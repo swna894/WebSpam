@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="borderPane" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ever.webSpam.spam.SpamController">
+   <top>
+      <VBox prefWidth="1000.0" BorderPane.alignment="CENTER">
+         <children>
+           <HBox prefWidth="1000.0" spacing="7.0">
+               <children>
+                  <Button fx:id="buttonReview" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonReview" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="buttonCrossQc" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonCrossQc" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="buttonQuestionList" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonQuestionList" HBox.hgrow="ALWAYS" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="7.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefWidth="1000.0">
+               <children>
+                  <TextField fx:id="textFieldGoogle" maxWidth="1.7976931348623157E308" onAction="#actionTextFieldGoogle" onMouseClicked="#mouseClickedGoogle" prefWidth="2000.0">
+                     <HBox.margin>
+                        <Insets right="7.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="buttonGoogle" maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" onAction="#actionButtonGoogle" prefHeight="23.0" prefWidth="200.0" HBox.hgrow="NEVER">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="7.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefWidth="1000.0">
+               <children>
+                  <TextField fx:id="textFieldExplorer" maxWidth="1.7976931348623157E308" onAction="#actionTextFieldExplorer" onMouseClicked="#mouseClickedExplorer" prefWidth="2000.0">
+                     <HBox.margin>
+                        <Insets right="7.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="buttonExplorer" maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" onAction="#actionButtonExplorer" prefWidth="200.0" HBox.hgrow="NEVER" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="7.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox prefWidth="1000.0">
+               <VBox.margin>
+                  <Insets bottom="7.0" />
+               </VBox.margin>
+               <children>
+                  <TextField fx:id="textFieldResult" maxWidth="1.7976931348623157E308" onAction="#actionTextFieldResult" onMouseClicked="#mouseClickedResult" prefWidth="2000.0" promptText="site:">
+                     <HBox.margin>
+                        <Insets right="7.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="buttonResult" maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" onAction="#actionButtonResult" prefWidth="200.0" />
+               </children>
+            </HBox>
+            <HBox prefWidth="1000.0">
+               <children>
+                  <TextField fx:id="textFieldHiddenText" maxWidth="1.7976931348623157E308" onAction="#actionTextFieldHiddenText" onMouseClicked="#mouseClickedHiddenText" prefWidth="2000.0">
+                     <HBox.margin>
+                        <Insets right="7.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="buttonHiddenText" maxWidth="100.0" minWidth="60.0" mnemonicParsing="false" onAction="#actionButtonHiddenText" prefWidth="200.0" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="7.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <bottom>
+      <HBox fx:id="hBoxBottom" prefHeight="24.0" prefWidth="1000.0" spacing="7.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="textFieldCategory" onKeyPressed="#keyPressedTextFieldCategoryHandler" onMouseClicked="#mouseClickedTextFieldCategory" prefWidth="2000.0" />
+            <Button fx:id="buttonQuestion" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonQuestion" prefWidth="40.0" />
+            <Button fx:id="buttonSave" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonSave" prefWidth="40.0" />
+            <Button fx:id="buttonSearch" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonSearch" prefWidth="40.0" />
+            <Button fx:id="buttonDel" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonDel" prefWidth="40.0" />
+            <Button fx:id="buttonCategory" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonCategory" prefWidth="40.0" />
+         </children>
+         <BorderPane.margin>
+            <Insets top="7.0" />
+         </BorderPane.margin>
+      </HBox>
+   </bottom>
+   <opaqueInsets>
+      <Insets />
+   </opaqueInsets>
+   <padding>
+      <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+   </padding>
+   <center>
+      <SplitPane fx:id="splitPane" dividerPositions="0.5303030303030303" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TableView fx:id="checkTableView" prefHeight="102.0" prefWidth="384.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <TableView fx:id="manualTableView" prefHeight="90.0" prefWidth="384.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+</BorderPane>

@@ -1,0 +1,96 @@
+bin/
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+# Code Recommenders
+.recommenders/
+
+# Scala IDE specific (Scala & Java development for Eclipse)
+.cache-main
+.scala_dependencies
+.worksheet
+
+### Eclipse Patch ###
+# Eclipse Core		
+.project
+
+# JDT-specific (Eclipse Java Development Tools)		
+.classpath
+
+
+# End of https://www.gitignore.io/api/eclipse
+<<<<<<< HEAD
+org.eclipse/*
+SceneBuilder
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Exclude maven wrapper
+!/.mvn/wrapper/maven-wrapper.jar
+
+# End of https://www.gitignore.io/api/maven,eclipse
+
+
+# TeXlipse plugin
+.texlipse
+/.project
+/.classpath
+/hs_err_pid12552.log
+logs/*
+/losg
+/debug.log
+=======
+
+
+### Maven ###
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Exclude maven wrapper
+!/.mvn/wrapper/maven-wrapper.jar
+
+# End of https://www.gitignore.io/api/maven,eclipse
+
+
+# TeXlipse plugin
+.texlipse
+/.project
+/.classpath
+/hs_err_pid12552.log
+logs/*
+/losg
+>>>>>>> branch 'master' of https://github.com/swna894/WebSpam.git
+/크로스qc(0805)-RESULT.xlsx
+/manual.xlsx
+/크로스qc(0812)-RESULT.xlsx
+/WebSpam - 바로 가기.lnk
+/크로스qc(0105)-나상운.xlsx
+/크로스qc(0105)-송호열.xlsx
+/크로스qc(0105)-엄정란.xlsx
+/크로스qc(0105)-이미원.xlsx
+/크로스qc(0105)-임수진.xlsx
+/크로스qc(0105)-정영미.xlsx
+/크로스qc(0105)-정영선.xlsx
+/크로스qc(0105)-최동우.xlsx
+/크로스qc(0105)-허창건.xlsx

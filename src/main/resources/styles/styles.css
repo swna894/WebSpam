@@ -1,0 +1,14 @@
+
+.table-row-cell:hover { -fx-background-color:#d9d9d9; }
+.table-row-cell { -fx-cell-size: 35px; }
+.table-row-cell:selected {
+   -fx-background-color: d9d9d9; 
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: black ;
+}
+
+.date-picker {
+	-fx-font-size: 14;
+}
