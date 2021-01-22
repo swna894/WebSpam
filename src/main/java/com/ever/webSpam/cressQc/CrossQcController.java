@@ -471,8 +471,7 @@ public class CrossQcController<S> implements Initializable, Constant {
 					private final Button text = new Button();
 					HBox hBox = new HBox(google, explorer, result, text);
 
-					{
-			
+					{	
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
 						explorer.setGraphic(new ImageView(new Image("/images/explorer.png")));
 						result.setGraphic(new ImageView(new Image("/images/magnify.png")));
@@ -482,10 +481,15 @@ public class CrossQcController<S> implements Initializable, Constant {
 							Spam spam = getTableView().getItems().get(getIndex());
 							getTableView().getItems().get(getIndex()).setSelected(true);
 							spam.setSelected(true);
-							verifySite.startBrowser(spam.getUri(), verifySite.getChrome());
-							//verifySite.setClipbord(spam.getUri());
+							String url = spam.getUri(); 
+							verifySite.startBrowser(url, verifySite.getChrome());
 							try {
-								verifySite.setClipbord(new URL(spam.getUri()).getHost());
+								if(url.contains("http")) {
+									verifySite.setClipbord(new URL(spam.getUri()).getHost());
+								} else {
+									verifySite.setClipbord(spam.getUri());
+								}
+								
 							} catch (MalformedURLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();

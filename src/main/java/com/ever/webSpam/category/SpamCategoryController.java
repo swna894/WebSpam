@@ -1,5 +1,6 @@
 package com.ever.webSpam.category;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -522,8 +523,21 @@ public class SpamCategoryController implements Initializable, Constant {
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
 						google.setOnAction((ActionEvent event) -> {
 							SpamCategory spam = getTableView().getItems().get(getIndex());
-							verifySite.startBrowser(spam.getUri(), verifySite.getChrome());
-							verifySite.setClipbord(spam.getUri());
+							//verifySite.startBrowser(spam.getUri(), verifySite.getChrome());
+							//verifySite.setClipbord(spam.getUri());
+							String url = spam.getUri(); 
+							verifySite.startBrowser(url, verifySite.getChrome());
+							try {
+								if(url.contains("http")) {
+									verifySite.setClipbord(new URL(spam.getUri()).getHost());
+								} else {
+									verifySite.setClipbord(spam.getUri());
+								}
+								
+							} catch (MalformedURLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 						});
 					}
 
