@@ -395,15 +395,19 @@ public class QuestionController implements Initializable, Constant {
 							Question spam = getTableView().getItems().get(getIndex());
 							getTableView().getItems().get(getIndex()).setSelected(true);
 							spam.setSelected(true);
-							verifySite.startBrowser(spam.getUri(), verifySite.getChrome());
-												
+							String url = spam.getUri(); 
+							verifySite.startBrowser(url, verifySite.getChrome());
 							try {
-								verifySite.setClipbord(new URL(spam.getUri()).getHost());
+								if(url.contains("http")) {
+									verifySite.setClipbord(new URL(spam.getUri()).getHost());
+								} else {
+									verifySite.setClipbord(spam.getUri());
+								}
+								
 							} catch (MalformedURLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-
 						});
 						explorer.setOnAction((ActionEvent event) -> {
 							Question spam = getTableView().getItems().get(getIndex());
