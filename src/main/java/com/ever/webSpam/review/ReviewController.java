@@ -1,5 +1,7 @@
 package com.ever.webSpam.review;
 
+
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -642,9 +644,8 @@ public class ReviewController implements Initializable, Constant {
 
 		switch (comboBoxCategory.getSelectionModel().getSelectedIndex()) {
 		case 0:
-			if (comboBoxReview.getSelectionModel().getSelectedIndex() == 0) {
 				reloadTable(spamList);
-			}
+
 			break;
 		case 1:
 			if (comboBoxWorker.getSelectionModel().getSelectedIndex() == 0)

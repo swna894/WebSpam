@@ -1,5 +1,7 @@
 package com.ever.webSpam.cressQc;
 
+
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -9,6 +11,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,6 +45,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -91,13 +96,16 @@ public class CrossQcController<S> implements Initializable, Constant {
 	private TableView<Spam> tableView;
 	private Button buttonSave;
 	private Button buttonReload;
-
+	private ComboBox<String> comboBoxCategory;
+	
 	private TextField textField;
 	private TextField textFieldWorker;
 	private Label label;
 	private File file;
-
+	private CheckBox wasChecked;
+	
 	private List<Spam> spamList;
+	private List<Spam> filtedSpamList;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -118,7 +126,32 @@ public class CrossQcController<S> implements Initializable, Constant {
 		buttonReload.setTooltip(new Tooltip("불러오기"));
 		buttonReload.setOnAction(e -> actionButtonReloadHandler());
 		buttonReload.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		
+//		buttonTimeReload = new Button();
+//		buttonTimeReload.setPrefWidth(200);
+//		buttonTimeReload.setGraphic(new ImageView(new Image("/images/refresh.png")));	
+//		buttonTimeReload.setOnAction(e -> actionButtonTimeReloadHandler());
+//		buttonTimeReload.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
+
+		wasChecked = new CheckBox("검수");
+		wasChecked.setSelected(false);
+		wasChecked.setOnAction(e -> {
+			filtedSpamList = spamList;
+			filtedSpamList = actionComboBoxCategoryHandler();
+			Platform.runLater(() -> reloadTable(filtedSpamList));
+		});
+		
+		comboBoxCategory = new ComboBox<String>();
+		comboBoxCategory.setPromptText("QC");
+		comboBoxCategory.setItems(observableListSpam);
+		comboBoxCategory.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
+		comboBoxCategory.valueProperty().addListener((obs, oldVal, newVal) -> {
+			filtedSpamList = spamList;
+			filtedSpamList = actionComboBoxCategoryHandler();
+			Platform.runLater(() -> reloadTable(filtedSpamList));
+		});
+		
 		textField = new TextField();
 		textField.setPrefWidth(400);
 		textField.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
@@ -172,7 +205,7 @@ public class CrossQcController<S> implements Initializable, Constant {
 		HBox.setHgrow(region, Priority.ALWAYS);
 
 		borderPane = new BorderPane();
-		hBox = new HBox(textFieldWorker, buttonSave, buttonReload, textField, label, region);
+		hBox = new HBox(textFieldWorker, buttonSave, buttonReload, wasChecked, comboBoxCategory, textField, label, region);
 		hBox.setStyle("-fx-alignment: CENTER-LEFT;");
 		hBox.setSpacing(10);
 		hBox.setPadding(new Insets(0, 7, 7, 0));
@@ -181,6 +214,106 @@ public class CrossQcController<S> implements Initializable, Constant {
 		borderPane.setTop(hBox);
 		borderPane.setCenter(tableView);
 		LOG.info("========== start initialize ");
+	}
+
+	private void reloadTable(List<Spam> filedList) {
+		if (filedList != null) {
+			// tableView.getItems().clear();
+			// tableView.getItems().addAll(filedList);
+			tableView.setItems(FXCollections.observableArrayList(filedList));
+		}
+	}
+	
+	private List<Spam> actionComboBoxCategoryHandler() {
+
+
+		Boolean isSeleted = wasChecked.isSelected();
+		String category = comboBoxCategory.getSelectionModel().getSelectedItem();
+
+		switch (comboBoxCategory.getSelectionModel().getSelectedIndex()) {
+		case 0:
+			tableView.setItems(FXCollections.observableArrayList(spamList));
+			break;
+		case 1:
+
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("비정상 광고 컨테트") && item.getSpamAd()) // 비광
+						.collect(Collectors.toList());
+			break;
+		case 2:
+	
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("비정상 텍스트") && item.getSpamText()) // 비텍
+						.collect(Collectors.toList());
+			break;
+		case 3:
+	
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("스펨 사이트로 리디렉션") && item.getSpamRedir())
+						.collect(Collectors.toList());
+			break;
+		case 4:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("악성 소프트웨어") && item.getSpamMalware()) // 악성
+						.collect(Collectors.toList());
+			break;
+		case 5:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("저작권위반") && item.getSpamCopy()).collect(Collectors.toList());
+			break;
+		// .filter(item -> category.equals("악성 소프트웨어") && item.getSpamCopy()) // 악성
+		// .filter(item -> category.equals("저작권위반") && item.getSpamIllegal()) // 저위
+		case 6:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("음란물") && item.getSpamPorn()) // 음란
+						.collect(Collectors.toList());
+			break;
+		case 7:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("기만적 컨텐트") && item.getSpamDecep()) // 기컨
+						.collect(Collectors.toList());
+			break;
+		case 8:
+				filtedSpamList = spamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("웹순위 조작 활동") && item.getSpamManip()) // 웹조
+						.collect(Collectors.toList());
+			break;
+		case 9:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("불법 사이트") && item.getSpamIllegal()) // 불사
+						.collect(Collectors.toList());
+			break;
+		case 10:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("정상 컨텐트") && item.getHam()) // 정상
+						.collect(Collectors.toList());
+			break;
+		case 11:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow()) // 정저
+						.collect(Collectors.toList());
+			break;
+		default:
+			System.out.println("그 외의 숫자");
+		}
+		return filtedSpamList;
+	}
+	
+	@SuppressWarnings("unused")
+	private Object actionButtonTimeReloadHandler() {
+		new Timer().schedule(
+			    new TimerTask() {
+
+			        @Override
+			        public void run() {
+			        	 Platform.runLater(() -> {			        	       
+			        	        	buttonSave.fire();
+						        	System.err.println("fire");		        	       
+			        	    });
+			        	
+			        }
+			    }, 0, 50000);
+		return null;
 	}
 
 	private void actionTextFieldHandler() {
