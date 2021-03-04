@@ -48,7 +48,6 @@ public class JavaFxApplication extends Application {
         stage.setScene(scene);
         
         if(diffDate()) {
-        	System.err.println("true");
         	stage.show();
         } else {
         	 System.exit(0);
@@ -71,7 +70,7 @@ public class JavaFxApplication extends Application {
 
     private Boolean diffDate() {
     	LocalDate currentDate = LocalDate.now();
-    	LocalDate targetDate = LocalDate.of(2021, 3, 01);
+    	LocalDate targetDate = LocalDate.of(2022, 3, 01);
     	
     	if(currentDate.isBefore(targetDate)) {
     		return true;

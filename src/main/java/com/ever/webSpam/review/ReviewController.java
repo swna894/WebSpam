@@ -2,6 +2,8 @@ package com.ever.webSpam.review;
 
 
 
+
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -104,7 +106,7 @@ import one.util.streamex.StreamEx;
 public class ReviewController implements Initializable, Constant {
 	Logger LOG = LoggerFactory.getLogger(ReviewController.class);
 	private final List<String> spamform = Arrays.asList("{서비스}", "{채널}", "{리스트}", "{리스트/컨텐트}", "{서비스/채널 확인 필요}", "검수불가",
-			"?서메", "?채메", "?컨리", "?컨테", "?비광", "?비텍", "?스리", "?악소", "?저위", "?음란", "?기컨", "?웹조", "?불사");
+			"?서메", "?채메", "?컨리", "?컨테", "?비광", "?비텍", "?스리", "?악소", "?저위", "?음란", "?기컨", "?웹조", "?불사", "리디렉션오류");
 	private Scene scene;
 	private Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 	private BorderPane borderPane;
@@ -1358,8 +1360,13 @@ public class ReviewController implements Initializable, Constant {
 				if (item == null) {
 					setStyle("");
 				} else if (item.getComment() != null && (spamform.contains(item.getComment()))
-						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {
-					setStyle("-fx-background-color: thistle;");
+						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {		
+					if(item.getComment().contains("리디렉션오류")) {
+						setStyle("-fx-background-color: #ff0066;"); 
+					} else {
+						setStyle("-fx-background-color: thistle;");
+					}
+				
 				} else {
 					setStyle("");
 				}
@@ -1511,8 +1518,8 @@ public class ReviewController implements Initializable, Constant {
 		columnNotCheck.setPrefWidth(60);
 
 		TableColumn<Spam, Void> columnButton = createButtonColumn();
-		columnButton.setMinWidth(130); // 130
-		columnButton.setPrefWidth(130);
+		columnButton.setMinWidth(160); // 130
+		columnButton.setPrefWidth(160);
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnButton, columnUri, columnName, columnScope,
 				columnNotCheck, columnDefer, columnLookMain, columnLookCh, columnLookList, columnLookCont, columnHam,
@@ -1527,6 +1534,12 @@ public class ReviewController implements Initializable, Constant {
 		// spamCategoryController.initalSpamCategory();
 		// List<SpamCategory> spamCategroysList =
 		// restSpamCategoryRepository.findAllByOrderByUriAsc();
+		
+		if(spam.getSpamRedir() && spam.getSpamText() && !spam.getSpamAd()) {
+	   	 	spam.setComment("리디렉션오류");
+		    return true;
+		}
+		
 		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
 
 		// spamCategoryList 에서 체크한다.
@@ -1566,8 +1579,11 @@ public class ReviewController implements Initializable, Constant {
 					}
 					spam.setComment(s);
 					return true;
-				}
+				} 
+				
+
 			}
+	
 		}
 
 		if (spam.getUri().startsWith("http:")) {
@@ -1830,17 +1846,19 @@ public class ReviewController implements Initializable, Constant {
 				final TableCell<Spam, Void> cell = new TableCell<Spam, Void>() {
 
 					private final Button google = new Button();
+			
 					private final Button explorer = new Button();
 					private final Button result = new Button();
 					private final Button text = new Button();
-					private final Button delete = new Button("D");
-					HBox hBox = new HBox(google, explorer, result, text);
+					private final Button delete = new Button();
+					HBox hBox = new HBox(google, explorer, result, text, delete);
 
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
 						explorer.setGraphic(new ImageView(new Image("/images/explorer.png")));
 						result.setGraphic(new ImageView(new Image("/images/magnify.png")));
 						text.setGraphic(new ImageView(new Image("/images/bluelist.png")));
+						delete.setGraphic(new ImageView(new Image("/images/check.png")));
 
 						google.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
@@ -1874,7 +1892,11 @@ public class ReviewController implements Initializable, Constant {
 						});
 						delete.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
-							eventDelete(spam);
+							spam.setSelected(true);
+							verifySite.setClipbord(spam.getUri());
+							
+//							Spam spam = getTableView().getItems().get(getIndex());
+//							eventDelete(spam);
 						});
 						text.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
@@ -1895,6 +1917,7 @@ public class ReviewController implements Initializable, Constant {
 						}
 					}
 
+					@SuppressWarnings("unused")
 					private void eventDelete(Spam spam) {
 						try {
 							spamList = restSpamRepository.deleteBySpam(spam);
