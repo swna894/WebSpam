@@ -80,6 +80,19 @@
                   <Insets bottom="7.0" />
                </VBox.margin>
             </HBox>
+            <HBox prefHeight="0.0" prefWidth="386.0">
+               <children>
+                  <TextField fx:id="textFieltInspectResult" onAction="#actionTextFieldInspectResult" onMouseClicked="#mouseClickedInspectResult" prefWidth="2000.0">
+                     <HBox.margin>
+                        <Insets right="7.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="buttonInstprctionResult" minWidth="60.0" mnemonicParsing="false" onAction="#actionButtonInspectResullt" prefWidth="200.0" />
+               </children>
+               <padding>
+                  <Insets bottom="7.0" />
+               </padding>
+            </HBox>
          </children>
       </VBox>
    </top>

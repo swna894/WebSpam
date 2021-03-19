@@ -571,11 +571,12 @@ public class ReviewController implements Initializable, Constant {
 		case 6:
 			if (comboBoxWorker.getSelectionModel().getSelectedIndex() == 0)
 				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
-						.filter(item -> item.getNotCheck().equals("검수불가")) // 켄테
+						.filter(item -> item.getNotCheck().equals("검수불가") || item.getBooleanDefer()) // 켄테
 						.collect(Collectors.toList());
 			else
 				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
-						.filter(item -> item.getName().equals(worker)).filter(item -> item.getNotCheck().equals("검수불가"))
+						.filter(item -> item.getName().equals(worker))
+						.filter(item -> item.getNotCheck().equals("검수불가") || item.getBooleanDefer())
 						.collect(Collectors.toList());
 			break;
 		case 7:
@@ -1518,8 +1519,8 @@ public class ReviewController implements Initializable, Constant {
 		columnNotCheck.setPrefWidth(60);
 
 		TableColumn<Spam, Void> columnButton = createButtonColumn();
-		columnButton.setMinWidth(160); // 130
-		columnButton.setPrefWidth(160);
+		columnButton.setMinWidth(195); 
+		columnButton.setPrefWidth(195);
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnButton, columnUri, columnName, columnScope,
 				columnNotCheck, columnDefer, columnLookMain, columnLookCh, columnLookList, columnLookCont, columnHam,
@@ -1851,7 +1852,8 @@ public class ReviewController implements Initializable, Constant {
 					private final Button result = new Button();
 					private final Button text = new Button();
 					private final Button delete = new Button();
-					HBox hBox = new HBox(google, explorer, result, text, delete);
+					private final Button inspect = new Button();
+					HBox hBox = new HBox(google, explorer, result, text, delete,inspect);
 
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
@@ -1859,6 +1861,7 @@ public class ReviewController implements Initializable, Constant {
 						result.setGraphic(new ImageView(new Image("/images/magnify.png")));
 						text.setGraphic(new ImageView(new Image("/images/bluelist.png")));
 						delete.setGraphic(new ImageView(new Image("/images/check.png")));
+						inspect.setGraphic(new ImageView(new Image("/images/all.png")));
 
 						google.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
@@ -1905,6 +1908,14 @@ public class ReviewController implements Initializable, Constant {
 
 							verifySite.hiddenText(spam.getUri());
 						});
+						
+						inspect.setOnAction((ActionEvent event) -> {
+							Spam spam = getTableView().getItems().get(getIndex());
+							spam.setSelected(true);
+							verifySite.setClipbord(spam.getUri());
+							verifySite.eventInspectReult(spam.getUri());
+						});
+						
 					}
 
 					@Override

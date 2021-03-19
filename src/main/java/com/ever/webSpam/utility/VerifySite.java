@@ -105,6 +105,28 @@ public class VerifySite {
 		}
 	}
 
+	
+	public void eventInspectReult(String uri) {
+		String prefixUrl = "http://spamdepot.navercorp.com/html/inspect_result.html?offset=0&limit=20&search=";
+
+		Clipboard clipboard = Clipboard.getSystemClipboard();
+		ClipboardContent clipboardContent = new ClipboardContent();
+		clipboardContent.putString(uri);
+
+		Platform.runLater(() -> {
+			clipboard.setContent(clipboardContent);
+		});
+
+		uri = prefixUrl + uri;
+		try {
+			String[] b = { chrome, uri };
+			process = Runtime.getRuntime().exec(b);
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+	}
+	
 	public void hiddenText(String uri) {		
 		if (uri.startsWith(prefix)) {
 			uri = uri.substring(prefix.length());

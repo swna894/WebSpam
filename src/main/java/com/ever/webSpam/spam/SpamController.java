@@ -167,7 +167,13 @@ public class SpamController implements Initializable, Constant {
 
 	@FXML
 	private TextField textFieldHiddenText;
-
+	
+	@FXML
+	private TextField textFieltInspectResult;
+	
+	@FXML
+	private Button buttonInstprctionResult;
+	
 	@FXML
 	private Button buttonGoogle;
 
@@ -194,7 +200,7 @@ public class SpamController implements Initializable, Constant {
 
 	@FXML
 	private Button buttonSearch;
-
+	
 	@FXML
 	private Button buttonHiddenText;
 
@@ -204,6 +210,8 @@ public class SpamController implements Initializable, Constant {
 	@FXML
 	private Button buttonQuestionList;
 
+
+	
 	@FXML
 	private TableView<Spam> checkTableView;
 
@@ -291,6 +299,12 @@ public class SpamController implements Initializable, Constant {
 	}
 
 	@FXML
+	void actionButtonInspectResullt(ActionEvent event) {
+		inspectResult();
+	}
+
+	
+	@FXML
 	void actionButtonSearch(ActionEvent event) {
 		// buttonDel.setDisable(true);
 		String search = textFieldCategory.getText().trim();
@@ -349,6 +363,20 @@ public class SpamController implements Initializable, Constant {
 	void actionButtonGoogle(ActionEvent event) {
 
 	}
+	
+	@FXML
+	void actionTextFieldInspectResult(ActionEvent event) {
+		inspectResult();
+	}
+	
+	private void inspectResult() {
+		clipText = verifySite.getClipboard();
+		if(!clipText.isEmpty())
+		{
+			textFieltInspectResult.setText(clipText);
+			verifySite.eventInspectReult(textFieltInspectResult.getText());
+		}
+	}
 
 	@FXML
 	void actionButtonResult(ActionEvent event) {
@@ -391,6 +419,13 @@ public class SpamController implements Initializable, Constant {
 		textFieldClean(textFieldExplorer);
 
 	}
+	
+	@FXML
+	void mouseClickedInspectResult(MouseEvent event) {
+		inspectResult();
+
+	}
+
 
 	@FXML
 	void mouseClickedGoogle(MouseEvent event) {
@@ -631,7 +666,6 @@ public class SpamController implements Initializable, Constant {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOG.info("========== start initialize ");
 		buttonSave.setGraphic(new ImageView(new Image("/images/save.png")));
 		buttonSearch.setGraphic(new ImageView(new Image("/images/magnify.png")));
 		buttonDel.setGraphic(new ImageView(new Image("/images/delete.png")));
@@ -644,7 +678,8 @@ public class SpamController implements Initializable, Constant {
 		buttonCategory.setGraphic(new ImageView(new Image("/images/category.png")));
 		buttonQuestion.setGraphic(new ImageView(new Image("/images/question_16.png")));
 		buttonQuestionList.setGraphic(new ImageView(new Image("/images/question_16.png")));
-		LOG.info("========== end initialize ");
+		buttonInstprctionResult.setGraphic(new ImageView(new Image("/images/all.png")));
+
 		textFieldGoogle.setPromptText("Goole");
 		textFieldExplorer.setPromptText("Explorer");
 		textFieldHiddenText.setPromptText("Crawled Text");
