@@ -360,8 +360,8 @@ public class QuestionController implements Initializable, Constant {
 		numberCol.setSortable(false);
 
 		TableColumn<Question, Void> columnButton = createButtonColumn();
-		columnButton.setMinWidth(130); // 130
-		columnButton.setPrefWidth(130);
+		columnButton.setMinWidth(160); // 130
+		columnButton.setPrefWidth(160);
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnButton, columnUri, columnDate, columnMemo);
 
@@ -382,7 +382,8 @@ public class QuestionController implements Initializable, Constant {
 					private final Button result = new Button();
 					private final Button text = new Button();
 					private final Button delete = new Button();
-					HBox hBox = new HBox(google, explorer, result, text);
+					private final Button inspect = new Button();
+					HBox hBox = new HBox(google, explorer, result, text ,inspect);
 
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
@@ -390,7 +391,8 @@ public class QuestionController implements Initializable, Constant {
 						result.setGraphic(new ImageView(new Image("/images/magnify.png")));
 						text.setGraphic(new ImageView(new Image("/images/bluelist.png")));
 						delete.setGraphic(new ImageView(new Image("/images/delete.png")));
-
+						inspect.setGraphic(new ImageView(new Image("/images/all.png")));
+						
 						google.setOnAction((ActionEvent event) -> {
 							Question spam = getTableView().getItems().get(getIndex());
 							getTableView().getItems().get(getIndex()).setSelected(true);
@@ -429,6 +431,12 @@ public class QuestionController implements Initializable, Constant {
 							getTableView().getItems().get(getIndex()).setSelected(true);
 							spam.setSelected(true);
 							verifySite.hiddenText(spam.getUri());
+						});
+						inspect.setOnAction((ActionEvent event) -> {
+							Question spam = getTableView().getItems().get(getIndex());
+							spam.setSelected(true);
+							verifySite.setClipbord(spam.getUri());
+							verifySite.eventInspectReult(spam.getUri());
 						});
 					}
 
