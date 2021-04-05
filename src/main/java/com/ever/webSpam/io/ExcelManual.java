@@ -58,6 +58,7 @@ public class ExcelManual implements Constant {
 	private Integer SPAM_ILLEGAL = 20;
 	private Integer DATE = 21;
 	private Integer COMMENT = 22;
+	private Integer SPAM_WHITE = 23;
 
 //	private  Integer booleanBlock = 9;
 
@@ -159,6 +160,9 @@ public class ExcelManual implements Constant {
 			cell = row.createCell(COMMENT);
 			cell.setCellValue(category.getComment());
 
+			cell = row.createCell(SPAM_WHITE);
+			cell.setCellValue(category.getSpamWhite());
+
 			cell.getRow().setHeight((short) -1);
 		}
 		return writeFile(workbook, FILE);
@@ -208,6 +212,9 @@ public class ExcelManual implements Constant {
 
 			cell = row.createCell(SPAM_ILLEGAL);
 			cell.setCellValue(category.getSpamIllegal());
+
+			cell = row.createCell(SPAM_WHITE);
+			cell.setCellValue(category.getWhiteSite());
 
 			cell.getRow().setHeight((short) -1);
 		}
@@ -371,6 +378,12 @@ public class ExcelManual implements Constant {
 			b = cell.getBooleanCellValue();
 			category.setSpamIllegal(b);
 
+			cell = row.getCell(SPAM_WHITE);
+			if (cell != null) {
+				b = cell.getBooleanCellValue();
+				category.setWhiteSite(b);
+			}
+
 			categoryList.add(category);
 		}
 		try {
@@ -456,6 +469,9 @@ public class ExcelManual implements Constant {
 			cell = row.getCell(SPAM_ILLEGAL);
 			spam.setSpamIllegal(cell.getBooleanCellValue());
 
+			cell = row.getCell(SPAM_WHITE);
+			spam.setSpamWhite(cell.getBooleanCellValue());
+
 			cell = row.getCell(DATE);
 			spam.setWorkday(cell.getStringCellValue());
 
@@ -470,7 +486,7 @@ public class ExcelManual implements Constant {
 	private void clearSteet(Sheet sheet) {
 		for (int i = sheet.getLastRowNum(); i >= 0; i--) {
 			Row row = sheet.getRow(i);
-			if(row != null)
+			if (row != null)
 				sheet.removeRow(sheet.getRow(i));
 		}
 	}

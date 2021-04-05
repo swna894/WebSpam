@@ -57,6 +57,7 @@ public class Spam {
 	private final BooleanProperty spamDecep = new SimpleBooleanProperty();
 	private final BooleanProperty spamManip = new SimpleBooleanProperty();
 	private final BooleanProperty spamIllegal = new SimpleBooleanProperty();
+	private final BooleanProperty spamWhite = new SimpleBooleanProperty();
 	
 	@Transient
 	private Integer no;
@@ -99,6 +100,11 @@ public class Spam {
 	}
 	
 	@Access(AccessType.PROPERTY)
+	public Boolean getSpamWhite() { return spamWhite.get(); }
+	public void setSpamWhite(Boolean spamWhite) { this.spamWhite.set(spamWhite); }
+	public BooleanProperty spamWhiteProperty() { return spamWhite; }
+	
+	@Access(AccessType.PROPERTY)
 	public String getLabel() { return label.get(); }
 	public void setLabel(String label) { this.label.set(label); }
 	public StringProperty labelProperty() { return label; }
@@ -107,6 +113,7 @@ public class Spam {
 	public String getQc() { return qc.get(); }
 	public void setQc(String qc) { this.qc.set(qc); }
 	public StringProperty qcProperty() { return qc; }
+	
 	
 	@Column(length = 1024)
 	@Access(AccessType.PROPERTY)

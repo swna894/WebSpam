@@ -1541,14 +1541,7 @@ public class ReviewController implements Initializable, Constant {
 		    return true;
 		}
 		
-		URL eUrl = null;
-		try {
-			eUrl = new URL(spam.getUri());
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		if ((spam.getUri().split("/").length < 2) && (eUrl.toString().endsWith(".co.kr") || eUrl.toString().endsWith(".com"))
+		if ((spam.getUri().split("/").length < 2) 
 				&& (spam.getSpamAd() || spam.getSpamText())) {
 			spam.setComment("{비광확인}");
 			return true;

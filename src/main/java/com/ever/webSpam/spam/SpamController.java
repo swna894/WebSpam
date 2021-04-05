@@ -542,6 +542,16 @@ public class SpamController implements Initializable, Constant {
 		alert.showAndWait();
 
 	}
+	
+	private void MyAlertDialog(String message) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Input Information");
+		alert.setHeaderText(null);
+		alert.setContentText(message);
+		closeAlert(alert);
+		alert.showAndWait();
+
+	}
 
 	private void isSpamList() {
 		try {
@@ -1097,7 +1107,7 @@ public class SpamController implements Initializable, Constant {
 	private void checkSpam(String url) {
 		SpamCategory spam = spamCategoryList.stream().filter(item-> item.getUri().contains(url)).findAny().orElse(null);
 		
-		MyAlertDialog(spam.toString(), null);
+		MyAlertDialog(spam.toString());
 		
 	}
 //	private void startBrowser(String uri, String browser) {
