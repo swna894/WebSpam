@@ -32,7 +32,13 @@ public class SpamCategory {
 	private final BooleanProperty spamText = new SimpleBooleanProperty();
 	private final BooleanProperty spamCopy = new SimpleBooleanProperty();
 	private final BooleanProperty spamIllegal = new SimpleBooleanProperty();
+	private final BooleanProperty whiteSite = new SimpleBooleanProperty();
 
+	@Access(AccessType.PROPERTY)
+	public Boolean getWhiteSite() { return whiteSite.get(); }
+	public void setWhiteSite(Boolean whiteSite) { this.whiteSite.set(whiteSite); }
+	public BooleanProperty whiteSiteProperty() {	return whiteSite; }
+	
 	@Access(AccessType.PROPERTY)
 	public Boolean getLookCont() { return lookCont.get(); }
 	public void setLookCont(Boolean lookCont) { this.lookCont.set(lookCont); }
@@ -96,10 +102,12 @@ public class SpamCategory {
 	}
 	@Override
 	public String toString() {
-		return "SpamCategory [uri=" + uri + ", lookMain=" + lookMain + ", lookCh=" + lookCh + ", lookList=" + lookList
-				+ ", lookCont=" + lookCont + ", hamLow=" + hamLow + ", spamAd=" + spamAd + ", spamText=" + spamText
-				+ "]";
+		return "SpamCategory [id=" + id + ", uri=" + uri + ", lookMain=" + lookMain + ", lookCh=" + lookCh
+				+ ", lookList=" + lookList + ", lookCont=" + lookCont + ", ham=" + ham + ", hamLow=" + hamLow
+				+ ", spamAd=" + spamAd + ", spamText=" + spamText + ", spamCopy=" + spamCopy + ", spamIllegal="
+				+ spamIllegal + ", whiteSite=" + whiteSite + "]\n";
 	}
+
 
 	
 

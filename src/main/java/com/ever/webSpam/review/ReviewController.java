@@ -106,7 +106,7 @@ import one.util.streamex.StreamEx;
 public class ReviewController implements Initializable, Constant {
 	Logger LOG = LoggerFactory.getLogger(ReviewController.class);
 	private final List<String> spamform = Arrays.asList("{서비스}", "{채널}", "{리스트}", "{리스트/컨텐트}", "{서비스/채널 확인 필요}", "검수불가",
-			"?서메", "?채메", "?컨리", "?컨테", "?비광", "?비텍", "?스리", "?악소", "?저위", "?음란", "?기컨", "?웹조", "?불사", "리디렉션오류");
+			"?서메", "?채메", "?컨리", "?컨테", "?비광", "?비텍", "?스리", "?악소", "?저위", "?음란", "?기컨", "?웹조", "?불사", "리디렉션오류", "비광확인");
 	private Scene scene;
 	private Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 	private BorderPane borderPane;
@@ -1362,7 +1362,7 @@ public class ReviewController implements Initializable, Constant {
 					setStyle("");
 				} else if (item.getComment() != null && (spamform.contains(item.getComment()))
 						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {		
-					if(item.getComment().contains("리디렉션오류")) {
+					if(item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인")) {
 						setStyle("-fx-background-color: #ff0066;"); 
 					} else {
 						setStyle("-fx-background-color: thistle;");
@@ -1540,6 +1540,20 @@ public class ReviewController implements Initializable, Constant {
 	   	 	spam.setComment("리디렉션오류");
 		    return true;
 		}
+		
+		URL eUrl = null;
+		try {
+			eUrl = new URL(spam.getUri());
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if ((spam.getUri().split("/").length < 2) && (eUrl.toString().endsWith(".co.kr") || eUrl.toString().endsWith(".com"))
+				&& (spam.getSpamAd() || spam.getSpamText())) {
+			spam.setComment("{비광확인}");
+			return true;
+		}
+	
 		
 		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
 

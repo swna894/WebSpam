@@ -64,6 +64,7 @@ public class SpamCategoryController implements Initializable, Constant {
 	private RadioButton checkBoxSpamText;
 	private RadioButton checkBoxSpamCopy;
 	private RadioButton checkBoxSpamIllegal;
+	private RadioButton checkBoxWhiteSite;
 	private TableView<SpamCategory> tableView;
 	private List<SpamCategory> spamCategoryList;
 
@@ -173,6 +174,10 @@ public class SpamCategoryController implements Initializable, Constant {
 		checkBoxSpamIllegal = new RadioButton("불사");
 		checkBoxSpamIllegal.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		checkBoxSpamIllegal.setOnAction(e -> actionEventCheckBoxSpamIllegal());
+		
+		checkBoxWhiteSite = new RadioButton("화이트");
+		checkBoxWhiteSite.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		checkBoxWhiteSite.setOnAction(e -> actionEventCheckBoxWhiteSite());
 
 	
 		ToggleGroup group = new ToggleGroup();
@@ -191,7 +196,7 @@ public class SpamCategoryController implements Initializable, Constant {
 //		checkBoxSpamText.setToggleGroup(spam);
 
 		HBox hBox2 = new HBox(checkBoxMain, checkBoxChannel, checkBoxList, checkBoxHam, checkBoxHamLow, checkBoxSpamAd,
-				checkBoxSpamText, checkBoxSpamCopy, checkBoxSpamIllegal);
+				checkBoxSpamText, checkBoxSpamCopy, checkBoxSpamIllegal, checkBoxWhiteSite);
 		hBox2.setPadding(new Insets(0, 0, 7, 0));
 		HBox.setHgrow(checkBoxMain, Priority.ALWAYS);
 		HBox.setHgrow(checkBoxChannel, Priority.ALWAYS);
@@ -213,6 +218,16 @@ public class SpamCategoryController implements Initializable, Constant {
 		borderPane.setCenter(tableView);
 
 	}
+
+	private Object actionEventCheckBoxWhiteSite() {
+		List<SpamCategory> filteredList = spamCategoryList.stream().filter(item -> item.getLookList())
+				.collect(Collectors.toList());
+
+		updateTableView(filteredList);
+		return null;
+	}
+
+
 
 	private Object actionButtonDeleteHandler() {
 		SpamCategory spamCategory = tableView.getSelectionModel().getSelectedItem();
@@ -330,6 +345,7 @@ public class SpamCategoryController implements Initializable, Constant {
 		channelUri.setSpamText(checkBoxSpamText.isSelected());
 		channelUri.setSpamCopy(checkBoxSpamCopy.isSelected());
 		channelUri.setSpamIllegal(checkBoxSpamIllegal.isSelected());
+		channelUri.setWhiteSite(checkBoxWhiteSite.isSelected());
 
 		if (!uri.isEmpty() && uri != null) {
 			spamCategoryRepository.save(channelUri);
@@ -357,7 +373,7 @@ public class SpamCategoryController implements Initializable, Constant {
 		stage.setTitle("Insert Category");
 
 		if (borderPane.getScene() == null) {
-			Scene scene = new Scene(borderPane, 760, 400);
+			Scene scene = new Scene(borderPane, 800, 400);
 			stage.setScene(scene);
 		} else {
 			stage.setScene(borderPane.getScene());
@@ -388,6 +404,7 @@ public class SpamCategoryController implements Initializable, Constant {
 		checkBoxSpamIllegal.setSelected(false);
 		checkBoxSpamText.setSelected(false);
 		checkBoxSpamCopy.setSelected(false);
+		checkBoxWhiteSite.setSelected(false);
 	}
 
 	public void initalSpamCategory() {
@@ -453,6 +470,7 @@ public class SpamCategoryController implements Initializable, Constant {
 		TableColumn<SpamCategory, Boolean> columnSpamText = createCheckBoxColumn("비텍", "비정상 텍스트");
 		TableColumn<SpamCategory, Boolean> columnSpamCopy = createCheckBoxColumn("저위", "저작권 위반");
 		TableColumn<SpamCategory, Boolean> columnSpamIllegal = createCheckBoxColumn("불사", "불법사이트");
+		TableColumn<SpamCategory, Boolean> columnWhiteSite = createCheckBoxColumn("화이", "화이트사이트");
 
 		columnUri.setCellValueFactory(cellData -> cellData.getValue().uriProperty());
 
@@ -466,6 +484,7 @@ public class SpamCategoryController implements Initializable, Constant {
 		columnSpamText.setCellValueFactory(cellData -> cellData.getValue().spamTextProperty());
 		columnSpamCopy.setCellValueFactory(cellData -> cellData.getValue().spamCopyProperty());
 		columnSpamIllegal.setCellValueFactory(cellData -> cellData.getValue().spamIllegalProperty());
+		columnWhiteSite.setCellValueFactory(cellData -> cellData.getValue().whiteSiteProperty());
 
 		// nameCol.getStyleClass().add("table-left");
 		// columnUri.setPrefWidth(150);
@@ -503,7 +522,7 @@ public class SpamCategoryController implements Initializable, Constant {
 		numberCol.setSortable(false);
 
 		tableView.getColumns().addAll(columnButton, numberCol, columnUri, columnLookMain, columnLookCh, columnLookList,
-				columnHam, columnHamLow, columnSpamAd, columnSpamText, columnSpamCopy, columnSpamIllegal);
+				columnHam, columnHamLow, columnSpamAd, columnSpamText, columnSpamCopy, columnSpamIllegal, columnWhiteSite);
 	}
 
 	private TableColumn<SpamCategory, Void> createButtonColumn() {

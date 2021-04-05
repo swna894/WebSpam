@@ -95,6 +95,7 @@ public class SpamController implements Initializable, Constant {
 
 	private String clipText;
 	private List<Manual> manualList;
+	private List<SpamCategory> spamCategoryList;
 
 	// private Manual selectedManual;
 
@@ -131,7 +132,7 @@ public class SpamController implements Initializable, Constant {
 
 	@Autowired
 	SpamCategoryRepository spamCategoryRepository;
-
+	
 	@Autowired
 	QuestionController questionController;
 	
@@ -693,6 +694,7 @@ public class SpamController implements Initializable, Constant {
 			borderPane.getChildren().remove(hBoxBottom);
 
 		}
+		spamCategoryList = spamCategoryRepository.findAllByOrderByUriAsc();
 	}
 
 	private void initialManualTableView() {
@@ -1042,6 +1044,7 @@ public class SpamController implements Initializable, Constant {
 							getTableView().getItems().get(getIndex()).setSelected(true);
 							spam.setSelected(true);
 							String url = spam.getUri(); 
+							
 							verifySite.startBrowser(url, verifySite.getChrome());
 							try {
 								if(url.contains("http")) {
@@ -1054,7 +1057,7 @@ public class SpamController implements Initializable, Constant {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-
+							checkSpam(url);
 						});
 
 						result.setOnAction((ActionEvent event) -> {
@@ -1091,6 +1094,12 @@ public class SpamController implements Initializable, Constant {
 		return column;
 	}
 
+	private void checkSpam(String url) {
+		SpamCategory spam = spamCategoryList.stream().filter(item-> item.getUri().contains(url)).findAny().orElse(null);
+		
+		MyAlertDialog(spam.toString(), null);
+		
+	}
 //	private void startBrowser(String uri, String browser) {
 //
 //		try {
