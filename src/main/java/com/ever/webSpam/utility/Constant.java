@@ -16,7 +16,7 @@ public interface Constant {
 			"정상 컨텐트 저품질");
 	
 	ObservableList<String> observableListReview = FXCollections.observableArrayList(" ",
-			"서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지", "사이트미분류", "검수불가", "보류");
+			"서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지", "사이트미분류", "검수불가", "보류", "WHITE");
 
 	
 	String user = "swna8934@gmail.com";

@@ -1,10 +1,7 @@
 package com.ever.webSpam.review;
 
-
-
-
-
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,6 +37,7 @@ import com.ever.webSpam.category.SpamCategoryController;
 import com.ever.webSpam.category.SpamCategoryRepository;
 import com.ever.webSpam.cressQc.CrossExcel;
 import com.ever.webSpam.io.ExcelManual;
+import com.ever.webSpam.io.ExcelWhiteQc;
 import com.ever.webSpam.io.JsonUtil;
 import com.ever.webSpam.spam.RestSpamRepository;
 import com.ever.webSpam.spam.Spam;
@@ -106,7 +104,8 @@ import one.util.streamex.StreamEx;
 public class ReviewController implements Initializable, Constant {
 	Logger LOG = LoggerFactory.getLogger(ReviewController.class);
 	private final List<String> spamform = Arrays.asList("{서비스}", "{채널}", "{리스트}", "{리스트/컨텐트}", "{서비스/채널 확인 필요}", "검수불가",
-			"?서메", "?채메", "?컨리", "?컨테", "?비광", "?비텍", "?스리", "?악소", "?저위", "?음란", "?기컨", "?웹조", "?불사", "리디렉션오류", "비광확인");
+			"?서메", "?채메", "?컨리", "?컨테", "?비광", "?비텍", "?스리", "?악소", "?저위", "?음란", "?기컨", "?웹조", "?불사", "리디렉션오류",
+			"비광확인");
 	private Scene scene;
 	private Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 	private BorderPane borderPane;
@@ -118,6 +117,7 @@ public class ReviewController implements Initializable, Constant {
 
 	private CheckBox checkBoxUseDatePicker;
 	private CheckBox wasChecked;
+	private CheckBox whiteQc;
 	private Button buttonFilter;
 	private Button buttonInsertCategory;
 	private Button buttonAll;
@@ -131,6 +131,7 @@ public class ReviewController implements Initializable, Constant {
 	private Button buttonReview;
 	private Button buttonTop;
 	private Button buttonEnd;
+	private Button buttonWhiteSave;
 	private Button buttonCommentSort;
 	private DatePicker datePicker;
 	private String selectedUri;
@@ -228,6 +229,11 @@ public class ReviewController implements Initializable, Constant {
 		checkBoxUseDatePicker.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		checkBoxUseDatePicker.setOnAction(e -> reloadTableAction());
 
+		whiteQc = new CheckBox("White");
+		whiteQc.setSelected(false);
+		whiteQc.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		whiteQc.setOnAction(e -> whiteQcAction());
+
 		comboBoxWorker = new ComboBox<String>();
 		comboBoxWorker.setItems(observableListName);
 		comboBoxWorker.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
@@ -271,6 +277,8 @@ public class ReviewController implements Initializable, Constant {
 			if (comboBoxCategory.getSelectionModel().getSelectedIndex() != 0) {
 				filtedSpamList = actionComboBoxCategoryHandler();
 			}
+			
+			
 
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 		});
@@ -386,6 +394,10 @@ public class ReviewController implements Initializable, Constant {
 		buttonEnd.setOnAction(e -> handlerButtonEndHandler());
 		buttonEnd.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
+		buttonWhiteSave = new Button("저장");
+		buttonWhiteSave.setOnAction(e -> actionButtonWhiteSave());
+		buttonWhiteSave.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		
 		datePicker = new DatePicker();
 		datePicker.setPrefWidth(150);
 		datePicker.setConverter(new StringConverter<LocalDate>() {
@@ -421,9 +433,10 @@ public class ReviewController implements Initializable, Constant {
 		HBox.setHgrow(region, Priority.ALWAYS);
 		hBox.setStyle("-fx-alignment: CENTER;");
 		if (isFile) {
-			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, buttonWorkNum,
+			//datePicker, checkBoxUseDatePicker, 
+			hBox.getChildren().addAll(comboBoxWorker, buttonAll, buttonWorkNum,
 					textFieldFilterURL, buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview,
-					buttonInsertCategory, buttonCommentSort, buttonTop, buttonEnd, label, region, wasChecked,
+					buttonInsertCategory, buttonCommentSort, buttonTop, buttonEnd, label, region, buttonWhiteSave, whiteQc, wasChecked,
 					// comboBoxCategory, textFieldSearch, textFieldNo, buttonFeedBack, buttonSave,
 					// buttonDelete);
 					textFieldNo, comboBoxCategory, comboBoxReview);
@@ -435,6 +448,33 @@ public class ReviewController implements Initializable, Constant {
 		hBox.setPadding(new Insets(7, 7, 7, 7));
 		hBox.setSpacing(10);
 		LOG.info("========== start initialize ");
+	}
+
+	@Autowired
+	ExcelWhiteQc excelWhiteQc;
+	
+	private Object actionButtonWhiteSave() {
+		String file = excelWhiteQc.writeSpamList(tableView.getItems());
+		try {
+			Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + file);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return null;
+	}
+
+	private Object whiteQcAction() {
+		if (whiteQc.isSelected()) {
+			List<Spam> filterList = tableView.getItems().stream().filter(item -> item.getScope().equals("doman"))
+					.filter(item -> !item.getLookCh() && !item.getLookMain() && !item.getLookList()
+							&& !item.getLookCont())
+					.collect(Collectors.toList());
+			reloadTable(filterList);
+		} else {
+			reloadTable(spamList);
+		}
+
+		return null;
 	}
 
 	void handlerButtonTopHandler() {
@@ -589,6 +629,14 @@ public class ReviewController implements Initializable, Constant {
 						.filter(item -> item.getName().equals(worker)).filter(item -> item.getBooleanDefer())
 						.collect(Collectors.toList());
 			break;
+		case 8:
+		
+				filtedSpamList = filtedSpamList.stream().filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+						 && !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh() && !item.getLookList() && !item.getLookCont() )		
+						.collect(Collectors.toList());
+				filtedSpamList.forEach(item -> item.setComment(""));
+			
+			break;
 		default:
 			System.out.println("그 외의 숫자");
 		}
@@ -644,10 +692,9 @@ public class ReviewController implements Initializable, Constant {
 		Boolean isSeleted = wasChecked.isSelected();
 		String category = comboBoxCategory.getSelectionModel().getSelectedItem();
 		String worker = comboBoxWorker.getSelectionModel().getSelectedItem();
-
-		switch (comboBoxCategory.getSelectionModel().getSelectedIndex()) {
+		switch (comboBoxCategory.getSelectionModel().getSelectedIndex()) {		
 		case 0:
-				reloadTable(spamList);
+			reloadTable(spamList);
 
 			break;
 		case 1:
@@ -828,7 +875,7 @@ public class ReviewController implements Initializable, Constant {
 		} else {
 
 			for (int i = 0; i < filtedSpamList.size(); i++) {
-				if (i > (Integer.valueOf(text)-1)) {
+				if (i > (Integer.valueOf(text) - 1)) {
 					filtedSpamList.get(i).setSelected(true);
 				} else {
 					filtedSpamList.get(i).setSelected(false);
@@ -1079,10 +1126,8 @@ public class ReviewController implements Initializable, Constant {
 
 			if (!name.equals("admin")) {
 
-				List<Spam> crossSpamList = spamList.stream()
-						.filter(item -> !item.getNotCheck().equals(notCheck))
-						.filter(item -> !item.getDefer().equals("보류"))
-						.filter(item -> item.getName().equals(name))
+				List<Spam> crossSpamList = spamList.stream().filter(item -> !item.getNotCheck().equals(notCheck))
+						.filter(item -> !item.getDefer().equals("보류")).filter(item -> item.getName().equals(name))
 
 						.filter(distinctByKey(s -> s.getUri()))
 
@@ -1361,13 +1406,13 @@ public class ReviewController implements Initializable, Constant {
 				if (item == null) {
 					setStyle("");
 				} else if (item.getComment() != null && (spamform.contains(item.getComment()))
-						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {		
-					if(item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인")) {
-						setStyle("-fx-background-color: #ff0066;"); 
+						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {
+					if (item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인")) {
+						setStyle("-fx-background-color: #ff0066;");
 					} else {
 						setStyle("-fx-background-color: thistle;");
 					}
-				
+
 				} else {
 					setStyle("");
 				}
@@ -1519,7 +1564,7 @@ public class ReviewController implements Initializable, Constant {
 		columnNotCheck.setPrefWidth(60);
 
 		TableColumn<Spam, Void> columnButton = createButtonColumn();
-		columnButton.setMinWidth(195); 
+		columnButton.setMinWidth(195);
 		columnButton.setPrefWidth(195);
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnButton, columnUri, columnName, columnScope,
@@ -1535,19 +1580,18 @@ public class ReviewController implements Initializable, Constant {
 		// spamCategoryController.initalSpamCategory();
 		// List<SpamCategory> spamCategroysList =
 		// restSpamCategoryRepository.findAllByOrderByUriAsc();
-		
-		if(spam.getSpamRedir() && spam.getSpamText() && !spam.getSpamAd()) {
-	   	 	spam.setComment("리디렉션오류");
-		    return true;
+
+		if (spam.getSpamRedir() && spam.getSpamText() && !spam.getSpamAd()) {
+			spam.setComment("리디렉션오류");
+			return true;
 		}
-		
-		if ((spam.getUri().split("/").length < 2) 
-				&& (spam.getSpamAd() || spam.getSpamText())) {
+
+		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && comboBoxReview
+				.getSelectionModel().getSelectedIndex() < 8) {
 			spam.setComment("{비광확인}");
 			return true;
 		}
-	
-		
+
 		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
 
 		// spamCategoryList 에서 체크한다.
@@ -1587,11 +1631,10 @@ public class ReviewController implements Initializable, Constant {
 					}
 					spam.setComment(s);
 					return true;
-				} 
-				
+				}
 
 			}
-	
+
 		}
 
 		if (spam.getUri().startsWith("http:")) {
@@ -1733,7 +1776,7 @@ public class ReviewController implements Initializable, Constant {
 			if (!spam.getUri().contains("http")) {
 				url = new URL("http://" + spam.getUri());
 			} else {
-				//url = new URL(spam.getUri());
+				// url = new URL(spam.getUri());
 			}
 
 		} catch (MalformedURLException e) {
@@ -1741,8 +1784,9 @@ public class ReviewController implements Initializable, Constant {
 		}
 
 		if (spam != null && !spam.getLookList()
-				&& (url != null && (url.getFile().contains("list") || url.getFile().contains("hashtag") || url.getFile().contains("tag")
-						|| url.getFile().contains("search") || url.getFile().contains("category")))) {
+				&& (url != null && (url.getFile().contains("list") || url.getFile().contains("hashtag")
+						|| url.getFile().contains("tag") || url.getFile().contains("search")
+						|| url.getFile().contains("category")))) {
 			spam.setComment("?컨리");
 			return true;
 		}
@@ -1854,13 +1898,13 @@ public class ReviewController implements Initializable, Constant {
 				final TableCell<Spam, Void> cell = new TableCell<Spam, Void>() {
 
 					private final Button google = new Button();
-			
+
 					private final Button explorer = new Button();
 					private final Button result = new Button();
 					private final Button text = new Button();
 					private final Button delete = new Button();
 					private final Button inspect = new Button();
-					HBox hBox = new HBox(google, explorer, result, text, delete,inspect);
+					HBox hBox = new HBox(google, explorer, result, text, delete, inspect);
 
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
@@ -1874,15 +1918,15 @@ public class ReviewController implements Initializable, Constant {
 							Spam spam = getTableView().getItems().get(getIndex());
 							getTableView().getItems().get(getIndex()).setSelected(true);
 							spam.setSelected(true);
-							String url = spam.getUri(); 
+							String url = spam.getUri();
 							verifySite.startBrowser(url, verifySite.getChrome());
 							try {
-								if(url.contains("http")) {
+								if (url.contains("http")) {
 									verifySite.setClipbord(new URL(spam.getUri()).getHost());
 								} else {
 									verifySite.setClipbord(spam.getUri());
 								}
-								
+
 							} catch (MalformedURLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -1904,7 +1948,7 @@ public class ReviewController implements Initializable, Constant {
 							Spam spam = getTableView().getItems().get(getIndex());
 							spam.setSelected(true);
 							verifySite.setClipbord(spam.getUri());
-							
+
 //							Spam spam = getTableView().getItems().get(getIndex());
 //							eventDelete(spam);
 						});
@@ -1915,14 +1959,14 @@ public class ReviewController implements Initializable, Constant {
 
 							verifySite.hiddenText(spam.getUri());
 						});
-						
+
 						inspect.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
 							spam.setSelected(true);
 							verifySite.setClipbord(spam.getUri());
 							verifySite.eventInspectReult(spam.getUri());
 						});
-						
+
 					}
 
 					@Override

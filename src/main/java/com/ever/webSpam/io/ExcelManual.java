@@ -470,6 +470,7 @@ public class ExcelManual implements Constant {
 			spam.setSpamIllegal(cell.getBooleanCellValue());
 
 			cell = row.getCell(SPAM_WHITE);
+			if(cell != null)
 			spam.setSpamWhite(cell.getBooleanCellValue());
 
 			cell = row.getCell(DATE);
