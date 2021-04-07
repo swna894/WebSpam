@@ -15,10 +15,10 @@ public interface Constant {
 			"스펨 사이트로 리디렉션", "악성 소프트웨어", "저작권위반", "음란물", "기만적 컨텐트", "웹순위 조작 활동", "불법 사이트", "정상 컨텐트", 
 			"정상 컨텐트 저품질");
 	
-	ObservableList<String> observableListReview = FXCollections.observableArrayList(" ",
-			"서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지", "사이트미분류", "검수불가", "보류", "WHITE");
+	ObservableList<String> observableListSite = FXCollections.observableArrayList(" ",
+			"서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지", "사이트미분류", "검수불가", "보류");
 
-	
+	ObservableList<String> observableListWhite = FXCollections.observableArrayList(" ", "All", "Target", "NoTarget");
 	String user = "swna8934@gmail.com";
 	String password = "new135!#%";
 	//String host = "http://cafe1404.cafe24.com/";

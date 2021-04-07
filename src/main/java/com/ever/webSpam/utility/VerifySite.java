@@ -84,6 +84,7 @@ public class VerifySite {
 
 	public void eventSearchResult(String uri) {
 		String prefixUrl = "https://search.naver.com/search.naver?sm=top_hty&fbm=0&ie=utf8&query=";
+		prefixUrl = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=";
 		if (!uri.startsWith(prefix)) {
 			uri = prefix + uri;
 		}

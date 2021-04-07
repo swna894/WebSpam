@@ -26,6 +26,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.validator.UrlValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,9 +81,11 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -100,6 +103,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import one.util.streamex.StreamEx;
 
+@SuppressWarnings("deprecation")
 @Controller
 public class ReviewController implements Initializable, Constant {
 	Logger LOG = LoggerFactory.getLogger(ReviewController.class);
@@ -113,11 +117,11 @@ public class ReviewController implements Initializable, Constant {
 
 	private ComboBox<String> comboBoxWorker;
 	private ComboBox<String> comboBoxCategory;
-	private ComboBox<String> comboBoxReview;
+	private ComboBox<String> comboBoxSite;
+	private ComboBox<String> comboBoxWhite;
 
 	private CheckBox checkBoxUseDatePicker;
 	private CheckBox wasChecked;
-	private CheckBox whiteQc;
 	private Button buttonFilter;
 	private Button buttonInsertCategory;
 	private Button buttonAll;
@@ -148,6 +152,7 @@ public class ReviewController implements Initializable, Constant {
 	private List<Spam> tooltipList;
 	private Map<String, Long> workingCount;
 
+	private Boolean isWhite = false;
 	private String pattern = "yyyy-MM-dd";
 
 	@Autowired
@@ -220,7 +225,7 @@ public class ReviewController implements Initializable, Constant {
 			filtedSpamList = spamList;
 			filtedSpamList = actionComboBoxCategoryHandler();
 			filtedSpamList = actionComboBoxWorkerHandler();
-			filtedSpamList = actionComboBoxSiteHandler();
+			filtedSpamList = actionComboBoxSite();
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 		});
 
@@ -229,56 +234,72 @@ public class ReviewController implements Initializable, Constant {
 		checkBoxUseDatePicker.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		checkBoxUseDatePicker.setOnAction(e -> reloadTableAction());
 
-		whiteQc = new CheckBox("White");
-		whiteQc.setSelected(false);
-		whiteQc.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-		whiteQc.setOnAction(e -> whiteQcAction());
-
 		comboBoxWorker = new ComboBox<String>();
 		comboBoxWorker.setItems(observableListName);
 		comboBoxWorker.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
-		// comboBoxWorker.valueProperty().addListener((obs, oldVal, newVal) ->
-		// reloadTableAction());
 		comboBoxWorker.valueProperty().addListener((obs, oldVal, newVal) -> {
 			filtedSpamList = spamList;
 			filtedSpamList = actionComboBoxWorkerHandler();
 			filtedSpamList = actionComboBoxCategoryHandler();
-			filtedSpamList = actionComboBoxSiteHandler();
+			filtedSpamList = actionComboBoxSite();
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 
 		});
 
+		comboBoxWhite = new ComboBox<String>();
+		comboBoxWhite.setPromptText("WHITE");
+		comboBoxWhite.setItems(observableListWhite);
+		comboBoxWhite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
+		comboBoxWhite.valueProperty().addListener((obs, oldVal, newVal) -> {
+			comboBoxSite.getSelectionModel().clearSelection();
+			comboBoxCategory.getSelectionModel().clearSelection();
+			Platform.runLater(() -> actionComboxWhite());
+
+		});
+
 		comboBoxCategory = new ComboBox<String>();
-		comboBoxCategory.setPromptText("QC");
+		comboBoxCategory.setPromptText("SPAM");
 		comboBoxCategory.setItems(observableListSpam);
 		comboBoxCategory.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
 		comboBoxCategory.valueProperty().addListener((obs, oldVal, newVal) -> {
+			comboBoxWhite.getSelectionModel().clearSelection();
 			filtedSpamList = spamList;
 			filtedSpamList = actionComboBoxCategoryHandler();
 			if (comboBoxWorker.getSelectionModel().getSelectedIndex() != 0) {
 				filtedSpamList = actionComboBoxWorkerHandler();
 			}
-			if (comboBoxReview.getSelectionModel().getSelectedIndex() != 0) {
-				filtedSpamList = actionComboBoxSiteHandler();
+			if (comboBoxSite.getSelectionModel().getSelectedIndex() != 0) {
+				filtedSpamList = actionComboBoxSite();
 			}
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 		});
 
-		comboBoxReview = new ComboBox<String>();
-		comboBoxReview.setPromptText("Review");
-		comboBoxReview.setItems(observableListReview);
-		comboBoxReview.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
-		comboBoxReview.valueProperty().addListener((obs, oldVal, newVal) -> {
+//		comboBoxSite = new ComboBox<String>();
+//		comboBoxSite.setItems(observableListSite);
+//		comboBoxSite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
+//		comboBoxSite.valueProperty().addListener((obs, oldVal, newVal) -> {
+//			filtedSpamList = spamList;
+//			filtedSpamList = actionComboBoxWorkerHandler();
+//			filtedSpamList = actionComboBoxCategoryHandler();
+//			filtedSpamList = actionComboBoxSite();
+//			Platform.runLater(() -> reloadTable(filtedSpamList));
+//
+//		});
+
+		comboBoxSite = new ComboBox<String>();
+		comboBoxSite.setPromptText("SITE");
+		comboBoxSite.setItems(observableListSite);
+		comboBoxSite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
+		comboBoxSite.valueProperty().addListener((obs, oldVal, newVal) -> {
+			comboBoxWhite.getSelectionModel().clearSelection();
 			filtedSpamList = spamList;
-			filtedSpamList = actionComboBoxSiteHandler();
+			filtedSpamList = actionComboBoxSite();
 			if (comboBoxWorker.getSelectionModel().getSelectedIndex() != 0) {
 				filtedSpamList = actionComboBoxWorkerHandler();
 			}
 			if (comboBoxCategory.getSelectionModel().getSelectedIndex() != 0) {
 				filtedSpamList = actionComboBoxCategoryHandler();
 			}
-			
-			
 
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 		});
@@ -287,7 +308,7 @@ public class ReviewController implements Initializable, Constant {
 		textFieldFilterURL.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		textFieldFilterURL.setPromptText("Enter URI");
 		textFieldFilterURL.setPrefWidth(300);
-		textFieldFilterURL.setOnMouseClicked(e -> actionDoubleClickCleanHandler());
+		textFieldFilterURL.setOnMouseClicked(e -> actionDoubleClickCleanHandler(e));
 		textFieldFilterURL.setOnKeyReleased(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				actionButtonFilterURLHander(textFieldFilterURL.getText());
@@ -298,7 +319,7 @@ public class ReviewController implements Initializable, Constant {
 		textFieldSearch.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		textFieldSearch.setPromptText("Enter Word");
 		textFieldSearch.setPrefWidth(150);
-		textFieldSearch.setOnMouseClicked(e -> textFieldSearch.clear());
+		textFieldSearch.setOnMouseClicked(e -> System.err.println("clicked"));
 		textFieldSearch.setOnKeyReleased(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				keyReleadedTextFieldSearchHander(textFieldSearch.getText());
@@ -394,10 +415,11 @@ public class ReviewController implements Initializable, Constant {
 		buttonEnd.setOnAction(e -> handlerButtonEndHandler());
 		buttonEnd.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonWhiteSave = new Button("저장");
+		buttonWhiteSave = new Button();
+		buttonWhiteSave.setGraphic(new ImageView("/images/save.png"));
 		buttonWhiteSave.setOnAction(e -> actionButtonWhiteSave());
 		buttonWhiteSave.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-		
+
 		datePicker = new DatePicker();
 		datePicker.setPrefWidth(150);
 		datePicker.setConverter(new StringConverter<LocalDate>() {
@@ -433,13 +455,11 @@ public class ReviewController implements Initializable, Constant {
 		HBox.setHgrow(region, Priority.ALWAYS);
 		hBox.setStyle("-fx-alignment: CENTER;");
 		if (isFile) {
-			//datePicker, checkBoxUseDatePicker, 
-			hBox.getChildren().addAll(comboBoxWorker, buttonAll, buttonWorkNum,
-					textFieldFilterURL, buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview,
-					buttonInsertCategory, buttonCommentSort, buttonTop, buttonEnd, label, region, buttonWhiteSave, whiteQc, wasChecked,
-					// comboBoxCategory, textFieldSearch, textFieldNo, buttonFeedBack, buttonSave,
-					// buttonDelete);
-					textFieldNo, comboBoxCategory, comboBoxReview);
+			// datePicker, checkBoxUseDatePicker,
+			hBox.getChildren().addAll(comboBoxWorker, buttonAll, buttonWorkNum, textFieldFilterURL, buttonFilter,
+					buttonRefresh, buttonCross, buttonResultCross, buttonReview, buttonInsertCategory,
+					buttonCommentSort, label, region, wasChecked, textFieldNo, comboBoxCategory, comboBoxSite,
+					comboBoxWhite, buttonWhiteSave, buttonTop, buttonEnd);
 		} else {
 			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, textFieldFilterURL,
 					buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview, label, region,
@@ -450,9 +470,45 @@ public class ReviewController implements Initializable, Constant {
 		LOG.info("========== start initialize ");
 	}
 
+
+	private Object actionComboxWhite() {
+		isWhite = true;
+		List<Spam> spams;
+		switch (comboBoxWhite.getSelectionModel().getSelectedIndex()) {
+
+		case 0:
+			isWhite = false;
+			reloadTable(spamList);
+			break;
+		case 1:
+			filtedSpamList = filtedSpamList.stream()
+					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
+							&& !item.getLookList() && !item.getLookCont())
+					.collect(Collectors.toList());
+			filtedSpamList.forEach(item -> item.setComment(""));
+			reloadTable(filtedSpamList);
+			break;
+		case 2:
+			spams = filtedSpamList.stream().filter(item -> item.getUri().endsWith(".com")
+					|| item.getUri().endsWith(".kr") || item.getUri().endsWith(".net")).collect(Collectors.toList());
+			reloadTable(spams);
+			break;
+		case 3:
+			spams = filtedSpamList.stream().filter(item -> !item.getUri().endsWith(".com")
+					&& !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
+			reloadTable(spams);
+			break;
+
+		default:
+			System.out.println("그 외의 숫자");
+		}
+		return null;
+	}
+
 	@Autowired
 	ExcelWhiteQc excelWhiteQc;
-	
+
 	private Object actionButtonWhiteSave() {
 		String file = excelWhiteQc.writeSpamList(tableView.getItems());
 		try {
@@ -460,20 +516,6 @@ public class ReviewController implements Initializable, Constant {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		return null;
-	}
-
-	private Object whiteQcAction() {
-		if (whiteQc.isSelected()) {
-			List<Spam> filterList = tableView.getItems().stream().filter(item -> item.getScope().equals("doman"))
-					.filter(item -> !item.getLookCh() && !item.getLookMain() && !item.getLookList()
-							&& !item.getLookCont())
-					.collect(Collectors.toList());
-			reloadTable(filterList);
-		} else {
-			reloadTable(spamList);
-		}
-
 		return null;
 	}
 
@@ -538,12 +580,12 @@ public class ReviewController implements Initializable, Constant {
 		t.start();
 	}
 
-	private List<Spam> actionComboBoxSiteHandler() {
+	private List<Spam> actionComboBoxSite() {
 		Boolean isSeleted = wasChecked.isSelected();
-		String review = comboBoxReview.getSelectionModel().getSelectedItem();
+		String review = comboBoxSite.getSelectionModel().getSelectedItem();
 		String worker = comboBoxWorker.getSelectionModel().getSelectedItem();
 
-		switch (comboBoxReview.getSelectionModel().getSelectedIndex()) {
+		switch (comboBoxSite.getSelectionModel().getSelectedIndex()) {
 		case 0:
 			if (comboBoxCategory.getSelectionModel().getSelectedIndex() == 0) {
 				reloadTable(filtedSpamList);
@@ -630,12 +672,14 @@ public class ReviewController implements Initializable, Constant {
 						.collect(Collectors.toList());
 			break;
 		case 8:
-		
-				filtedSpamList = filtedSpamList.stream().filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
-						 && !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh() && !item.getLookList() && !item.getLookCont() )		
-						.collect(Collectors.toList());
-				filtedSpamList.forEach(item -> item.setComment(""));
-			
+
+			filtedSpamList = filtedSpamList.stream()
+					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
+							&& !item.getLookList() && !item.getLookCont())
+					.collect(Collectors.toList());
+			filtedSpamList.forEach(item -> item.setComment(""));
+
 			break;
 		default:
 			System.out.println("그 외의 숫자");
@@ -653,7 +697,7 @@ public class ReviewController implements Initializable, Constant {
 		if (comboBoxWorker.getSelectionModel().getSelectedIndex() == 0) {
 			filtedSpamList = spamList;
 			comboBoxCategory.getSelectionModel().select(0);
-			comboBoxReview.getSelectionModel().select(0);
+			comboBoxSite.getSelectionModel().select(0);
 		} else {
 			filtedSpamList = filtedSpamList.stream().filter(item -> item.getName().equals(worker)) // 비광
 					.collect(Collectors.toList());
@@ -692,7 +736,7 @@ public class ReviewController implements Initializable, Constant {
 		Boolean isSeleted = wasChecked.isSelected();
 		String category = comboBoxCategory.getSelectionModel().getSelectedItem();
 		String worker = comboBoxWorker.getSelectionModel().getSelectedItem();
-		switch (comboBoxCategory.getSelectionModel().getSelectedIndex()) {		
+		switch (comboBoxCategory.getSelectionModel().getSelectedIndex()) {
 		case 0:
 			reloadTable(spamList);
 
@@ -902,12 +946,27 @@ public class ReviewController implements Initializable, Constant {
 		t.start();
 	}
 
-	private Object actionDoubleClickCleanHandler() {
-		textFieldFilterURL.setOnMouseClicked(e -> {
-			if (e.getClickCount() == 2) {
-				textFieldFilterURL.clear();
-			}
-		});
+	private Object actionDoubleClickCleanHandler(MouseEvent e) {
+		textFieldFilterURL.clear();
+		if (e.getClickCount() == 2) {	
+			  Clipboard clipboard = Clipboard.getSystemClipboard();
+			  if (clipboard.hasString()) {
+			    String text = clipboard.getString();
+			    try {
+			    	UrlValidator urlValidator = new UrlValidator();
+			    	if(urlValidator.isValid(text)) {
+			    		URL url = new URL(text); 
+						textFieldFilterURL.setText(url.getHost().toString());
+			    	} else {
+			    		textFieldFilterURL.setText(text);
+			    	}
+					
+				} catch (MalformedURLException e1) {
+					e1.printStackTrace();
+				}
+			   		      
+			    }
+			  }
 		return null;
 	}
 
@@ -931,7 +990,7 @@ public class ReviewController implements Initializable, Constant {
 		return null;
 	}
 
-	@SuppressWarnings("unused")
+	@SuppressWarnings({ "unused" })
 	private Object actionCheckBoxAllHandler() {
 
 		clearTextFileQuery();
@@ -1312,11 +1371,11 @@ public class ReviewController implements Initializable, Constant {
 		initialPane();
 		initialComponent();
 		initialTableView();
-
-		// this.spamCheckedList = jsonUtil.convertJsonToSpamList(SPAM_FILE);
-		if (isFile) {
-			this.spamCheckedList = excelManual.readSpamList();
-		}
+//
+//		// this.spamCheckedList = jsonUtil.convertJsonToSpamList(SPAM_FILE);
+//		if (isFile) {
+//			this.spamCheckedList = excelManual.readSpamList();
+//		}
 		if (spamCheckedList != null) {
 			tableView.getItems().addAll(spamCheckedList);
 			spamRepository.saveAll(spamCheckedList);
@@ -1341,6 +1400,7 @@ public class ReviewController implements Initializable, Constant {
 		});
 		stage.show();
 		initialShortKey();
+		buttonReview.fire();
 	}
 
 	private void initialShortKey() {
@@ -1586,8 +1646,7 @@ public class ReviewController implements Initializable, Constant {
 			return true;
 		}
 
-		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && comboBoxReview
-				.getSelectionModel().getSelectedIndex() < 8) {
+		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 			spam.setComment("{비광확인}");
 			return true;
 		}
@@ -1944,6 +2003,14 @@ public class ReviewController implements Initializable, Constant {
 							spam.setSelected(true);
 							verifySite.eventSearchResult(spam.getUri());
 						});
+						
+						inspect.setOnAction((ActionEvent event) -> {
+							Spam spam = getTableView().getItems().get(getIndex());
+							spam.setSelected(true);
+							verifySite.setClipbord(spam.getUri());
+							verifySite.eventInspectReult(spam.getUri());
+						});
+						
 						delete.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
 							spam.setSelected(true);

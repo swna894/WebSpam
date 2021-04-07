@@ -769,9 +769,9 @@ public class SpamController implements Initializable, Constant {
 	public List<String> getSpamListFromDownLoadFile() {
 		FileChooser fileChooser = getFileChooser();
 		file = fileChooser.showOpenDialog(null);
-		path = file.getParent();
 		List<String> qcList = null;
 		if (file != null) {
+			path = file.getParent();
 			qcList = readFileToList(file);
 		}
 		return qcList;
