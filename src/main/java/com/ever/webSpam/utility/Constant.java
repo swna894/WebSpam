@@ -32,6 +32,7 @@ public interface Constant {
 	String JSON_FILE = "d:/웹스팸/manual.json";
 	String CATEGORY_FILE = "d:/웹스팸/category.json";
 	String SPAM_FILE = "d:/웹스팸/spam.json";
+	String HOME_DIR = System.getProperty("user.home");
 	//public static String FILE = "d:/웹스팸/manual.xlsx";
 	Boolean isDBMS = false;
 	Boolean isFile = new File(QC_FILE + "/manual.xlsx").exists();

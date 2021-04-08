@@ -251,8 +251,8 @@ public class ReviewController implements Initializable, Constant {
 		comboBoxWhite.setItems(observableListWhite);
 		comboBoxWhite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
 		comboBoxWhite.valueProperty().addListener((obs, oldVal, newVal) -> {
-			comboBoxSite.getSelectionModel().clearSelection();
-			comboBoxCategory.getSelectionModel().clearSelection();
+			comboBoxSite.getSelectionModel().select(0);
+			comboBoxSite.getSelectionModel().select(0);
 			Platform.runLater(() -> actionComboxWhite());
 
 		});
@@ -473,7 +473,7 @@ public class ReviewController implements Initializable, Constant {
 
 	private Object actionComboxWhite() {
 		isWhite = true;
-		List<Spam> spams;
+		List<Spam> spams = tableView.getItems();
 		switch (comboBoxWhite.getSelectionModel().getSelectedIndex()) {
 
 		case 0:
@@ -481,27 +481,26 @@ public class ReviewController implements Initializable, Constant {
 			reloadTable(spamList);
 			break;
 		case 1:
-			filtedSpamList = filtedSpamList.stream()
+			spams = spams.stream()
 					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
 							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
 							&& !item.getLookList() && !item.getLookCont())
 					.collect(Collectors.toList());
-			filtedSpamList.forEach(item -> item.setComment(""));
-			reloadTable(filtedSpamList);
+			reloadTable(spams);
 			break;
 		case 2:
-			spams = filtedSpamList.stream().filter(item -> item.getUri().endsWith(".com")
-					|| item.getUri().endsWith(".kr") || item.getUri().endsWith(".net")).collect(Collectors.toList());
+			spams = spams.stream().filter(item -> item.getUri().endsWith(".com") || item.getUri().endsWith(".kr") || item.getUri().endsWith(".net"))
+					.collect(Collectors.toList());
 			reloadTable(spams);
 			break;
 		case 3:
-			spams = filtedSpamList.stream().filter(item -> !item.getUri().endsWith(".com")
+			spams = spams.stream().filter(item -> !item.getUri().endsWith(".com")
 					&& !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
 			reloadTable(spams);
 			break;
 
 		default:
-			System.out.println("그 외의 숫자");
+			//System.out.println("그 외의 숫자");
 		}
 		return null;
 	}
@@ -1076,12 +1075,15 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private void reloadTable(List<Spam> filedList) {
+		comboBoxWorker.getSelectionModel().select(0);
 		tooltipList = filedList;
 		if (filedList != null) {
 			// tableView.getItems().clear();
-			// tableView.getItems().addAll(filedList);
+			// tableView.getItems().addAll(filedList); -
+			Platform.runLater(() -> {
 			tableView.setItems(FXCollections.observableArrayList(filedList));
 			updateFilterTextField(FXCollections.observableArrayList(filedList));
+			});
 		}
 
 		updateLabel();

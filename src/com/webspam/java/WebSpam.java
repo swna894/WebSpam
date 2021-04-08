@@ -41,7 +41,6 @@ public class WebSpam extends Application {
 	private int WIDTH = 400;
 	private int WIDTH_BUTTON = 100;
 	private String File_SEARCH = "site:";
-	private String HOME_DIR = System.getProperty("user.home");
 	private String SPAMMGR = "http://spammgr.navercorp.com/doc.html?search=";
 	private String PATH_EXPLORE = "C:\\Program Files\\Internet Explorer\\iexplore.exe ";
 	private String PATH_CHROME = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";

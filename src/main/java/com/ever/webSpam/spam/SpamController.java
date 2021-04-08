@@ -241,19 +241,6 @@ public class SpamController implements Initializable, Constant {
 			}
 		});
 		textFieldCategory.clear();
-		// showDoc();
-//		String doc = textFieldCategory.getText();
-//		if (!doc.isEmpty() && !isSelected) {
-//			Manual manual = new Manual();
-//			manual.setDoc(doc);
-//			manualRepository.save(manual);
-//		} else if (!doc.isEmpty() && isSelected) {
-//			selectedManual.setDoc(textFieldCategory.getText());
-//			manualRepository.save(selectedManual);
-//		} 
-//		isSelected = false;
-//		selectedManual = null;
-
 	}
 
 	private void saveManualAndShowList(Manual manual) {
@@ -343,6 +330,14 @@ public class SpamController implements Initializable, Constant {
 	void actionButtonCrossQc(ActionEvent event) {
 		FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("*.xlsx", "*.xlsx");
 		FileChooser fileChooser = new FileChooser();
+		String userDirectoryString = HOME_DIR + File.separator + "Downloads";
+		// System.err.println(userDirectoryString);
+		File userDirectory = new File(userDirectoryString);
+		if (!userDirectory.canRead()) {
+			userDirectory = new File("c:/");
+		}
+		fileChooser.setInitialDirectory(userDirectory);
+		
 		fileChooser.getExtensionFilters().add(extentionFilter);
 		file = fileChooser.showOpenDialog(null);
 		if (file != null)
