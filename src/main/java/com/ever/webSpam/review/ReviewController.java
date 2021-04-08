@@ -242,6 +242,7 @@ public class ReviewController implements Initializable, Constant {
 			filtedSpamList = actionComboBoxWorkerHandler();
 			filtedSpamList = actionComboBoxCategoryHandler();
 			filtedSpamList = actionComboBoxSite();
+			comboBoxWhite.getSelectionModel().select(0);
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 
 		});
@@ -473,7 +474,8 @@ public class ReviewController implements Initializable, Constant {
 
 	private Object actionComboxWhite() {
 		isWhite = true;
-		List<Spam> spams = tableView.getItems();
+		List<Spam> spams;
+		if(filtedSpamList == null) filtedSpamList = spamList;
 		switch (comboBoxWhite.getSelectionModel().getSelectedIndex()) {
 
 		case 0:
@@ -481,26 +483,26 @@ public class ReviewController implements Initializable, Constant {
 			reloadTable(spamList);
 			break;
 		case 1:
-			spams = spams.stream()
+			filtedSpamList = filtedSpamList.stream()
 					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
 							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
 							&& !item.getLookList() && !item.getLookCont())
 					.collect(Collectors.toList());
-			reloadTable(spams);
+			reloadTable(filtedSpamList);
 			break;
 		case 2:
-			spams = spams.stream().filter(item -> item.getUri().endsWith(".com") || item.getUri().endsWith(".kr") || item.getUri().endsWith(".net"))
+			spams = filtedSpamList.stream().filter(item -> item.getUri().endsWith(".com") || item.getUri().endsWith(".kr") || item.getUri().endsWith(".net"))
 					.collect(Collectors.toList());
 			reloadTable(spams);
 			break;
 		case 3:
-			spams = spams.stream().filter(item -> !item.getUri().endsWith(".com")
+			spams = filtedSpamList.stream().filter(item -> !item.getUri().endsWith(".com")
 					&& !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
 			reloadTable(spams);
 			break;
 
 		default:
-			//System.out.println("그 외의 숫자");
+			System.out.println("그 외의 숫자");
 		}
 		return null;
 	}
@@ -1075,7 +1077,7 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private void reloadTable(List<Spam> filedList) {
-		comboBoxWorker.getSelectionModel().select(0);
+		//comboBoxWhite.getSelectionModel().select(0);
 		tooltipList = filedList;
 		if (filedList != null) {
 			// tableView.getItems().clear();
