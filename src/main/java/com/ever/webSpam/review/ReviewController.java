@@ -1652,14 +1652,41 @@ public class ReviewController implements Initializable, Constant {
 			spam.setComment("리디렉션오류");
 			return true;
 		}
+		String https = "https://";
+		String http = "http://";
 
-		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
-			spam.setComment("{비광확인}");
-			if(spam.getLookList() || spam.getLookCont()) {
+		if(spam.getUri().contains(https) ||spam.getUri().contains(http) ) {
+			String url = spam.getUri().replace(https, "");
+			if((spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
+				spam.setComment("{비광확인}");
+			}
+			if((url.split("/").length < 1)  && (spam.getLookList() || spam.getLookCont())) {
+					spam.setComment("{서비스/채널 확인 필요}");
+			} 			
+			if ((url.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
+				spam.setComment("{서비스/채널 확인 필요}");
+			} 
+
+		} else {
+			String url = spam.getUri();
+			if((spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
+				spam.setComment("{비광확인}");
+			}
+			if((url.split("/").length < 1)  && (spam.getLookList() || spam.getLookCont())) {
+					spam.setComment("{서비스/채널 확인 필요}");
+			} 			
+			if ((url.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
 				spam.setComment("{서비스/채널 확인 필요}");
 			}
-			return true;
 		}
+		
+//		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
+//			
+//			if(spam.getLookList() || spam.getLookCont()) {
+//				spam.setComment("{서비스/채널 확인 필요}");
+//			}
+//			return true;
+//		}
 		
 		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
 
@@ -1667,27 +1694,27 @@ public class ReviewController implements Initializable, Constant {
 		if (spamCategroyList != null) {
 			SpamCategory spamCategroy = spamCategroyList.stream().filter(item -> item != null)
 					.filter(item -> spam.getUri().contains(item.getUri())).findAny().orElse(null);
-
+			String comment = spam.getComment();
 			if (spamCategroy != null) {
 				if (spamCategroy.getLookMain() && spam.getLookCh()) { // 그룹 : 메인 , 작업 : 채널
 					if (spam.getComment() == null || spam.getComment().isEmpty())
-						spam.setComment("{서비스}");
+						spam.setComment("{서비스}" + comment);
 					return true;
 				} else if (spamCategroy.getLookCh() && spam.getLookMain()) { // 그룹 : 채널 , 작업 : 메인
 					if (spam.getComment() == null || spam.getComment().isEmpty())
-						spam.setComment("{채널}");
+						spam.setComment("{채널}"  + comment);
 					return true;
 				} else if (spamCategroy.getHamLow() && !spam.getHamLow()) { // 그룹 : 저품질 , 작업 : !저품질
 					if (spam.getComment() == null || spam.getComment().isEmpty())
-						spam.setComment("{저품질}");
+						spam.setComment("{저품질}"  + comment);
 					return true;
 				} else if (spamCategroy.getLookList() && (spam.getLookMain() || spam.getLookCh())) { // 그룹 : 리스트 , 작업 :
 																										// !리스트
 					if (spam.getComment() == null || spam.getComment().isEmpty())
-						spam.setComment("{리스트}");
+						spam.setComment("{리스트}"  + comment);
 					return true;
 				} else {
-					String s = "";
+					String s = comment;
 					if (spamCategroy.getSpamAd() && !spam.getSpamAd()) {
 						if (spam.getComment() == null || spam.getComment().isEmpty())
 							s = "{비광}";
