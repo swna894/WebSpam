@@ -1652,33 +1652,25 @@ public class ReviewController implements Initializable, Constant {
 			spam.setComment("리디렉션오류");
 			return true;
 		}
-		String https = "https://";
 		String http = "http://";
-
-		if(spam.getUri().contains(https) ||spam.getUri().contains(http) ) {
-			String url = spam.getUri().replace(https, "");
-			if((spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
-				spam.setComment("{비광확인}");
-			}
-			if((url.split("/").length < 1)  && (spam.getLookList() || spam.getLookCont())) {
-					spam.setComment("{서비스/채널 확인 필요}");
-			} 			
-			if ((url.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
-				spam.setComment("{서비스/채널 확인 필요}");
-			} 
-
-		} else {
-			String url = spam.getUri();
-			if((spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
-				spam.setComment("{비광확인}");
-			}
-			if((url.split("/").length < 1)  && (spam.getLookList() || spam.getLookCont())) {
-					spam.setComment("{서비스/채널 확인 필요}");
-			} 			
-			if ((url.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
-				spam.setComment("{서비스/채널 확인 필요}");
-			}
+		String urlString = spam.getUri().replaceAll("https://", "");
+		urlString = urlString.replaceAll(http, "");
+		if(urlString.endsWith("/")) {	
+			urlString = urlString.replace("/", "");
 		}
+
+		if((urlString.endsWith(".com")|| urlString.endsWith(".kr") || urlString.endsWith(".net")) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
+				spam.setComment("{비광확인}");
+		}
+		if((urlString.split("/").length < 1)  && (spam.getLookList() || spam.getLookCont())) {
+				spam.setComment("{서비스/채널 확인 필요}");
+				return true;
+		} 			
+		if ((urlString.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
+				spam.setComment("{서비스/채널 확인 필요}");
+				return true;
+		}
+	
 		
 //		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 //			
@@ -1740,7 +1732,7 @@ public class ReviewController implements Initializable, Constant {
 		} else {
 			uri = spam.getUri();
 		}
-
+		if(uri.endsWith("/")) uri.replace("/", "");
 		if ((uri.split("/").length < 2) && (spam.getLookList() || spam.getLookCont())) {
 			spam.setComment("{서비스/채널 확인 필요}");
 			return true;
