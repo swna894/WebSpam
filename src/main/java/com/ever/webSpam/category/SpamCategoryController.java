@@ -220,7 +220,7 @@ public class SpamCategoryController implements Initializable, Constant {
 	}
 
 	private Object actionEventCheckBoxWhiteSite() {
-		List<SpamCategory> filteredList = spamCategoryList.stream().filter(item -> item.getLookList())
+		List<SpamCategory> filteredList = spamCategoryList.stream().filter(item -> item.getWhiteSite())
 				.collect(Collectors.toList());
 
 		updateTableView(filteredList);

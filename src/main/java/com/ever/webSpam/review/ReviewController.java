@@ -1471,11 +1471,14 @@ public class ReviewController implements Initializable, Constant {
 					setStyle("");
 				} else if (item.getComment() != null && (spamform.contains(item.getComment()))
 						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {
-					if (item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인")) {
+					if (item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인") ||
+							item.getComment().contains("서비스/채널 확인 필요")) {
 						setStyle("-fx-background-color: #ff0066;");
 					} else {
-						setStyle("-fx-background-color: thistle;");
+						setStyle("-fx-background-color: null;");
 					}
+					
+					
 
 				} else {
 					setStyle("");
@@ -1652,9 +1655,12 @@ public class ReviewController implements Initializable, Constant {
 
 		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 			spam.setComment("{비광확인}");
+			if(spam.getLookList() || spam.getLookCont()) {
+				spam.setComment("{서비스/채널 확인 필요}");
+			}
 			return true;
 		}
-
+		
 		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
 
 		// spamCategoryList 에서 체크한다.
