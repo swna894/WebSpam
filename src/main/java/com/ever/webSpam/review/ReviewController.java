@@ -471,11 +471,11 @@ public class ReviewController implements Initializable, Constant {
 		LOG.info("========== start initialize ");
 	}
 
-
 	private Object actionComboxWhite() {
 		isWhite = true;
 		List<Spam> spams;
-		if(filtedSpamList == null) filtedSpamList = spamList;
+		if (filtedSpamList == null)
+			filtedSpamList = spamList;
 		switch (comboBoxWhite.getSelectionModel().getSelectedIndex()) {
 
 		case 0:
@@ -491,8 +491,8 @@ public class ReviewController implements Initializable, Constant {
 			reloadTable(filtedSpamList);
 			break;
 		case 2:
-			spams = filtedSpamList.stream().filter(item -> item.getUri().endsWith(".com") || item.getUri().endsWith(".kr") || item.getUri().endsWith(".net"))
-					.collect(Collectors.toList());
+			spams = filtedSpamList.stream().filter(item -> item.getUri().endsWith(".com")
+					|| item.getUri().endsWith(".kr") || item.getUri().endsWith(".net")).collect(Collectors.toList());
 			reloadTable(spams);
 			break;
 		case 3:
@@ -949,25 +949,25 @@ public class ReviewController implements Initializable, Constant {
 
 	private Object actionDoubleClickCleanHandler(MouseEvent e) {
 		textFieldFilterURL.clear();
-		if (e.getClickCount() == 2) {	
-			  Clipboard clipboard = Clipboard.getSystemClipboard();
-			  if (clipboard.hasString()) {
-			    String text = clipboard.getString();
-			    try {
-			    	UrlValidator urlValidator = new UrlValidator();
-			    	if(urlValidator.isValid(text)) {
-			    		URL url = new URL(text); 
+		if (e.getClickCount() == 2) {
+			Clipboard clipboard = Clipboard.getSystemClipboard();
+			if (clipboard.hasString()) {
+				String text = clipboard.getString();
+				try {
+					UrlValidator urlValidator = new UrlValidator();
+					if (urlValidator.isValid(text)) {
+						URL url = new URL(text);
 						textFieldFilterURL.setText(url.getHost().toString());
-			    	} else {
-			    		textFieldFilterURL.setText(text);
-			    	}
-					
+					} else {
+						textFieldFilterURL.setText(text);
+					}
+
 				} catch (MalformedURLException e1) {
 					e1.printStackTrace();
 				}
-			   		      
-			    }
-			  }
+
+			}
+		}
 		return null;
 	}
 
@@ -1077,14 +1077,14 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private void reloadTable(List<Spam> filedList) {
-		//comboBoxWhite.getSelectionModel().select(0);
+		// comboBoxWhite.getSelectionModel().select(0);
 		tooltipList = filedList;
 		if (filedList != null) {
 			// tableView.getItems().clear();
 			// tableView.getItems().addAll(filedList); -
 			Platform.runLater(() -> {
-			tableView.setItems(FXCollections.observableArrayList(filedList));
-			updateFilterTextField(FXCollections.observableArrayList(filedList));
+				tableView.setItems(FXCollections.observableArrayList(filedList));
+				updateFilterTextField(FXCollections.observableArrayList(filedList));
 			});
 		}
 
@@ -1471,14 +1471,12 @@ public class ReviewController implements Initializable, Constant {
 					setStyle("");
 				} else if (item.getComment() != null && (spamform.contains(item.getComment()))
 						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {
-					if (item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인") ||
-							item.getComment().contains("서비스/채널 확인 필요")) {
+					if (item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인")
+							|| item.getComment().contains("서비스/채널 확인 필요")) {
 						setStyle("-fx-background-color: #ff0066;");
 					} else {
 						setStyle("-fx-background-color: null;");
 					}
-					
-					
 
 				} else {
 					setStyle("");
@@ -1655,23 +1653,29 @@ public class ReviewController implements Initializable, Constant {
 		String http = "http://";
 		String urlString = spam.getUri().replaceAll("https://", "");
 		urlString = urlString.replaceAll(http, "");
-		if(urlString.endsWith("/")) {	
+		if (urlString.endsWith("/")) {
 			urlString = urlString.replace("/", "");
 		}
 
-		if((urlString.endsWith(".com")|| urlString.endsWith(".kr") || urlString.endsWith(".net")) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
-				spam.setComment("{비광확인}");
+		if ((urlString.endsWith(".com") || urlString.endsWith(".kr") || urlString.endsWith(".net"))
+				&& (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
+			spam.setComment("{비광확인}");
 		}
-		if((urlString.split("/").length < 1)  && (spam.getLookList() || spam.getLookCont())) {
-				spam.setComment("{서비스/채널 확인 필요}");
-				return true;
-		} 			
+		if ((urlString.split("/").length < 1) && (spam.getLookList() || spam.getLookCont())) {
+			spam.setComment("{서비스/채널 확인 필요}");
+			return true;
+		}
 		if ((urlString.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
+			if (urlString.split("/").length == 3 && urlString.contains("sites.google.com/view")) {
+				if(!spam.getLookMain()) {
+					spam.setComment("{서비스/채널 확인 필요}");
+				}				
+			} else {
 				spam.setComment("{서비스/채널 확인 필요}");
-				return true;
+			}
+			return true;
 		}
-	
-		
+
 //		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 //			
 //			if(spam.getLookList() || spam.getLookCont()) {
@@ -1679,7 +1683,7 @@ public class ReviewController implements Initializable, Constant {
 //			}
 //			return true;
 //		}
-		
+
 		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
 
 		// spamCategoryList 에서 체크한다.
@@ -1694,16 +1698,16 @@ public class ReviewController implements Initializable, Constant {
 					return true;
 				} else if (spamCategroy.getLookCh() && spam.getLookMain()) { // 그룹 : 채널 , 작업 : 메인
 					if (spam.getComment() == null || spam.getComment().isEmpty())
-						spam.setComment("{채널}"  + comment);
+						spam.setComment("{채널}" + comment);
 					return true;
 				} else if (spamCategroy.getHamLow() && !spam.getHamLow()) { // 그룹 : 저품질 , 작업 : !저품질
 					if (spam.getComment() == null || spam.getComment().isEmpty())
-						spam.setComment("{저품질}"  + comment);
+						spam.setComment("{저품질}" + comment);
 					return true;
 				} else if (spamCategroy.getLookList() && (spam.getLookMain() || spam.getLookCh())) { // 그룹 : 리스트 , 작업 :
 																										// !리스트
 					if (spam.getComment() == null || spam.getComment().isEmpty())
-						spam.setComment("{리스트}"  + comment);
+						spam.setComment("{리스트}" + comment);
 					return true;
 				} else {
 					String s = comment;
@@ -1732,7 +1736,8 @@ public class ReviewController implements Initializable, Constant {
 		} else {
 			uri = spam.getUri();
 		}
-		if(uri.endsWith("/")) uri.replace("/", "");
+		if (uri.endsWith("/"))
+			uri.replace("/", "");
 		if ((uri.split("/").length < 2) && (spam.getLookList() || spam.getLookCont())) {
 			spam.setComment("{서비스/채널 확인 필요}");
 			return true;
@@ -2032,14 +2037,14 @@ public class ReviewController implements Initializable, Constant {
 							spam.setSelected(true);
 							verifySite.eventSearchResult(spam.getUri());
 						});
-						
+
 						inspect.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
 							spam.setSelected(true);
 							verifySite.setClipbord(spam.getUri());
 							verifySite.eventInspectReult(spam.getUri());
 						});
-						
+
 						delete.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
 							spam.setSelected(true);
