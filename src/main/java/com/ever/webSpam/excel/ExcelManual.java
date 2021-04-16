@@ -1,4 +1,4 @@
-package com.ever.webSpam.io;
+package com.ever.webSpam.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -324,6 +324,31 @@ public class ExcelManual implements Constant {
 		return manualList;
 	}
 
+	public List<Manual> readLookChList(String sheetName) {
+		List<Manual> manualList = new ArrayList<Manual>();
+		Workbook workbook = readFile(FILE);
+		sheet = workbook.getSheet(sheetName);
+
+		for (int i = 0; i < sheet.getLastRowNum() + 1; i++) {
+			Manual manual = new Manual();
+			Row row = sheet.getRow(i);
+			Cell cell = row.getCell(0);
+			Long id = (long) cell.getNumericCellValue();
+			manual.setId(id);
+			cell = row.getCell(1);
+			String doc = cell.getStringCellValue();
+			manual.setDoc(doc);
+			manualList.add(manual);
+		}
+
+		try {
+			workbook.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return manualList;
+	}
+	
 	public List<SpamCategory> readCategoryList() {
 		List<SpamCategory> categoryList = new ArrayList<SpamCategory>();
 		Workbook workbook = readFile(FILE);

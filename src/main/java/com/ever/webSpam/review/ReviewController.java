@@ -37,9 +37,9 @@ import com.ever.webSpam.category.SpamCategory;
 import com.ever.webSpam.category.SpamCategoryController;
 import com.ever.webSpam.category.SpamCategoryRepository;
 import com.ever.webSpam.cressQc.CrossExcel;
-import com.ever.webSpam.io.ExcelManual;
-import com.ever.webSpam.io.ExcelWhiteQc;
-import com.ever.webSpam.io.JsonUtil;
+import com.ever.webSpam.excel.ExcelManual;
+import com.ever.webSpam.excel.ExcelWhiteQc;
+import com.ever.webSpam.excel.JsonUtil;
 import com.ever.webSpam.spam.RestSpamRepository;
 import com.ever.webSpam.spam.Spam;
 import com.ever.webSpam.spam.SpamController;
@@ -418,7 +418,7 @@ public class ReviewController implements Initializable, Constant {
 
 		buttonWhiteSave = new Button();
 		buttonWhiteSave.setGraphic(new ImageView("/images/save.png"));
-		buttonWhiteSave.setOnAction(e -> actionButtonWhiteSave());
+		buttonWhiteSave.setOnAction(e -> actionButtonSaveWhite());
 		buttonWhiteSave.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
 		datePicker = new DatePicker();
@@ -491,16 +491,47 @@ public class ReviewController implements Initializable, Constant {
 			reloadTable(filtedSpamList);
 			break;
 		case 2:
-			spams = filtedSpamList.stream().filter(item -> item.getUri().endsWith(".com")
-					|| item.getUri().endsWith(".kr") || item.getUri().endsWith(".net")).collect(Collectors.toList());
-			reloadTable(spams);
-			break;
-		case 3:
-			spams = filtedSpamList.stream().filter(item -> !item.getUri().endsWith(".com")
-					&& !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
+			spams = filtedSpamList.stream()
+			       .filter(item -> !item.getUri().endsWith(".com")
+					        && !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
 			reloadTable(spams);
 			break;
 
+		case 3:
+			spams = filtedSpamList.stream()
+					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
+							&& !item.getLookList() && !item.getLookCont())
+			       .filter(item -> item.getUri().endsWith(".com")
+					|| item.getUri().endsWith(".kr") || item.getUri().endsWith(".net"))
+			       .collect(Collectors.toList());
+			reloadTable(spams);
+			break;
+		case 4:
+			filtedSpamList = spamList;
+			spams = filtedSpamList.stream()
+			.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+					&& !item.getBooleanDefer() 
+					&& !item.getHam() && !item.getHamLow()  
+					&& (item.getLookMain() || item.getLookCh())
+					&& !item.getLookList() && !item.getLookCont()
+					&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))	       
+	       .collect(Collectors.toList());
+			reloadTable(spams);
+			break;
+
+		case 5:
+			filtedSpamList = spamList;
+			spams = filtedSpamList.stream()
+			.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+					&& !item.getBooleanDefer() 
+					&& !item.getHam() && !item.getHamLow()  
+					&& !item.getLookMain() && !item.getLookCh()
+					&& (item.getLookList() || item.getLookCont())
+					&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))	       
+	       .collect(Collectors.toList());
+			reloadTable(spams);
+			break;
 		default:
 			System.out.println("그 외의 숫자");
 		}
@@ -510,8 +541,9 @@ public class ReviewController implements Initializable, Constant {
 	@Autowired
 	ExcelWhiteQc excelWhiteQc;
 
-	private Object actionButtonWhiteSave() {
-		String file = excelWhiteQc.writeSpamList(tableView.getItems());
+	private Object actionButtonSaveWhite() {
+		String sheet = comboBoxWhite.getSelectionModel().getSelectedItem();
+		String file = excelWhiteQc.writeSpamList(tableView.getItems(), sheet);
 		try {
 			Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + file);
 		} catch (IOException e1) {

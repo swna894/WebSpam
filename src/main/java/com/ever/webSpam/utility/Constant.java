@@ -18,7 +18,8 @@ public interface Constant {
 	ObservableList<String> observableListSite = FXCollections.observableArrayList(" ",
 			"서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지", "사이트미분류", "검수불가", "보류");
 
-	ObservableList<String> observableListWhite = FXCollections.observableArrayList(" ", "All", "Target", "NoTarget");
+	ObservableList<String> observableListWhite = 
+			FXCollections.observableArrayList(" ", "1단계 사이트", "1 단계 No", "1 단계 ", "2단계 사이트", "3단계 사이트");
 	String user = "swna8934@gmail.com";
 	String password = "new135!#%";
 	//String host = "http://cafe1404.cafe24.com/";

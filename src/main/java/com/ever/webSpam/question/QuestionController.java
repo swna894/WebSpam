@@ -21,7 +21,7 @@ import org.springframework.stereotype.Controller;
 
 import com.ever.webSpam.category.RestSpamCategoryRepository;
 import com.ever.webSpam.category.SpamCategoryController;
-import com.ever.webSpam.io.ExcelManual;
+import com.ever.webSpam.excel.ExcelManual;
 import com.ever.webSpam.spam.Spam;
 import com.ever.webSpam.utility.Constant;
 import com.ever.webSpam.utility.VerifySite;
