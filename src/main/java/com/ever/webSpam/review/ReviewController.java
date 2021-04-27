@@ -474,12 +474,17 @@ public class ReviewController implements Initializable, Constant {
 	private Object actionComboxWhite() {
 		isWhite = true;
 		List<Spam> spams;
-		if (filtedSpamList == null)
+		if (filtedSpamList == null) {
 			filtedSpamList = spamList;
+			
+		} 
+		
+		filtedSpamList.forEach(item -> item.setComment(""));
 		switch (comboBoxWhite.getSelectionModel().getSelectedIndex()) {
 
 		case 0:
 			isWhite = false;
+			spamList.forEach(item -> item.setComment(""));
 			reloadTable(spamList);
 			break;
 		case 1:
@@ -488,12 +493,14 @@ public class ReviewController implements Initializable, Constant {
 							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
 							&& !item.getLookList() && !item.getLookCont())
 					.collect(Collectors.toList());
+			filtedSpamList.forEach(item -> item.setComment(""));
 			reloadTable(filtedSpamList);
 			break;
 		case 2:
 			spams = filtedSpamList.stream()
 			       .filter(item -> !item.getUri().endsWith(".com")
 					        && !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
+			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
 
@@ -505,6 +512,7 @@ public class ReviewController implements Initializable, Constant {
 			       .filter(item -> item.getUri().endsWith(".com")
 					|| item.getUri().endsWith(".kr") || item.getUri().endsWith(".net"))
 			       .collect(Collectors.toList());
+			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
 		case 4:
@@ -517,6 +525,7 @@ public class ReviewController implements Initializable, Constant {
 					&& !item.getLookList() && !item.getLookCont()
 					&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))	       
 	       .collect(Collectors.toList());
+			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
 
@@ -530,6 +539,7 @@ public class ReviewController implements Initializable, Constant {
 					&& (item.getLookList() || item.getLookCont())
 					&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))	       
 	       .collect(Collectors.toList());
+			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
 		default:
