@@ -15,7 +15,7 @@ public class VerifySite {
 	private String prefix = "site:";
 	private String home = System.getProperty("user.home");
 	private String explore = "C:\\Program Files\\Internet Explorer\\iexplore.exe ";
-	private String chrome = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+	private String chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 	private String hiddenPrefix = "http://spamdepot.navercorp.com/html/view_doc_text.html?search=";
 
 	public VerifySite() {
