@@ -1699,6 +1699,10 @@ public class ReviewController implements Initializable, Constant {
 			urlString = urlString.replace("/", "");
 		}
 
+		if (urlString.contains(".go.kr") && (spam.getSpamAd() || spam.getSpamText())) {
+			spam.setComment("{비광확인}");
+		}
+		
 		if ((urlString.endsWith(".com") || urlString.endsWith(".kr") || urlString.endsWith(".net"))
 				&& (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 			spam.setComment("{비광확인}");
