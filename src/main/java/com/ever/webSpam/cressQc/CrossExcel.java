@@ -186,23 +186,28 @@ public class CrossExcel implements Constant {
 						break;
 					case 22:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamDecep(true);
+							spam.setSpamPornWeak(true);
 						}
 						break;
 					case 23:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamManip(true);
+							spam.setSpamDecep(true);
 						}
 						break;
 					case 24:
 						if (cell.getBooleanCellValue()) {
+							spam.setSpamManip(true);
+						}
+						break;
+					case 25:
+						if (cell.getBooleanCellValue()) {
 							spam.setSpamIllegal(true);
 						}
 						break;
-					case 42:
+					case 43:
 						spam.setQc((String) getValueFromCell(cell));
 						break;
-					case 43:
+					case 44:
 						spam.setComment((String) getValueFromCell(cell));
 					default:
 					}
@@ -315,14 +320,16 @@ public class CrossExcel implements Constant {
 				cell = row.getCell(21);
 				cell.setCellValue(spam.getSpamPorn());
 				cell = row.getCell(22);
-				cell.setCellValue(spam.getSpamDecep());
+				cell.setCellValue(spam.getSpamPornWeak());
 				cell = row.getCell(23);
-				cell.setCellValue(spam.getSpamManip());
+				cell.setCellValue(spam.getSpamDecep());
 				cell = row.getCell(24);
+				cell.setCellValue(spam.getSpamManip());
+				cell = row.getCell(25);
 				cell.setCellValue(spam.getSpamIllegal());
-				cell = row.getCell(42);
-				cell.setCellValue(spam.getQc());
 				cell = row.getCell(43);
+				cell.setCellValue(spam.getQc());
+				cell = row.getCell(44);
 				cell.setCellValue(spam.getComment());
 				cell.setCellStyle(style);
 				cell.getRow().setHeight((short) -1);
@@ -419,14 +426,16 @@ public class CrossExcel implements Constant {
 					cell = row.getCell(21);
 					cell.setCellValue(spam.getSpamPorn());
 					cell = row.getCell(22);
-					cell.setCellValue(spam.getSpamDecep());
+					cell.setCellValue(spam.getSpamPornWeak());
 					cell = row.getCell(23);
-					cell.setCellValue(spam.getSpamManip());
+					cell.setCellValue(spam.getSpamDecep());
 					cell = row.getCell(24);
+					cell.setCellValue(spam.getSpamManip());
+					cell = row.getCell(25);
 					cell.setCellValue(spam.getSpamIllegal());
-					cell = row.getCell(42);
-					cell.setCellValue(spam.getQc());
 					cell = row.getCell(43);
+					cell.setCellValue(spam.getQc());
+					cell = row.getCell(44);
 					cell.setCellValue(spam.getComment());
 					cell.setCellStyle(style);
 					for (int i = 27; i < 42; i++) {
@@ -473,7 +482,8 @@ public class CrossExcel implements Constant {
 		//FileInputStream fis;
 		try {
 			//fis = new FileInputStream(inFile);
-			InputStream is = getClass().getResourceAsStream("/file/크로스qc.xlsx");
+			InputStream is = getClass().getResourceAsStream("/file/신규크로스파일.xlsx");
+			//InputStream is = getClass().getResourceAsStream("/file/크로스qc.xlsx");
 			workbook = new XSSFWorkbook(is);
 		} catch (IOException e) {
 			alert("지정된 경로를 찾을 수 없습니다");
@@ -566,14 +576,17 @@ public class CrossExcel implements Constant {
 
 				cell = row.getCell(21);
 				cell.setCellValue(spam.getSpamPorn());
-
+				
 				cell = row.getCell(22);
-				cell.setCellValue(spam.getSpamDecep());
+				cell.setCellValue(spam.getSpamPornWeak());
 
 				cell = row.getCell(23);
-				cell.setCellValue(spam.getSpamManip());
+				cell.setCellValue(spam.getSpamDecep());
 
 				cell = row.getCell(24);
+				cell.setCellValue(spam.getSpamManip());
+
+				cell = row.getCell(25);
 				cell.setCellValue(spam.getSpamIllegal());
 
 //				for (int i = 27; i < 42; i++) {

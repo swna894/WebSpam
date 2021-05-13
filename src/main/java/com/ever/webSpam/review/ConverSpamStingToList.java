@@ -46,11 +46,10 @@ public class ConverSpamStingToList {
 		final List<Spam> spamList = new ArrayList<Spam>();
 		
 		for (final String line : stringList) {
-
 			Spam spam = new Spam();
 			String[] array = line.split("\t");
 
-			if (array[URI].equals("uri"))
+			if (array[URI].equals("uri") || array[URI].equals("key"))
 				continue;
 
 			spam.setUri(array[URI]);
@@ -103,12 +102,15 @@ public class ConverSpamStingToList {
 				spam.setSpamPorn(true);
 			}
 			if (array[21].equals("true")) {
+				spam.setSpamPornWeak(true);
+			}		
+			if (array[22].equals("true")) {
 				spam.setSpamDecep(true);
 			}
-			if (array[22].equals("true")) {
+			if (array[23].equals("true")) {
 				spam.setSpamManip(true);
 			}
-			if (array[23].equals("true")) {
+			if (array[24].equals("true")) {
 				spam.setSpamIllegal(true);
 			}
 //			try {

@@ -22,6 +22,7 @@ public class SpamCheck {
 	private final BooleanProperty spamMalware = new SimpleBooleanProperty();
 	private final BooleanProperty spamCopy = new SimpleBooleanProperty();
 	private final BooleanProperty spamPorn = new SimpleBooleanProperty();
+	private final BooleanProperty spamPornWeak = new SimpleBooleanProperty();
 	private final BooleanProperty spamDecep = new SimpleBooleanProperty();
 	private final BooleanProperty spamManip = new SimpleBooleanProperty();
 	private final BooleanProperty spamIllegal = new SimpleBooleanProperty();
@@ -58,6 +59,10 @@ public class SpamCheck {
 	public Boolean getSpamPorn() { return spamPorn.get(); }
 	public void setSpamPorn(Boolean spamPorn) { this.spamPorn.set(spamPorn); }
 	public BooleanProperty spamPornProperty() {	return spamPorn; }
+	
+	public Boolean getSpamPornWeak() { return spamPornWeak.get(); }
+	public void setSpamPornWeak(Boolean spamPornWeak) { this.spamPornWeak.set(spamPornWeak); }
+	public BooleanProperty spamPornWeakProperty() {	return spamPornWeak; }
 
 	public Boolean getSpamDecep() { return spamDecep.get(); }
 	public void setSpamDecep(Boolean spamDecep) { this.spamDecep.set(spamDecep); }

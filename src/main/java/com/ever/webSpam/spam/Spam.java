@@ -54,6 +54,7 @@ public class Spam {
 	private final BooleanProperty spamMalware = new SimpleBooleanProperty();
 	private final BooleanProperty spamCopy = new SimpleBooleanProperty();
 	private final BooleanProperty spamPorn = new SimpleBooleanProperty();
+	private final BooleanProperty spamPornWeak = new SimpleBooleanProperty();
 	private final BooleanProperty spamDecep = new SimpleBooleanProperty();
 	private final BooleanProperty spamManip = new SimpleBooleanProperty();
 	private final BooleanProperty spamIllegal = new SimpleBooleanProperty();
@@ -94,6 +95,7 @@ public class Spam {
 		this.spamMalwareProperty().bindBidirectional(spamCheck.spamMalwareProperty());
 		this.spamCopyProperty().bindBidirectional(spamCheck.spamCopyProperty());
 		this.spamPornProperty().bindBidirectional(spamCheck.spamPornProperty());
+		this.spamPornWeakProperty().bindBidirectional(spamCheck.spamPornWeakProperty());
 		this.spamDecepProperty().bindBidirectional(spamCheck.spamDecepProperty());
 		this.spamManipProperty().bindBidirectional(spamCheck.spamManipProperty());
 		this.spamIllegalProperty().bindBidirectional(spamCheck.spamIllegalProperty());
@@ -196,6 +198,11 @@ public class Spam {
 	public Boolean getSpamPorn() { return spamPorn.get(); }
 	public void setSpamPorn(Boolean spamPorn) { this.spamPorn.set(spamPorn); }
 	public BooleanProperty spamPornProperty() {	return spamPorn; }
+	
+	@Access(AccessType.PROPERTY)
+	public Boolean getSpamPornWeak() { return spamPornWeak.get(); }
+	public void setSpamPornWeak(Boolean spamPornWeak) { this.spamPornWeak.set(spamPornWeak); }
+	public BooleanProperty spamPornWeakProperty() {	return spamPornWeak; }
 
 	@Access(AccessType.PROPERTY)
 	public Boolean getSpamDecep() { return spamDecep.get(); }

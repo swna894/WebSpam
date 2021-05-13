@@ -479,12 +479,14 @@ public class ReviewController implements Initializable, Constant {
 			
 		} 
 		
-		filtedSpamList.forEach(item -> item.setComment(""));
+		//filtedSpamList.forEach(item -> item.setComment(""));
 		switch (comboBoxWhite.getSelectionModel().getSelectedIndex()) {
 
 		case 0:
 			isWhite = false;
-			spamList.forEach(item -> item.setComment(""));
+			if(spamList != null)
+				spamList.forEach(item -> item.setComment(""));
+	
 			reloadTable(spamList);
 			break;
 		case 1:
