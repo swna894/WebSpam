@@ -290,7 +290,8 @@ public class CrossQcController<S> implements Initializable, Constant {
 			break;
 		case 11:
 				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
-						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow()) // 정저
+						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow() ||
+								category.equals("정상 컨텐트 저품질") && item.getHamFish()) // 정저
 						.collect(Collectors.toList());
 			break;
 		default:
@@ -446,7 +447,8 @@ public class CrossQcController<S> implements Initializable, Constant {
 
 		TableColumn<Spam, Boolean> columnHam = createCheckBoxColumn("정상", "정상 컨텐트", Spam::hamProperty);
 		TableColumn<Spam, Boolean> columnHamLow = createCheckBoxColumn("정저", "정상 컨텐트 저품질", Spam::hamLowProperty);
-
+		TableColumn<Spam, Boolean> columnHamFish = createCheckBoxColumn("정낚", "정상 컨텐트 저품질 낚시", Spam::hamFishProperty);
+		
 		TableColumn<Spam, Boolean> columnSpamAd = createCheckBoxColumn("비광", "비정상 광고 컨텐트", Spam::spamAdProperty);
 		TableColumn<Spam, Boolean> columnSpamText = createCheckBoxColumn("비텍", "비장상 텍스트", Spam::spamTextProperty);
 		TableColumn<Spam, Boolean> columnSpamRedir = createCheckBoxColumn("스리", "스펨 사이트로 리디렉션", Spam::spamRedirProperty);
@@ -576,7 +578,7 @@ public class CrossQcController<S> implements Initializable, Constant {
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnNum, columnUri, columnName, columnScope,
 				columnNotCheck, columnDefer, columnLookMain, columnLookCh, columnLookList, columnLookCont, columnHam,
-				columnHamLow, columnSpamAd, columnSpamText, columnSpamRedir, columnSpamMalware, columnSpamCopy,
+				columnHamLow, columnHamFish, columnSpamAd, columnSpamText, columnSpamRedir, columnSpamMalware, columnSpamCopy,
 				columnSpamPorn, columnSpamDecep, columnSpamManip, columnSpamIllegal, columnQc, columnComment);
 
 	}
@@ -760,7 +762,7 @@ public class CrossQcController<S> implements Initializable, Constant {
 		stage.initModality(Modality.APPLICATION_MODAL);
 
 		if (currentValue == null || currentValue.trim().length() == 0) {
-			currentValue = "\n\r       [사이트형태]\n\r       [스 팸 체 크]";
+			//currentValue = "\n\r       [사이트형태]\n\r       [스 팸 체 크]";
 		}
 		TextArea textArea = new TextArea(currentValue);
 

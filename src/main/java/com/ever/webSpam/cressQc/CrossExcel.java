@@ -156,58 +156,63 @@ public class CrossExcel implements Constant {
 						break;
 					case 16:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamAd(true);
+							spam.setHamFish(true);
 						}
 						break;
 					case 17:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamText(true);
+							spam.setSpamAd(true);
 						}
 						break;
 					case 18:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamRedir(true);
+							spam.setSpamText(true);
 						}
 						break;
 					case 19:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamMalware(true);
+							spam.setSpamRedir(true);
 						}
 						break;
 					case 20:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamCopy(true);
+							spam.setSpamMalware(true);
 						}
 						break;
 					case 21:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamPorn(true);
+							spam.setSpamCopy(true);
 						}
 						break;
 					case 22:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamPornWeak(true);
+							spam.setSpamPorn(true);
 						}
 						break;
 					case 23:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamDecep(true);
+							spam.setSpamPornWeak(true);
 						}
 						break;
 					case 24:
 						if (cell.getBooleanCellValue()) {
-							spam.setSpamManip(true);
+							spam.setSpamDecep(true);
 						}
 						break;
 					case 25:
 						if (cell.getBooleanCellValue()) {
+							spam.setSpamManip(true);
+						}
+						break;
+					case 26:
+						if (cell.getBooleanCellValue()) {
 							spam.setSpamIllegal(true);
 						}
 						break;
-					case 43:
+					case 45:
 						spam.setQc((String) getValueFromCell(cell));
 						break;
-					case 44:
+					case 46:
 						spam.setComment((String) getValueFromCell(cell));
 					default:
 					}
@@ -414,31 +419,33 @@ public class CrossExcel implements Constant {
 					cell = row.getCell(15);
 					cell.setCellValue(spam.getHamLow());
 					cell = row.getCell(16);
-					cell.setCellValue(spam.getSpamAd());
+					cell.setCellValue(spam.getHamFish());
 					cell = row.getCell(17);
-					cell.setCellValue(spam.getSpamText());
+					cell.setCellValue(spam.getSpamAd());
 					cell = row.getCell(18);
-					cell.setCellValue(spam.getSpamRedir());
+					cell.setCellValue(spam.getSpamText());
 					cell = row.getCell(19);
-					cell.setCellValue(spam.getSpamMalware());
+					cell.setCellValue(spam.getSpamRedir());
 					cell = row.getCell(20);
-					cell.setCellValue(spam.getSpamCopy());
+					cell.setCellValue(spam.getSpamMalware());
 					cell = row.getCell(21);
-					cell.setCellValue(spam.getSpamPorn());
+					cell.setCellValue(spam.getSpamCopy());
 					cell = row.getCell(22);
-					cell.setCellValue(spam.getSpamPornWeak());
+					cell.setCellValue(spam.getSpamPorn());
 					cell = row.getCell(23);
-					cell.setCellValue(spam.getSpamDecep());
+					cell.setCellValue(spam.getSpamPornWeak());
 					cell = row.getCell(24);
-					cell.setCellValue(spam.getSpamManip());
+					cell.setCellValue(spam.getSpamDecep());
 					cell = row.getCell(25);
+					cell.setCellValue(spam.getSpamManip());
+					cell = row.getCell(26);
 					cell.setCellValue(spam.getSpamIllegal());
-					cell = row.getCell(43);
+					cell = row.getCell(45);
 					cell.setCellValue(spam.getQc());
-					cell = row.getCell(44);
+					cell = row.getCell(46);
 					cell.setCellValue(spam.getComment());
 					cell.setCellStyle(style);
-					for (int i = 27; i < 42; i++) {
+					for (int i = 29; i < 44; i++) {
 						cell = row.getCell(i);
 						cell.setCellFormula(cell.getCellFormula());
 					}
@@ -558,35 +565,38 @@ public class CrossExcel implements Constant {
 
 				cell = row.getCell(15);
 				cell.setCellValue(spam.getHamLow());
-
+				
 				cell = row.getCell(16);
-				cell.setCellValue(spam.getSpamAd());
+				cell.setCellValue(spam.getHamFish());
 
 				cell = row.getCell(17);
-				cell.setCellValue(spam.getSpamText());
+				cell.setCellValue(spam.getSpamAd());
 
 				cell = row.getCell(18);
-				cell.setCellValue(spam.getSpamRedir());
+				cell.setCellValue(spam.getSpamText());
 
 				cell = row.getCell(19);
-				cell.setCellValue(spam.getSpamMalware());
+				cell.setCellValue(spam.getSpamRedir());
 
 				cell = row.getCell(20);
-				cell.setCellValue(spam.getSpamCopy());
+				cell.setCellValue(spam.getSpamMalware());
 
 				cell = row.getCell(21);
+				cell.setCellValue(spam.getSpamCopy());
+
+				cell = row.getCell(22);
 				cell.setCellValue(spam.getSpamPorn());
 				
-				cell = row.getCell(22);
+				cell = row.getCell(23);
 				cell.setCellValue(spam.getSpamPornWeak());
 
-				cell = row.getCell(23);
+				cell = row.getCell(24);
 				cell.setCellValue(spam.getSpamDecep());
 
-				cell = row.getCell(24);
+				cell = row.getCell(25);
 				cell.setCellValue(spam.getSpamManip());
 
-				cell = row.getCell(25);
+				cell = row.getCell(26);
 				cell.setCellValue(spam.getSpamIllegal());
 
 //				for (int i = 27; i < 42; i++) {

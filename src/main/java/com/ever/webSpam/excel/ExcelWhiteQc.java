@@ -47,16 +47,17 @@ public class ExcelWhiteQc implements Constant {
 	private Integer LOOK_CONT = 13;
 	private Integer HAM = 14;
 	private Integer HAM_LOW = 15;
-	private Integer SPAM_AD = 16;
-	private Integer SPAM_TEXT = 17;
-	private Integer SPAM_REDIR = 18;
-	private Integer SPAM_MALWARE = 19;
-	private Integer SPAM_COPY = 20;
-	private Integer SPAM_PORN = 21;
-	private Integer SPAM_DECEPWEAK = 22;
-	private Integer SPAM_DECEP = 23;
-	private Integer SPAM_MAINIP = 24;
-	private Integer SPAM_ILLEGAL = 25;
+	private Integer HAM_FISH = 16;
+	private Integer SPAM_AD = 17;
+	private Integer SPAM_TEXT = 18;
+	private Integer SPAM_REDIR = 19;
+	private Integer SPAM_MALWARE = 20;
+	private Integer SPAM_COPY = 21;
+	private Integer SPAM_PORN = 22;
+	private Integer SPAM_DECEPWEAK = 23;
+	private Integer SPAM_DECEP = 24;
+	private Integer SPAM_MAINIP = 25;
+	private Integer SPAM_ILLEGAL = 26;
 
 	//private Integer COMMENT = 22;
 	//private Integer SPAM_WHITE = 23;
@@ -136,7 +137,7 @@ public class ExcelWhiteQc implements Constant {
 				}
 			}
 			
-			cell = row.createCell(43);
+			cell = row.createCell(45);
 			cell.setCellValue(category.getComment());
 			cell.setCellStyle(style);
 			
@@ -190,6 +191,10 @@ public class ExcelWhiteQc implements Constant {
 			
 			cell = row.createCell(HAM_LOW);
 			cell.setCellValue(category.getHamLow());
+			cell.setCellStyle(style);
+			
+			cell = row.createCell(HAM_FISH);
+			cell.setCellValue(category.getHamFish());
 			cell.setCellStyle(style);
 			
 			cell = row.createCell(SPAM_AD);
