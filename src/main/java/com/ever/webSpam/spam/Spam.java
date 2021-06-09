@@ -48,6 +48,7 @@ public class Spam {
 	private final BooleanProperty lookCont = new SimpleBooleanProperty();   
 	private final BooleanProperty ham = new SimpleBooleanProperty();
 	private final BooleanProperty hamLow = new SimpleBooleanProperty();
+	private final BooleanProperty hamFish = new SimpleBooleanProperty();
 	private final BooleanProperty spamAd = new SimpleBooleanProperty();
 	private final BooleanProperty spamText = new SimpleBooleanProperty();
 	private final BooleanProperty spamRedir = new SimpleBooleanProperty();
@@ -88,6 +89,7 @@ public class Spam {
 		this.lookContProperty().bindBidirectional(spamCheck.lookContProperty());
 		this.hamProperty().bindBidirectional(spamCheck.hamProperty());
 		this.hamLowProperty().bindBidirectional(spamCheck.hamLowProperty());
+		this.hamFishProperty().bindBidirectional(spamCheck.hamFishProperty());
 
 		this.spamAdProperty().bindBidirectional(spamCheck.spamAdProperty());
 		this.spamTextProperty().bindBidirectional(spamCheck.spamTextProperty());
@@ -168,6 +170,11 @@ public class Spam {
 	public Boolean getHamLow() { return hamLow.get(); }
 	public void setHamLow(Boolean hamLow) { this.hamLow.set(hamLow); }
 	public BooleanProperty hamLowProperty() {	return hamLow; }
+	
+	@Access(AccessType.PROPERTY)
+	public Boolean getHamFish() { return hamFish.get(); }
+	public void setHamFish(Boolean hamFish) { this.hamFish.set(hamFish); }
+	public BooleanProperty hamFishProperty() {	return hamFish; }
 	
 	@Access(AccessType.PROPERTY)
 	public Boolean getSpamAd() { return spamAd.get(); }

@@ -16,6 +16,7 @@ public class SpamCheck {
 	private final BooleanProperty lookCont = new SimpleBooleanProperty();   
 	private final BooleanProperty ham = new SimpleBooleanProperty();
 	private final BooleanProperty hamLow = new SimpleBooleanProperty();
+	private final BooleanProperty hamFish = new SimpleBooleanProperty();
 	private final BooleanProperty spamAd = new SimpleBooleanProperty();
 	private final BooleanProperty spamText = new SimpleBooleanProperty();
 	private final BooleanProperty spamRedir = new SimpleBooleanProperty();
@@ -34,6 +35,10 @@ public class SpamCheck {
 	public Boolean getHamLow() { return hamLow.get(); }
 	public void setHamLow(Boolean hamLow) { this.hamLow.set(hamLow); }
 	public BooleanProperty hamLowProperty() {	return hamLow; }
+	
+	public Boolean getHamFish() { return hamFish.get(); }
+	public void setHamFish(Boolean hamFish) { this.hamFish.set(hamFish); }
+	public BooleanProperty hamFishProperty() {	return hamFish; }
 	
 	public Boolean getSpamAd() { return spamAd.get(); }
 	public void setSpamAd(Boolean spamAd) { this.spamAd.set(spamAd); }

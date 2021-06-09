@@ -899,12 +899,14 @@ public class ReviewController implements Initializable, Constant {
 		case 11:
 			if (comboBoxWorker.getSelectionModel().getSelectedIndex() == 0)
 				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
-						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow()) // 정저
+						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow() ||
+								category.equals("정상 컨텐트 저품질") && item.getHamFish() ) // 정저
 						.collect(Collectors.toList());
 			else
 				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> item.getName().equals(worker))
-						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow()) // 정저
+						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow() ||
+								category.equals("정상 컨텐트 저품질") && item.getHamFish()) // 정저
 						.collect(Collectors.toList());
 			break;
 		default:
@@ -1545,7 +1547,8 @@ public class ReviewController implements Initializable, Constant {
 
 		TableColumn<Spam, Boolean> columnHam = createCheckBoxColumn("정상", "정상 컨텐트", Spam::hamProperty);
 		TableColumn<Spam, Boolean> columnHamLow = createCheckBoxColumn("정저", "정상 컨텐트 저품질", Spam::hamLowProperty);
-
+		TableColumn<Spam, Boolean> columnHamFish = createCheckBoxColumn("정낚", "정상 컨텐트 저품질 낚시", Spam::hamFishProperty);
+		
 		TableColumn<Spam, Boolean> columnSpamAd = createCheckBoxColumn("비광", "비정상 광고 컨텐트", Spam::spamAdProperty);
 		TableColumn<Spam, Boolean> columnSpamText = createCheckBoxColumn("비텍", "비장상 텍스트", Spam::spamTextProperty);
 		TableColumn<Spam, Boolean> columnSpamRedir = createCheckBoxColumn("스리", "스펨 사이트로 리디렉션",
@@ -1678,7 +1681,7 @@ public class ReviewController implements Initializable, Constant {
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnButton, columnUri, columnName, columnScope,
 				columnNotCheck, columnDefer, columnLookMain, columnLookCh, columnLookList, columnLookCont, columnHam,
-				columnHamLow, columnSpamAd, columnSpamText, columnSpamRedir, columnSpamMalware, columnSpamCopy,
+				columnHamLow, columnHamFish, columnSpamAd, columnSpamText, columnSpamRedir, columnSpamMalware, columnSpamCopy,
 				columnSpamPorn, columnSpamDecep, columnSpamManip, columnSpamIllegal, columnComment, columnWorkDay);
 
 	}
