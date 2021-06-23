@@ -193,13 +193,13 @@ public class ReviewController implements Initializable, Constant {
 		System.setProperty("java.awt.headless", "false");
 	}
 
-//	@PostConstruct
-//	public void init() {
-//		mapper = new ObjectMapper();
-//		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//		mapper.setSerializationInclusion(Include.NON_NULL);
-//
-//	}
+	// @PostConstruct
+	// public void init() {
+	// mapper = new ObjectMapper();
+	// mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+	// mapper.setSerializationInclusion(Include.NON_NULL);
+	//
+	// }
 
 	private void initialPane() {
 		borderPane = new BorderPane();
@@ -219,9 +219,10 @@ public class ReviewController implements Initializable, Constant {
 		wasChecked = new CheckBox("검수");
 		wasChecked.setSelected(false);
 		wasChecked.setOnAction(e -> {
-//			String selectCategor = comboBoxCategory.getSelectionModel().getSelectedItem(); =
-//			comboBoxCategory.getSelectionModel().select(0);
-//			comboBoxCategory.getSelectionModel().select(selectCategor);
+			// String selectCategor =
+			// comboBoxCategory.getSelectionModel().getSelectedItem(); =
+			// comboBoxCategory.getSelectionModel().select(0);
+			// comboBoxCategory.getSelectionModel().select(selectCategor);
 			filtedSpamList = spamList;
 			filtedSpamList = actionComboBoxCategoryHandler();
 			filtedSpamList = actionComboBoxWorkerHandler();
@@ -275,17 +276,17 @@ public class ReviewController implements Initializable, Constant {
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 		});
 
-//		comboBoxSite = new ComboBox<String>();
-//		comboBoxSite.setItems(observableListSite);
-//		comboBoxSite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
-//		comboBoxSite.valueProperty().addListener((obs, oldVal, newVal) -> {
-//			filtedSpamList = spamList;
-//			filtedSpamList = actionComboBoxWorkerHandler();
-//			filtedSpamList = actionComboBoxCategoryHandler();
-//			filtedSpamList = actionComboBoxSite();
-//			Platform.runLater(() -> reloadTable(filtedSpamList));
-//
-//		});
+		// comboBoxSite = new ComboBox<String>();
+		// comboBoxSite.setItems(observableListSite);
+		// comboBoxSite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
+		// comboBoxSite.valueProperty().addListener((obs, oldVal, newVal) -> {
+		// filtedSpamList = spamList;
+		// filtedSpamList = actionComboBoxWorkerHandler();
+		// filtedSpamList = actionComboBoxCategoryHandler();
+		// filtedSpamList = actionComboBoxSite();
+		// Platform.runLater(() -> reloadTable(filtedSpamList));
+		//
+		// });
 
 		comboBoxSite = new ComboBox<String>();
 		comboBoxSite.setPromptText("SITE");
@@ -301,7 +302,7 @@ public class ReviewController implements Initializable, Constant {
 				filtedSpamList = actionComboBoxCategoryHandler();
 			}
 			Platform.runLater(() -> reloadTable(filtedSpamList));
-			//comboBoxWhite.getSelectionModel().clearSelection();
+			// comboBoxWhite.getSelectionModel().clearSelection();
 		});
 
 		textFieldFilterURL = new TextField();
@@ -475,17 +476,17 @@ public class ReviewController implements Initializable, Constant {
 		List<Spam> spams;
 		if (filtedSpamList == null) {
 			filtedSpamList = spamList;
-			
-		} 
-		
-		//filtedSpamList.forEach(item -> item.setComment(""));
+
+		}
+
+		// filtedSpamList.forEach(item -> item.setComment(""));
 		switch (comboBoxWhite.getSelectionModel().getSelectedIndex()) {
 
 		case 0:
 			isWhite = false;
-			if(spamList != null)
+			if (spamList != null)
 				spamList.forEach(item -> item.setComment(""));
-	
+
 			reloadTable(spamList);
 			break;
 		case 1:
@@ -498,9 +499,8 @@ public class ReviewController implements Initializable, Constant {
 			reloadTable(filtedSpamList);
 			break;
 		case 2:
-			spams = filtedSpamList.stream()
-			       .filter(item -> !item.getUri().endsWith(".com")
-					        && !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
+			spams = filtedSpamList.stream().filter(item -> !item.getUri().endsWith(".com")
+					&& !item.getUri().endsWith(".kr") && !item.getUri().endsWith(".net")).collect(Collectors.toList());
 			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
@@ -510,22 +510,20 @@ public class ReviewController implements Initializable, Constant {
 					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
 							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
 							&& !item.getLookList() && !item.getLookCont())
-			       .filter(item -> item.getUri().endsWith(".com")
-					|| item.getUri().endsWith(".kr") || item.getUri().endsWith(".net"))
-			       .collect(Collectors.toList());
+					.filter(item -> item.getUri().endsWith(".com") || item.getUri().endsWith(".kr")
+							|| item.getUri().endsWith(".net"))
+					.collect(Collectors.toList());
 			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
 		case 4:
 			filtedSpamList = spamList;
 			spams = filtedSpamList.stream()
-			.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
-					&& !item.getBooleanDefer() 
-					&& !item.getHam() && !item.getHamLow()  
-					&& (item.getLookMain() || item.getLookCh())
-					&& !item.getLookList() && !item.getLookCont()
-					&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))	       
-	       .collect(Collectors.toList());
+					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+							&& !item.getBooleanDefer() && !item.getHam() && !item.getHamLow()
+							&& (item.getLookMain() || item.getLookCh()) && !item.getLookList() && !item.getLookCont()
+							&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))
+					.collect(Collectors.toList());
 			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
@@ -533,13 +531,11 @@ public class ReviewController implements Initializable, Constant {
 		case 5:
 			filtedSpamList = spamList;
 			spams = filtedSpamList.stream()
-			.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
-					&& !item.getBooleanDefer() 
-					&& !item.getHam() && !item.getHamLow()  
-					&& !item.getLookMain() && !item.getLookCh()
-					&& (item.getLookList() || item.getLookCont())
-					&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))	       
-	       .collect(Collectors.toList());
+					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
+							&& !item.getBooleanDefer() && !item.getHam() && !item.getHamLow() && !item.getLookMain()
+							&& !item.getLookCh() && (item.getLookList() || item.getLookCont())
+							&& item.getName().equals(comboBoxWorker.getSelectionModel().getSelectedItem()))
+					.collect(Collectors.toList());
 			spams.forEach(item -> item.setComment(""));
 			reloadTable(spams);
 			break;
@@ -751,9 +747,11 @@ public class ReviewController implements Initializable, Constant {
 
 	private List<Spam> actionComboBoxCategoryHandler() {
 
-//		ObservableList<String> observableListSpam = FXCollections.observableArrayList(" ", "비정상 광고 컨테트", "비정상 텍스트", 
-//				"스펨 사이트로 리디렉션", "악성 소프트웨어", "저작권위반", "음란물", "기만적 컨텐트", "웹순위 조작 활동", "불법 사이트", "정상 컨텐트", 
-//				"정상 컨텐트 저품질", "서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지");
+		// ObservableList<String> observableListSpam =
+		// FXCollections.observableArrayList(" ", "비정상 광고 컨테트", "비정상 텍스트",
+		// "스펨 사이트로 리디렉션", "악성 소프트웨어", "저작권위반", "음란물", "기만적 컨텐트", "웹순위 조작 활동", "불법 사이트",
+		// "정상 컨텐트",
+		// "정상 컨텐트 저품질", "서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지");
 
 		// filtedSpamList = spamList.stream().filter(item -> isSeleted ==
 		// item.getSelected())
@@ -898,14 +896,14 @@ public class ReviewController implements Initializable, Constant {
 		case 11:
 			if (comboBoxWorker.getSelectionModel().getSelectedIndex() == 0)
 				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
-						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow() ||
-								category.equals("정상 컨텐트 저품질") && item.getHamFish() ) // 정저
+						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow()
+								|| category.equals("정상 컨텐트 저품질") && item.getHamFish()) // 정저
 						.collect(Collectors.toList());
 			else
 				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> item.getName().equals(worker))
-						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow() ||
-								category.equals("정상 컨텐트 저품질") && item.getHamFish()) // 정저
+						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow()
+								|| category.equals("정상 컨텐트 저품질") && item.getHamFish()) // 정저
 						.collect(Collectors.toList());
 			break;
 		default:
@@ -945,8 +943,10 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private void keyReleadedTextFieldSearchHander(String text) {
-//		List<Spam> searchList = spamList.stream().filter(item -> item.getComment() != null)
-//				.filter(item -> item.getComment().contains(text)).collect(Collectors.toList());
+		// List<Spam> searchList = spamList.stream().filter(item -> item.getComment() !=
+		// null)
+		// .filter(item ->
+		// item.getComment().contains(text)).collect(Collectors.toList());
 
 		List<Spam> searchList = tableView.getItems().stream().peek(item -> System.err.println(item))
 				.filter(item -> item.getNo() < Integer.valueOf(text)).collect(Collectors.toList());
@@ -1017,13 +1017,14 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private Object actionButtonDeleteHandler() {
-//		if (checkBoxUseDatePicker.isSelected()) {
-//			String date = datePicker.getValue().toString();
-//			spamList = restSpamRepository.deleteBySelectedAndWorkday(false, date);
-//			List<Spam> filteList = spamList.stream().filter(item -> item.getWorkday().equals(date))
-//					.collect(Collectors.toList());
-//			reloadTable(filteList);
-//		}
+		// if (checkBoxUseDatePicker.isSelected()) {
+		// String date = datePicker.getValue().toString();
+		// spamList = restSpamRepository.deleteBySelectedAndWorkday(false, date);
+		// List<Spam> filteList = spamList.stream().filter(item ->
+		// item.getWorkday().equals(date))
+		// .collect(Collectors.toList());
+		// reloadTable(filteList);
+		// }
 
 		Spam spam = tableView.getSelectionModel().getSelectedItem();
 		spamRepository.delete(spam);
@@ -1420,11 +1421,11 @@ public class ReviewController implements Initializable, Constant {
 		initialPane();
 		initialComponent();
 		initialTableView();
-//
-//		// this.spamCheckedList = jsonUtil.convertJsonToSpamList(SPAM_FILE);
-//		if (isFile) {
-//			this.spamCheckedList = excelManual.readSpamList();
-//		}
+		//
+		// // this.spamCheckedList = jsonUtil.convertJsonToSpamList(SPAM_FILE);
+		// if (isFile) {
+		// this.spamCheckedList = excelManual.readSpamList();
+		// }
 		if (spamCheckedList != null) {
 			tableView.getItems().addAll(spamCheckedList);
 			spamRepository.saveAll(spamCheckedList);
@@ -1526,13 +1527,13 @@ public class ReviewController implements Initializable, Constant {
 				} else {
 					setStyle("");
 				}
-				
-				if(item != null && item.getIsCheck()) {
+
+				if (item != null && item.getIsCheck()) {
 					setStyle("-fx-background-color: #ff0066;");
 				}
 			}
 		});
-		
+
 		tableView.setEditable(true);
 		TableColumn<Spam, Boolean> columnSelected = createCheckBoxHeaderColumn(Spam::selectedProperty);
 		TableColumn<Spam, String> columnUri = createColumn("url", Spam::uriProperty);
@@ -1552,7 +1553,7 @@ public class ReviewController implements Initializable, Constant {
 		TableColumn<Spam, Boolean> columnHam = createCheckBoxColumn("정상", "정상 컨텐트", Spam::hamProperty);
 		TableColumn<Spam, Boolean> columnHamLow = createCheckBoxColumn("정저", "정상 컨텐트 저품질", Spam::hamLowProperty);
 		TableColumn<Spam, Boolean> columnHamFish = createCheckBoxColumn("정낚", "정상 컨텐트 저품질 낚시", Spam::hamFishProperty);
-		
+
 		TableColumn<Spam, Boolean> columnSpamAd = createCheckBoxColumn("비광", "비정상 광고 컨텐트", Spam::spamAdProperty);
 		TableColumn<Spam, Boolean> columnSpamText = createCheckBoxColumn("비텍", "비장상 텍스트", Spam::spamTextProperty);
 		TableColumn<Spam, Boolean> columnSpamRedir = createCheckBoxColumn("스리", "스펨 사이트로 리디렉션",
@@ -1685,16 +1686,61 @@ public class ReviewController implements Initializable, Constant {
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnButton, columnUri, columnName, columnScope,
 				columnNotCheck, columnDefer, columnLookMain, columnLookCh, columnLookList, columnLookCont, columnHam,
-				columnHamLow, columnHamFish, columnSpamAd, columnSpamText, columnSpamRedir, columnSpamMalware, columnSpamCopy,
-				columnSpamPorn, columnSpamDecep, columnSpamManip, columnSpamIllegal, columnComment, columnWorkDay);
+				columnHamLow, columnHamFish, columnSpamAd, columnSpamText, columnSpamRedir, columnSpamMalware,
+				columnSpamCopy, columnSpamPorn, columnSpamDecep, columnSpamManip, columnSpamIllegal, columnComment,
+				columnWorkDay);
 
 	}
 
-	private List<String> chHost1 = Arrays.asList("blog.naver.com", "soundcloud.com", "blog.daum.net", 
-			"facebook.com",  ".tiktok.com","twitter.com", "blog.sina.com.cn");
-	private List<String> chHost2 = Arrays.asList( "youtube.com/channel/", "youtube.com/user/");
+	private List<String> chHost1 = Arrays.asList("blog.naver.com", "soundcloud.com", "blog.daum.net", "facebook.com",
+			".tiktok.com", "twitter.com", "blog.sina.com.cn");
+	private List<String> chHost2 = Arrays.asList("youtube.com/channel/", "youtube.com/user/");
 	private List<String> chHost3 = Arrays.asList(".tumblr.com", ".tistory.com", ".blogspot.com", "tiktok.com");
-	
+
+	private String getBasicUrl(String url) {
+		String checkUrl = url.replaceAll("https://", "");
+		checkUrl = checkUrl.replaceAll("http://", "");
+		if (checkUrl.endsWith("/")) {
+			checkUrl = checkUrl.replace("/", "");
+		}
+		return checkUrl;
+	}
+
+	private Boolean isChannel(String url) {
+		// 2. 채널 확인
+		if (chHost1.contains(url)) {
+			long count = url.chars().filter(ch -> ch == '/').count();
+			if (count < 2) {
+				return true;
+			}
+		}
+
+		if (chHost2.contains(url)) {
+			long count = url.chars().filter(ch -> ch == '/').count();
+			if (count < 3) {
+				return true;
+			}
+		}
+
+		if (chHost3.contains(url)) {
+			long count = url.chars().filter(ch -> ch == '/').count();
+			if (count < 1) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private Boolean isService(String url) {
+		// 3. 서비스 확인
+		long count = url.chars().filter(ch -> ch == '/').count();
+		if (count < 1) {
+			return true;
+		}
+		return false;
+	}
+
 	public Boolean checkSpamAction(Spam spam) {
 		String uri = null;
 
@@ -1702,84 +1748,65 @@ public class ReviewController implements Initializable, Constant {
 		// List<SpamCategory> spamCategroysList =
 		// restSpamCategoryRepository.findAllByOrderByUriAsc();
 
+		// 작업 실수 확인
 		if (spam.getSpamRedir() && spam.getSpamText() && !spam.getSpamAd()) {
 			spam.setComment("리디렉션오류");
 			spam.setIsCheck(true);
 			return true;
 		}
-
-		// 채널 확인
 		
-		
-		
-		String urlString = spam.getUri().replaceAll("https://", "");
-		urlString = urlString.replaceAll("http://", "");
-		if (urlString.endsWith("/")) {
-			urlString = urlString.replace("/", "");
-		}
-
-		// 2. 채널 확인
-		if(chHost1.contains(urlString)) {
-			long count = urlString.chars().filter(ch -> ch == '/').count();
-			if(count < 2 && !spam.getLookCh()) {
-				spam.setComment("채널 확인");
-				spam.setIsCheck(true);
-			}
-		}
-		
-		if(chHost2.contains(urlString)) {
-			long count = urlString.chars().filter(ch -> ch == '/').count();
-			if(count < 3 && !spam.getLookCh()) {
-				spam.setComment("채널 확인");
-				spam.setIsCheck(true);
-			}
-		}
-		
-		if(chHost3.contains(urlString)) {
-			long count = urlString.chars().filter(ch -> ch == '/').count();
-			if(count < 1 && !spam.getLookCh()) {
-				spam.setComment("채널 확인");
-				spam.setIsCheck(true);
-			}
-		}
-		
-		if (urlString.contains(".go.kr") && (spam.getSpamAd() || spam.getSpamText())) {
+		if (spam.getUri().contains(".go.kr") && (spam.getSpamAd() || spam.getSpamText())) {
 			spam.setComment("{비광확인}");
 			spam.setIsCheck(true);
 		}
+
+		if (spam.getSpamMalware()) {
+			spam.setComment("?악소");
+			spam.setIsCheck(true);
+			return true;
+		}
+
+		if (!spam.getDefer().equals("")) {
+			spam.setComment("?보류");
+			return true;
+		}
+
+		if (spam.getSpamDecep()) {
+			spam.setComment("?기컨");
+			spam.setIsCheck(true);
+			return true;
+		}
+
+		if (spam.getSpamMalware()) {
+			spam.setComment("?악성");
+			spam.setIsCheck(true);
+			return true;
+		}
 		
-		
-		if ((urlString.endsWith(".com") || urlString.endsWith(".kr") || urlString.endsWith(".net"))
+		// 기본 url 작업
+		String checkUrl = getBasicUrl(spam.getUri());
+
+		// 1. 채널 확인
+		if (!spam.getLookCh() && isChannel(checkUrl)) {
+			spam.setComment("채널 확인");
+			spam.setIsCheck(true);
+			return true;
+		}
+
+		// 2. 서비스 확인
+		if (!spam.getLookMain() && isService(checkUrl)) {
+			spam.setComment("서비스 확인");
+			spam.setIsCheck(true);
+			return true;
+		}
+
+
+		if ((checkUrl.endsWith(".com") || checkUrl.endsWith(".kr") || checkUrl.endsWith(".net"))
 				&& (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 			spam.setComment("{비광확인}");
 			spam.setIsCheck(true);
 		}
-		
-//		if ((urlString.split("/").length < 1) && (spam.getLookList() || spam.getLookCont())) {
-//			spam.setComment("{서비스/채널 확인 필요}");
-//			spam.setIsCheck(true);
-//			return true;
-//		}
-//		if ((urlString.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
-//			if (urlString.split("/").length == 3 && urlString.contains("sites.google.com/view")) {
-//				if(!spam.getLookMain()) {
-//					spam.setComment("{서비스/채널 확인 필요}");
-//					spam.setIsCheck(true);
-//				}				
-//			} else {
-//				spam.setComment("{서비스/채널 확인 필요}");
-//				spam.setIsCheck(true);
-//			}
-//			return true;
-//		}
 
-//		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
-//			
-//			if(spam.getLookList() || spam.getLookCont()) {
-//				spam.setComment("{서비스/채널 확인 필요}");
-//			}
-//			return true;
-//		}
 
 		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
 
@@ -1791,7 +1818,7 @@ public class ReviewController implements Initializable, Constant {
 			if (spamCategroy != null) {
 				if (spamCategroy.getLookMain() && spam.getLookCh()) { // 그룹 : 메인 , 작업 : 채널
 					if (spam.getComment() == null || spam.getComment().isEmpty()) {
-						spam.setComment("{서비스}" + comment);
+						spam.setComment("검증 -> {서비스}" + comment);
 						spam.setIsCheck(true);
 					}
 					return true;
@@ -1831,9 +1858,7 @@ public class ReviewController implements Initializable, Constant {
 					spam.setComment(s);
 					return true;
 				}
-
 			}
-
 		}
 
 		if (spam.getUri().startsWith("http:")) {
@@ -1851,30 +1876,7 @@ public class ReviewController implements Initializable, Constant {
 			return true;
 		}
 
-		if (spam.getSpamMalware()) {
-			spam.setComment("?악소");
-			return true;
-		}
 
-		if (spam.getSpamPorn()) {
-			spam.setComment("?음란");
-			return true;
-		}
-
-		if (!spam.getDefer().equals("")) {
-			spam.setComment("?보류");
-			return true;
-		}
-
-		if (spam.getSpamDecep()) {
-			spam.setComment("?기컨");
-			return true;
-		}
-
-		if (spam.getSpamMalware()) {
-			spam.setComment("?악성");
-			return true;
-		}
 		// google 확인
 		if (uri.contains("sites.google.com/site")) {
 			if (spam.getLookCh()) {
@@ -2075,18 +2077,18 @@ public class ReviewController implements Initializable, Constant {
 		textFieldFilterURL.clear();
 	}
 
-//	private void checkFeedBack() {
-//
-//		if (isFeedBack) {
-//			isFeedBack = false;
-//			// if(checkBoxAll.isSelected()) {
-//			spamList = spamRepository.findAllByOrderByWorkdayDesc();
-//			// } else {
-//			// spamList = spamRepository.findByWorkday(datePicker.getValue().toString());
-//			// }
-//		}
-//
-//	}
+	// private void checkFeedBack() {
+	//
+	// if (isFeedBack) {
+	// isFeedBack = false;
+	// // if(checkBoxAll.isSelected()) {
+	// spamList = spamRepository.findAllByOrderByWorkdayDesc();
+	// // } else {
+	// // spamList = spamRepository.findByWorkday(datePicker.getValue().toString());
+	// // }
+	// }
+	//
+	// }
 
 	private TableColumn<Spam, Void> createButtonColumn() {
 		TableColumn<Spam, Void> column = new TableColumn<Spam, Void>("ACTION");
@@ -2158,8 +2160,8 @@ public class ReviewController implements Initializable, Constant {
 							spam.setSelected(true);
 							verifySite.setClipbord(spam.getUri());
 
-//							Spam spam = getTableView().getItems().get(getIndex());
-//							eventDelete(spam);
+							// Spam spam = getTableView().getItems().get(getIndex());
+							// eventDelete(spam);
 						});
 						text.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
@@ -2225,11 +2227,12 @@ public class ReviewController implements Initializable, Constant {
 		col.setGraphic(stack);
 	}
 
-//    private static <S,T> TableColumn<S,T> column(String title, Function<S, Property<T>> prop) {
-//        TableColumn<S,T> col = new TableColumn<>(title);
-//        col.setCellValueFactory(cellData -> prop.apply(cellData.getValue()));
-//        return col ;
-//    }
+	// private static <S,T> TableColumn<S,T> column(String title, Function<S,
+	// Property<T>> prop) {
+	// TableColumn<S,T> col = new TableColumn<>(title);
+	// col.setCellValueFactory(cellData -> prop.apply(cellData.getValue()));
+	// return col ;
+	// }
 
 	private <S, T> TableColumn<S, T> createEditColumn(String head, Function<S, Property<T>> prop) {
 		TableColumn<S, T> tableColumn = new TableColumn<>(head.toUpperCase());
@@ -2398,13 +2401,14 @@ public class ReviewController implements Initializable, Constant {
 		tableColumn.setCellFactory(column -> new CheckBoxTableCell<S, T>());
 		tableColumn.setPrefWidth(50);
 
-//		tableColumn.setCellFactory(CheckBoxTableCell.forTableColumn(new Callback<Integer, ObservableValue<Boolean>>() {
-//			@Override
-//			public ObservableValue<Boolean> call(Integer param) {
-//				leftNameTableView.getItems().get(param).setIsSelect(true);
-//				return leftNameTableView.getItems().get(param).showingProperty();
-//			}
-//		}));
+		// tableColumn.setCellFactory(CheckBoxTableCell.forTableColumn(new
+		// Callback<Integer, ObservableValue<Boolean>>() {
+		// @Override
+		// public ObservableValue<Boolean> call(Integer param) {
+		// leftNameTableView.getItems().get(param).setIsSelect(true);
+		// return leftNameTableView.getItems().get(param).showingProperty();
+		// }
+		// }));
 
 		return tableColumn;
 	}
