@@ -62,6 +62,16 @@ public class Spam {
 	private final BooleanProperty spamWhite = new SimpleBooleanProperty();
 	
 	@Transient
+	private Boolean isCheck = false;
+	
+	public Boolean getIsCheck() {
+		return isCheck;
+	}
+	public void setIsCheck(Boolean isCheck) {
+		this.isCheck = isCheck;
+	}
+
+	@Transient
 	private Integer no;
 	
 	public Integer getNo() {

@@ -292,7 +292,6 @@ public class ReviewController implements Initializable, Constant {
 		comboBoxSite.setItems(observableListSite);
 		comboBoxSite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
 		comboBoxSite.valueProperty().addListener((obs, oldVal, newVal) -> {
-			comboBoxWhite.getSelectionModel().clearSelection();
 			filtedSpamList = spamList;
 			filtedSpamList = actionComboBoxSite();
 			if (comboBoxWorker.getSelectionModel().getSelectedIndex() != 0) {
@@ -301,8 +300,8 @@ public class ReviewController implements Initializable, Constant {
 			if (comboBoxCategory.getSelectionModel().getSelectedIndex() != 0) {
 				filtedSpamList = actionComboBoxCategoryHandler();
 			}
-
 			Platform.runLater(() -> reloadTable(filtedSpamList));
+			//comboBoxWhite.getSelectionModel().clearSelection();
 		});
 
 		textFieldFilterURL = new TextField();
@@ -1527,8 +1526,13 @@ public class ReviewController implements Initializable, Constant {
 				} else {
 					setStyle("");
 				}
+				
+				if(item != null && item.getIsCheck()) {
+					setStyle("-fx-background-color: #ff0066;");
+				}
 			}
 		});
+		
 		tableView.setEditable(true);
 		TableColumn<Spam, Boolean> columnSelected = createCheckBoxHeaderColumn(Spam::selectedProperty);
 		TableColumn<Spam, String> columnUri = createColumn("url", Spam::uriProperty);
@@ -1686,6 +1690,11 @@ public class ReviewController implements Initializable, Constant {
 
 	}
 
+	private List<String> chHost1 = Arrays.asList("blog.naver.com", "soundcloud.com", "blog.daum.net", 
+			"facebook.com",  ".tiktok.com","twitter.com", "blog.sina.com.cn");
+	private List<String> chHost2 = Arrays.asList( "youtube.com/channel/", "youtube.com/user/");
+	private List<String> chHost3 = Arrays.asList(".tumblr.com", ".tistory.com", ".blogspot.com", "tiktok.com");
+	
 	public Boolean checkSpamAction(Spam spam) {
 		String uri = null;
 
@@ -1695,37 +1704,74 @@ public class ReviewController implements Initializable, Constant {
 
 		if (spam.getSpamRedir() && spam.getSpamText() && !spam.getSpamAd()) {
 			spam.setComment("리디렉션오류");
+			spam.setIsCheck(true);
 			return true;
 		}
-		String http = "http://";
+
+		// 채널 확인
+		
+		
+		
 		String urlString = spam.getUri().replaceAll("https://", "");
-		urlString = urlString.replaceAll(http, "");
+		urlString = urlString.replaceAll("http://", "");
 		if (urlString.endsWith("/")) {
 			urlString = urlString.replace("/", "");
 		}
 
+		// 2. 채널 확인
+		if(chHost1.contains(urlString)) {
+			long count = urlString.chars().filter(ch -> ch == '/').count();
+			if(count < 2 && !spam.getLookCh()) {
+				spam.setComment("채널 확인");
+				spam.setIsCheck(true);
+			}
+		}
+		
+		if(chHost2.contains(urlString)) {
+			long count = urlString.chars().filter(ch -> ch == '/').count();
+			if(count < 3 && !spam.getLookCh()) {
+				spam.setComment("채널 확인");
+				spam.setIsCheck(true);
+			}
+		}
+		
+		if(chHost3.contains(urlString)) {
+			long count = urlString.chars().filter(ch -> ch == '/').count();
+			if(count < 1 && !spam.getLookCh()) {
+				spam.setComment("채널 확인");
+				spam.setIsCheck(true);
+			}
+		}
+		
 		if (urlString.contains(".go.kr") && (spam.getSpamAd() || spam.getSpamText())) {
 			spam.setComment("{비광확인}");
+			spam.setIsCheck(true);
 		}
+		
 		
 		if ((urlString.endsWith(".com") || urlString.endsWith(".kr") || urlString.endsWith(".net"))
 				&& (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 			spam.setComment("{비광확인}");
+			spam.setIsCheck(true);
 		}
-		if ((urlString.split("/").length < 1) && (spam.getLookList() || spam.getLookCont())) {
-			spam.setComment("{서비스/채널 확인 필요}");
-			return true;
-		}
-		if ((urlString.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
-			if (urlString.split("/").length == 3 && urlString.contains("sites.google.com/view")) {
-				if(!spam.getLookMain()) {
-					spam.setComment("{서비스/채널 확인 필요}");
-				}				
-			} else {
-				spam.setComment("{서비스/채널 확인 필요}");
-			}
-			return true;
-		}
+		
+//		if ((urlString.split("/").length < 1) && (spam.getLookList() || spam.getLookCont())) {
+//			spam.setComment("{서비스/채널 확인 필요}");
+//			spam.setIsCheck(true);
+//			return true;
+//		}
+//		if ((urlString.split("/").length > 1) && (spam.getLookMain() || spam.getLookCh())) {
+//			if (urlString.split("/").length == 3 && urlString.contains("sites.google.com/view")) {
+//				if(!spam.getLookMain()) {
+//					spam.setComment("{서비스/채널 확인 필요}");
+//					spam.setIsCheck(true);
+//				}				
+//			} else {
+//				spam.setComment("{서비스/채널 확인 필요}");
+//				spam.setIsCheck(true);
+//			}
+//			return true;
+//		}
 
 //		if ((spam.getUri().split("/").length < 2) && (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
 //			
@@ -1744,33 +1790,43 @@ public class ReviewController implements Initializable, Constant {
 			String comment = spam.getComment();
 			if (spamCategroy != null) {
 				if (spamCategroy.getLookMain() && spam.getLookCh()) { // 그룹 : 메인 , 작업 : 채널
-					if (spam.getComment() == null || spam.getComment().isEmpty())
+					if (spam.getComment() == null || spam.getComment().isEmpty()) {
 						spam.setComment("{서비스}" + comment);
+						spam.setIsCheck(true);
+					}
 					return true;
 				} else if (spamCategroy.getLookCh() && spam.getLookMain()) { // 그룹 : 채널 , 작업 : 메인
-					if (spam.getComment() == null || spam.getComment().isEmpty())
+					if (spam.getComment() == null || spam.getComment().isEmpty()) {
 						spam.setComment("{채널}" + comment);
+						spam.setIsCheck(true);
+					}
 					return true;
 				} else if (spamCategroy.getHamLow() && !spam.getHamLow()) { // 그룹 : 저품질 , 작업 : !저품질
-					if (spam.getComment() == null || spam.getComment().isEmpty())
+					if (spam.getComment() == null || spam.getComment().isEmpty()) {
 						spam.setComment("{저품질}" + comment);
+						spam.setIsCheck(true);
+					}
 					return true;
 				} else if (spamCategroy.getLookList() && (spam.getLookMain() || spam.getLookCh())) { // 그룹 : 리스트 , 작업 :
 																										// !리스트
-					if (spam.getComment() == null || spam.getComment().isEmpty())
+					if (spam.getComment() == null || spam.getComment().isEmpty()) {
 						spam.setComment("{리스트}" + comment);
+						spam.setIsCheck(true);
+					}
 					return true;
 				} else {
 					String s = comment;
 					if (spamCategroy.getSpamAd() && !spam.getSpamAd()) {
 						if (spam.getComment() == null || spam.getComment().isEmpty())
 							s = "{비광}";
+						spam.setIsCheck(true);
 
 					}
 
 					if (spamCategroy.getSpamText() && !spam.getSpamText()) { // 그룹 : 리스트 , 작업 : !리스트
 						if (spam.getComment() == null || spam.getComment().isEmpty())
 							s = s + "{비광}";
+						spam.setIsCheck(true);
 					}
 					spam.setComment(s);
 					return true;
@@ -1791,6 +1847,7 @@ public class ReviewController implements Initializable, Constant {
 			uri.replace("/", "");
 		if ((uri.split("/").length < 2) && (spam.getLookList() || spam.getLookCont())) {
 			spam.setComment("{서비스/채널 확인 필요}");
+			spam.setIsCheck(true);
 			return true;
 		}
 
