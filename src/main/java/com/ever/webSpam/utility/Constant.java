@@ -29,8 +29,8 @@ public interface Constant {
 	//String JSON_FILE = System.getProperty("user.home") + File.separator + "manual.json";
 	//String QC_FILE = "d:/웹스팸/";
 	String QC_FILE = Paths.get(".").toAbsolutePath().normalize().toString();
-	String EXCEL_FILE = "d:/웹스팸/manual.xlsx";
-	String JSON_FILE = "d:/웹스팸/manual.json";
+	String EXCEL_FILE = "D:\\웹스팸\\manual.xlsx";
+	String JSON_FILE = "D:\\웹스팸\\manual.json";
 	String CATEGORY_FILE = "d:/웹스팸/category.json";
 	String SPAM_FILE = "d:/웹스팸/spam.json";
 	String HOME_DIR = System.getProperty("user.home");

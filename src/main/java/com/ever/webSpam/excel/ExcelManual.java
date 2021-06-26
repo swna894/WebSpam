@@ -269,6 +269,7 @@ public class ExcelManual implements Constant {
 		Workbook workbook = readFile(EXCEL_FILE);
 		initalStyle(workbook);
 		sheet = workbook.getSheet(SHEET_QUESTION);
+		// sheet = workbook.getSheetAt(4);
 
 		for (int i = 0; i < sheet.getLastRowNum() + 1; i++) {
 			Question question = new Question();
@@ -283,8 +284,10 @@ public class ExcelManual implements Constant {
 				question.setDate(date);
 
 				cell = row.getCell(2);
-				String memo = cell.getStringCellValue();
-				question.setMemo(memo);
+				if (cell != null) {
+					String memo = cell.getStringCellValue();
+					question.setMemo(memo);
+				}
 
 				list.add(question);
 			}
@@ -348,10 +351,10 @@ public class ExcelManual implements Constant {
 		}
 		return manualList;
 	}
-	
+
 	public List<SpamCategory> readCategoryList() {
 		List<SpamCategory> categoryList = new ArrayList<SpamCategory>();
-		Workbook workbook = readFile(FILE);
+		Workbook workbook = readFile(EXCEL_FILE);
 		initalStyle(workbook);
 		sheet = workbook.getSheet(SHEET_CETEGORY);
 
@@ -495,8 +498,8 @@ public class ExcelManual implements Constant {
 			spam.setSpamIllegal(cell.getBooleanCellValue());
 
 			cell = row.getCell(SPAM_WHITE);
-			if(cell != null)
-			spam.setSpamWhite(cell.getBooleanCellValue());
+			if (cell != null)
+				spam.setSpamWhite(cell.getBooleanCellValue());
 
 			cell = row.getCell(DATE);
 			spam.setWorkday(cell.getStringCellValue());
@@ -519,7 +522,7 @@ public class ExcelManual implements Constant {
 
 	private Workbook readFile(String file) {
 		Workbook workbook = null;
-		if (new File(FILE).exists()) {
+		if (new File(file).exists()) {
 			FileInputStream fis;
 			try {
 				fis = new FileInputStream(file);

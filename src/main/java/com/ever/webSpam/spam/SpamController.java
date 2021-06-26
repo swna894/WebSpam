@@ -695,8 +695,8 @@ public class SpamController implements Initializable, Constant {
 		if (isFile) {
 			initalDoc();
 		} else {
-			borderPane.getChildren().remove(splitPane);
-			borderPane.getChildren().remove(hBoxBottom);
+			//borderPane.getChildren().remove(splitPane);
+			//borderPane.getChildren().remove(hBoxBottom);
 
 		}
 		spamCategoryList = spamCategoryRepository.findAllByOrderByUriAsc();
