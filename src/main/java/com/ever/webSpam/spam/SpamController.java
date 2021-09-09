@@ -15,10 +15,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -132,16 +135,16 @@ public class SpamController implements Initializable, Constant {
 
 	@Autowired
 	SpamCategoryRepository spamCategoryRepository;
-	
+
 	@Autowired
 	QuestionController questionController;
-	
+
 	@Autowired
 	VerifySite verifySite;
 
 	@Autowired
 	QuestionRepository questionRepository;
-	
+
 	@FXML
 	private BorderPane borderPane;
 
@@ -168,13 +171,13 @@ public class SpamController implements Initializable, Constant {
 
 	@FXML
 	private TextField textFieldHiddenText;
-	
+
 	@FXML
 	private TextField textFieltInspectResult;
-	
+
 	@FXML
 	private Button buttonInstprctionResult;
-	
+
 	@FXML
 	private Button buttonGoogle;
 
@@ -201,7 +204,7 @@ public class SpamController implements Initializable, Constant {
 
 	@FXML
 	private Button buttonSearch;
-	
+
 	@FXML
 	private Button buttonHiddenText;
 
@@ -211,8 +214,6 @@ public class SpamController implements Initializable, Constant {
 	@FXML
 	private Button buttonQuestionList;
 
-
-	
 	@FXML
 	private TableView<Spam> checkTableView;
 
@@ -291,7 +292,6 @@ public class SpamController implements Initializable, Constant {
 		inspectResult();
 	}
 
-	
 	@FXML
 	void actionButtonSearch(ActionEvent event) {
 		// buttonDel.setDisable(true);
@@ -307,14 +307,15 @@ public class SpamController implements Initializable, Constant {
 
 	@FXML
 	void actionButtonQuestionList(ActionEvent event) {
-	
+
 		questionController.open();
 	}
 
 	@FXML
 	void actionButtonQuestion(ActionEvent event) {
 		String uri = textFieldCategory.getText().trim();
-		List<Question> questionList = excelManual.readQuestionList();;
+		List<Question> questionList = excelManual.readQuestionList();
+		;
 		if (!uri.equals("")) {
 			Question question = new Question();
 			question.setUri(uri);
@@ -337,7 +338,7 @@ public class SpamController implements Initializable, Constant {
 			userDirectory = new File("c:/");
 		}
 		fileChooser.setInitialDirectory(userDirectory);
-		
+
 		fileChooser.getExtensionFilters().add(extentionFilter);
 		file = fileChooser.showOpenDialog(null);
 		if (file != null)
@@ -359,16 +360,15 @@ public class SpamController implements Initializable, Constant {
 	void actionButtonGoogle(ActionEvent event) {
 
 	}
-	
+
 	@FXML
 	void actionTextFieldInspectResult(ActionEvent event) {
 		inspectResult();
 	}
-	
+
 	private void inspectResult() {
 		clipText = verifySite.getClipboard();
-		if(!clipText.isEmpty())
-		{
+		if (!clipText.isEmpty()) {
 			textFieltInspectResult.setText(clipText);
 			verifySite.eventInspectReult(textFieltInspectResult.getText());
 		}
@@ -415,13 +415,12 @@ public class SpamController implements Initializable, Constant {
 		textFieldClean(textFieldExplorer);
 
 	}
-	
+
 	@FXML
 	void mouseClickedInspectResult(MouseEvent event) {
 		inspectResult();
 
 	}
-
 
 	@FXML
 	void mouseClickedGoogle(MouseEvent event) {
@@ -537,7 +536,7 @@ public class SpamController implements Initializable, Constant {
 		alert.showAndWait();
 
 	}
-	
+
 	private void MyAlertDialog(String message) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Input Information");
@@ -695,11 +694,34 @@ public class SpamController implements Initializable, Constant {
 		if (isFile) {
 			initalDoc();
 		} else {
-			//borderPane.getChildren().remove(splitPane);
-			//borderPane.getChildren().remove(hBoxBottom);
+			// borderPane.getChildren().remove(splitPane);
+			// borderPane.getChildren().remove(hBoxBottom);
 
 		}
 		spamCategoryList = spamCategoryRepository.findAllByOrderByUriAsc();
+		reload();
+	}
+
+	private void reload() {
+		long delay = 300010L;
+		//long delay = 240000L;
+		System.out.println(
+				"Task performed on: " + new Date() + "n" + "Thread's name: " + Thread.currentThread().getName());
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				Platform.runLater(new Runnable() {
+					public void run() {
+						System.out.println("Task performed on: " + new Date() + "n" + "Thread's name: "
+								+ Thread.currentThread().getName());
+						textFieldCategory.setText("--");
+						Platform.runLater(() -> textFieldCategory.requestFocus());
+					}
+				});
+			}
+		}, delay, delay); // Every 1 second
+
 	}
 
 	private void initialManualTableView() {
@@ -1048,16 +1070,16 @@ public class SpamController implements Initializable, Constant {
 							Spam spam = getTableView().getItems().get(getIndex());
 							getTableView().getItems().get(getIndex()).setSelected(true);
 							spam.setSelected(true);
-							String url = spam.getUri(); 
-							
+							String url = spam.getUri();
+
 							verifySite.startBrowser(url, verifySite.getChrome());
 							try {
-								if(url.contains("http")) {
+								if (url.contains("http")) {
 									verifySite.setClipbord(new URL(spam.getUri()).getHost());
 								} else {
 									verifySite.setClipbord(spam.getUri());
 								}
-								
+
 							} catch (MalformedURLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -1100,10 +1122,11 @@ public class SpamController implements Initializable, Constant {
 	}
 
 	private void checkSpam(String url) {
-		SpamCategory spam = spamCategoryList.stream().filter(item-> item.getUri().contains(url)).findAny().orElse(null);
-		
+		SpamCategory spam = spamCategoryList.stream().filter(item -> item.getUri().contains(url)).findAny()
+				.orElse(null);
+
 		MyAlertDialog(spam.toString());
-		
+
 	}
 //	private void startBrowser(String uri, String browser) {
 //

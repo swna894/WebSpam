@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -139,6 +142,8 @@ public class ReviewController implements Initializable, Constant {
 	private Button buttonEnd;
 	private Button buttonWhiteSave;
 	private Button buttonCommentSort;
+	private Button buttonAutoReview;
+	private Button buttonStopAutoReview;
 	private DatePicker datePicker;
 	private String selectedUri;
 	private Label label;
@@ -326,7 +331,7 @@ public class ReviewController implements Initializable, Constant {
 		textFieldSearch.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		textFieldSearch.setPromptText("Enter Word");
 		textFieldSearch.setPrefWidth(150);
-		//textFieldSearch.setOnMouseClicked(e -> System.err.println("clicked"));
+		// textFieldSearch.setOnMouseClicked(e -> System.err.println("clicked"));
 		textFieldSearch.setOnKeyReleased(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				keyReleadedTextFieldSearchHander(textFieldSearch.getText());
@@ -372,6 +377,14 @@ public class ReviewController implements Initializable, Constant {
 		buttonDelete.setTooltip(new Tooltip("저장된 QC 삭제하기"));
 		buttonDelete.setOnAction(e -> actionButtonDeleteHandler());
 		buttonDelete.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+
+		buttonAutoReview = new Button("AUTO");
+		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
+		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		
+		buttonStopAutoReview = new Button("STOP");
+		buttonStopAutoReview.setOnAction(e -> actionButtonStopAutoReview());
+		buttonStopAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
 		buttonReview = new Button();
 		buttonReview.setGraphic(new ImageView(new Image("/images/folder.png")));
@@ -466,7 +479,7 @@ public class ReviewController implements Initializable, Constant {
 		hBox.getChildren().addAll(comboBoxWorker, buttonAll, buttonWorkNum, textFieldFilterURL, buttonFilter,
 				buttonRefresh, buttonCross, buttonResultCross, buttonReview, buttonInsertCategory, buttonCommentSort,
 				label, region, wasChecked, textFieldNo, comboBoxCategory, comboBoxSite, comboBoxWhite, buttonWhiteSave,
-				buttonTop, buttonEnd);
+				buttonAutoReview, buttonStopAutoReview, buttonTop, buttonEnd);
 //		} else {
 //			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, textFieldFilterURL,
 //					buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview, label, region,
@@ -475,6 +488,48 @@ public class ReviewController implements Initializable, Constant {
 		hBox.setPadding(new Insets(7, 7, 7, 7));
 		hBox.setSpacing(10);
 		LOG.info("========== start initialize ");
+	}
+
+	private Object actionButtonStopAutoReview() {
+		timer.cancel(); // 타이머 종료
+		System.out.println("[카운트다운 : 종료]");
+		return null;
+	}
+
+	Timer timer;
+	private Object actionButtonAutoReview() {
+		long delay = 10000L;
+
+		System.out.println("Task performed on: " + new Date());
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+			int i = 0;
+
+			@Override
+			public void run() {
+				System.out.println("Task performed on: " + new Date());
+				if (i >= filtedSpamList.size()) {
+					timer.cancel(); // 타이머 종료
+					System.out.println("[카운트다운 : 종료]");
+				} else {
+					Spam spam = filtedSpamList.get(i);				
+//					for (; i < filtedSpamList.size(); i++ ) {
+//						System.err.println("selected = " + i);
+//						if (spam.getSelected() == true) {
+//							spam = filtedSpamList.get(i);
+//							continue;
+//						} else {
+//							break;
+//						}
+//					}
+					spam.setSelected(true);
+					String url = spam.getUri();
+					verifySite.startBrowser(url, verifySite.getChrome());
+					i++;
+				}
+			}
+		}, 0, delay); // Every 1 second
+		return null;
 	}
 
 	private Object actionComboxWhite() {
@@ -1537,7 +1592,7 @@ public class ReviewController implements Initializable, Constant {
 				if (item != null && item.getIsCheck()) {
 					setStyle("-fx-background-color: #f9e6ff;");
 				} else {
-					//setStyle("-fx-background-color: null;");
+					// setStyle("-fx-background-color: null;");
 				}
 			}
 		});
@@ -1730,7 +1785,7 @@ public class ReviewController implements Initializable, Constant {
 		}
 
 		ErrorCheckDbms(spam);
-		
+
 		String urlString = spam.getUri();
 		try {
 			if (!urlString.startsWith("http")) {
@@ -1760,12 +1815,12 @@ public class ReviewController implements Initializable, Constant {
 				}
 				spam.setComment("채널 확인요");
 				spam.setIsCheck(true);
-				//System.out.println("0. 채널 => " + spam.getLookCh());
+				// System.out.println("0. 채널 => " + spam.getLookCh());
 				return true;
 			} else if (!spam.getLookMain()) {
-				//System.err.println(spam);
+				// System.err.println(spam);
 				spam.setComment("시비스 확인요");
-				//System.out.println("0. 시비스 확인요 => " + spam.getLookCh());
+				// System.out.println("0. 시비스 확인요 => " + spam.getLookCh());
 				spam.setIsCheck(true);
 				return true;
 			}
@@ -1795,7 +1850,7 @@ public class ReviewController implements Initializable, Constant {
 				spam.setIsCheck(true);
 				return true;
 			} else if (isList(path)) {
-				if(spam.getLookList()) {
+				if (spam.getLookList()) {
 					return false;
 				}
 				spam.setComment("리스트 확인요");
@@ -1805,8 +1860,8 @@ public class ReviewController implements Initializable, Constant {
 				spam.setComment("채널/리스트 확인요");
 				spam.setIsCheck(true);
 				return true;
-			} 
-			
+			}
+
 			if (!path.equals("") && !spam.getSpamRedir() && (spam.getLookCh() || spam.getLookMain())) {
 				spam.setIsCheck(true);
 				spam.setComment("3. 채널/리스트 확인요");
@@ -1819,8 +1874,8 @@ public class ReviewController implements Initializable, Constant {
 
 	private void ErrorCheckDbms(Spam spam) {
 
-		//spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
-		//System.err.println(spamCategroyList);
+		// spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
+		// System.err.println(spamCategroyList);
 
 		// spamCategoryList 에서 체크한다.
 		if (spamCategroyList != null) {
@@ -1833,26 +1888,26 @@ public class ReviewController implements Initializable, Constant {
 						spam.setComment("검증 -> {서비스}" + comment);
 						spam.setIsCheck(true);
 					}
-					//return true;
+					// return true;
 				} else if (spamCategroy.getLookCh() && spam.getLookMain()) { // 그룹 : 채널 , 작업 : 메인
 					if (spam.getComment() == null || spam.getComment().isEmpty()) {
 						spam.setComment("{채널}" + comment);
 						spam.setIsCheck(true);
 					}
-					//return true;
+					// return true;
 				} else if (spamCategroy.getHamLow() && !spam.getHamLow()) { // 그룹 : 저품질 , 작업 : !저품질
 					if (spam.getComment() == null || spam.getComment().isEmpty()) {
 						spam.setComment("{저품질}" + comment);
 						spam.setIsCheck(true);
 					}
-					//return true;
+					// return true;
 				} else if (spamCategroy.getLookList() && (spam.getLookMain() || spam.getLookCh())) { // 그룹 : 리스트 , 작업 :
 																										// !리스트
 					if (spam.getComment() == null || spam.getComment().isEmpty()) {
 						spam.setComment("{리스트}" + comment);
 						spam.setIsCheck(true);
 					}
-					//return true;
+					// return true;
 				} else {
 					String s = comment;
 					if (spamCategroy.getSpamAd() && !spam.getSpamAd()) {
@@ -1868,7 +1923,7 @@ public class ReviewController implements Initializable, Constant {
 						spam.setIsCheck(true);
 					}
 					spam.setComment(s);
-					//return true;
+					// return true;
 				}
 			}
 		}
@@ -2286,7 +2341,6 @@ public class ReviewController implements Initializable, Constant {
 				final TableCell<Spam, Void> cell = new TableCell<Spam, Void>() {
 
 					private final Button google = new Button();
-
 					private final Button explorer = new Button();
 					private final Button result = new Button();
 					private final Button text = new Button();
