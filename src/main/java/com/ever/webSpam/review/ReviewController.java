@@ -143,6 +143,8 @@ public class ReviewController implements Initializable, Constant {
 	private Button buttonWhiteSave;
 	private Button buttonCommentSort;
 	private Button buttonAutoReview;
+	private Button buttonAutoReview10;
+	private Button buttonAutoReview15;
 	private Button buttonStopAutoReview;
 	private DatePicker datePicker;
 	private String selectedUri;
@@ -378,10 +380,18 @@ public class ReviewController implements Initializable, Constant {
 		buttonDelete.setOnAction(e -> actionButtonDeleteHandler());
 		buttonDelete.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoReview = new Button("AUTO");
-		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
+		buttonAutoReview = new Button("05");
+		buttonAutoReview.setOnAction(e -> actionButtonAutoReview(5000L));
 		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		
+		buttonAutoReview10 = new Button("10");
+		buttonAutoReview10.setOnAction(e -> actionButtonAutoReview(10000L));
+		buttonAutoReview10.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		
+		buttonAutoReview15 = new Button("15");
+		buttonAutoReview15.setOnAction(e -> actionButtonAutoReview(15000L));
+		buttonAutoReview15.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+				
 		buttonStopAutoReview = new Button("STOP");
 		buttonStopAutoReview.setOnAction(e -> actionButtonStopAutoReview());
 		buttonStopAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
@@ -479,7 +489,7 @@ public class ReviewController implements Initializable, Constant {
 		hBox.getChildren().addAll(comboBoxWorker, buttonAll, buttonWorkNum, textFieldFilterURL, buttonFilter,
 				buttonRefresh, buttonCross, buttonResultCross, buttonReview, buttonInsertCategory, buttonCommentSort,
 				label, region, wasChecked, textFieldNo, comboBoxCategory, comboBoxSite, comboBoxWhite, buttonWhiteSave,
-				buttonAutoReview, buttonStopAutoReview, buttonTop, buttonEnd);
+				buttonAutoReview, buttonAutoReview10, buttonAutoReview15, buttonStopAutoReview, buttonTop, buttonEnd);
 //		} else {
 //			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, textFieldFilterURL,
 //					buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview, label, region,
@@ -497,9 +507,9 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	Timer timer;
-	private Object actionButtonAutoReview() {
-		long delay = 10000L;
-
+	long delay = 5000L;
+	private Object actionButtonAutoReview(long time) {
+		delay = time;
 		System.out.println("Task performed on: " + new Date());
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -507,7 +517,7 @@ public class ReviewController implements Initializable, Constant {
 
 			@Override
 			public void run() {
-				System.out.println("Task performed on: " + new Date());
+				//System.out.println("Task performed on: " + new Date());
 				if (i >= filtedSpamList.size()) {
 					timer.cancel(); // 타이머 종료
 					System.out.println("[카운트다운 : 종료]");
