@@ -380,18 +380,18 @@ public class ReviewController implements Initializable, Constant {
 		buttonDelete.setOnAction(e -> actionButtonDeleteHandler());
 		buttonDelete.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoReview = new Button("05");
-		buttonAutoReview.setOnAction(e -> actionButtonAutoReview(5000L));
-		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-		
-		buttonAutoReview10 = new Button("10");
-		buttonAutoReview10.setOnAction(e -> actionButtonAutoReview(10000L));
+		buttonAutoReview10 = new Button("IV");
+		buttonAutoReview10.setOnAction(e -> actionButtonAutoReviewAll());
 		buttonAutoReview10.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-		
-		buttonAutoReview15 = new Button("15");
+
+		buttonAutoReview = new Button("00");
+		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
+		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+
+		buttonAutoReview15 = new Button("10");
 		buttonAutoReview15.setOnAction(e -> actionButtonAutoReview(15000L));
 		buttonAutoReview15.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-				
+
 		buttonStopAutoReview = new Button("STOP");
 		buttonStopAutoReview.setOnAction(e -> actionButtonStopAutoReview());
 		buttonStopAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
@@ -506,8 +506,52 @@ public class ReviewController implements Initializable, Constant {
 		return null;
 	}
 
+	private void actionButtonAutoReview() {
+		int i = 0;
+		for (Spam spam : filtedSpamList) {
+			if (!spam.getSelected()) {
+				spam.setSelected(true);
+				String url = spam.getUri();
+				verifySite.startBrowser(url, verifySite.getChrome());
+				i++;
+//				if (comboBoxSite.getSelectionModel().getSelectedIndex() == 5) {
+//					verifySite.eventSearchResultAutoReview(spam.getUri()); // 검색결과
+//				     verifySite.hiddenText(spam.getUri());   // 저장된 텍스트
+//					verifySite.eventInspectReultAutoReview(spam.getUri()); // 결과 수정
+//				}
+			}
+			if (i == 20) {
+				break;
+			}
+		}
+	}
+
+	private void actionButtonAutoReviewAll() {
+		int i = 0;
+		for (Spam spam : filtedSpamList) {
+			if (!spam.getSelected()) {
+				try {
+					spam.setSelected(true);
+					String url = spam.getUri();
+					verifySite.startBrowser(url, verifySite.getChrome());
+					Thread.sleep(200); // 1초 대기
+					verifySite.eventSearchResultAutoReview(url); // 검색결과
+					verifySite.hiddenText(url); // 저장된 텍스트
+					i++;
+					Thread.sleep(200); // 1초 대기
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			if (i == 10) {
+				break;
+			}
+		}
+	}
+
 	Timer timer;
 	long delay = 5000L;
+
 	private Object actionButtonAutoReview(long time) {
 		delay = time;
 		System.out.println("Task performed on: " + new Date());
@@ -517,21 +561,12 @@ public class ReviewController implements Initializable, Constant {
 
 			@Override
 			public void run() {
-				//System.out.println("Task performed on: " + new Date());
+				// System.out.println("Task performed on: " + new Date());
 				if (i >= filtedSpamList.size()) {
 					timer.cancel(); // 타이머 종료
 					System.out.println("[카운트다운 : 종료]");
 				} else {
-					Spam spam = filtedSpamList.get(i);				
-//					for (; i < filtedSpamList.size(); i++ ) {
-//						System.err.println("selected = " + i);
-//						if (spam.getSelected() == true) {
-//							spam = filtedSpamList.get(i);
-//							continue;
-//						} else {
-//							break;
-//						}
-//					}
+					Spam spam = filtedSpamList.get(i);
 					spam.setSelected(true);
 					String url = spam.getUri();
 					verifySite.startBrowser(url, verifySite.getChrome());
@@ -783,14 +818,9 @@ public class ReviewController implements Initializable, Constant {
 						.collect(Collectors.toList());
 			break;
 		case 8:
-
-			filtedSpamList = filtedSpamList.stream()
-					.filter(item -> item.getScope().equals("domain") && !item.getNotCheck().equals("검수불가")
-							&& !item.getBooleanDefer() && !item.getLookMain() && !item.getLookCh()
-							&& !item.getLookList() && !item.getLookCont())
+			filtedSpamList.forEach(item -> checkSpamAction(item));
+			filtedSpamList = filtedSpamList.stream().filter(item -> item.getComment() != null)
 					.collect(Collectors.toList());
-			filtedSpamList.forEach(item -> item.setComment(""));
-
 			break;
 		default:
 			System.out.println("그 외의 숫자");
@@ -998,7 +1028,8 @@ public class ReviewController implements Initializable, Constant {
 		spamList = getSpamListFromDownloadList();
 
 		reloadTable(spamList);
-		datePicker.setValue(LocalDate.parse(spamList.get(0).getWorkday()));
+		if (spamList != null)
+			datePicker.setValue(LocalDate.parse(spamList.get(0).getWorkday()));
 		return null;
 	}
 

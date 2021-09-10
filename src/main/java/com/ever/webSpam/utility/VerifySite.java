@@ -106,6 +106,22 @@ public class VerifySite {
 		}
 	}
 
+	public void eventSearchResultAutoReview(String uri) {
+		String prefixUrl = "https://search.naver.com/search.naver?sm=top_hty&fbm=0&ie=utf8&query=";
+		prefixUrl = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=";
+		if (!uri.startsWith(prefix)) {
+			uri = prefix + uri;
+		}
+
+		uri = prefixUrl + uri;
+		try {
+			String[] b = { chrome, uri };
+			process = Runtime.getRuntime().exec(b);
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+	}
 	
 	public void eventInspectReult(String uri) {
 		String prefixUrl = "http://spamdepot.navercorp.com/html/inspect_result.html?offset=0&limit=20&search=";
@@ -117,6 +133,19 @@ public class VerifySite {
 		Platform.runLater(() -> {
 			clipboard.setContent(clipboardContent);
 		});
+
+		uri = prefixUrl + uri;
+		try {
+			String[] b = { chrome, uri };
+			process = Runtime.getRuntime().exec(b);
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		}
+	}
+	
+	public void eventInspectReultAutoReview(String uri) {
+		String prefixUrl = "http://spamdepot.navercorp.com/html/inspect_result.html?offset=0&limit=20&search=";
 
 		uri = prefixUrl + uri;
 		try {

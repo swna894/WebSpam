@@ -96,7 +96,9 @@ public class CrossQcController<S> implements Initializable, Constant {
 	private TableView<Spam> tableView;
 	private Button buttonSave;
 	private Button buttonReload;
+	private Button buttonAutoReview;
 	private ComboBox<String> comboBoxCategory;
+	private ComboBox<String> comboBoxSite;
 	
 	private TextField textField;
 	private TextField textFieldWorker;
@@ -105,6 +107,7 @@ public class CrossQcController<S> implements Initializable, Constant {
 	private CheckBox wasChecked;
 	
 	private List<Spam> spamList;
+	private List<Spam> sitedSpamList;
 	private List<Spam> filtedSpamList;
 
 	@Override
@@ -127,6 +130,9 @@ public class CrossQcController<S> implements Initializable, Constant {
 		buttonReload.setOnAction(e -> actionButtonReloadHandler());
 		buttonReload.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		
+		buttonAutoReview = new Button("OPEN");
+		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
+		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 //		buttonTimeReload = new Button();
 //		buttonTimeReload.setPrefWidth(200);
 //		buttonTimeReload.setGraphic(new ImageView(new Image("/images/refresh.png")));	
@@ -148,8 +154,25 @@ public class CrossQcController<S> implements Initializable, Constant {
 		comboBoxCategory.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
 		comboBoxCategory.valueProperty().addListener((obs, oldVal, newVal) -> {
 			filtedSpamList = spamList;
-			filtedSpamList = actionComboBoxCategoryHandler();
+			List<Spam> categorySpam = actionComboBoxCategoryHandler();
+			Platform.runLater(() -> reloadTable(categorySpam));
+		});
+		
+		comboBoxSite = new ComboBox<String>();
+		comboBoxSite.setPromptText("SITE");
+		comboBoxSite.setItems(observableListSite);
+		comboBoxSite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
+		comboBoxSite.valueProperty().addListener((obs, oldVal, newVal) -> {
+			filtedSpamList = spamList;
+			sitedSpamList = actionComboBoxSite();
+//			if (comboBoxWorker.getSelectionModel().getSelectedIndex() != 0) {
+//				filtedSpamList = actionComboBoxWorkerHandler();
+//			}
+//			if (comboBoxCategory.getSelectionModel().getSelectedIndex() != 0) {
+//				filtedSpamList = actionComboBoxCategoryHandler();
+//			}
 			Platform.runLater(() -> reloadTable(filtedSpamList));
+			// comboBoxWhite.getSelectionModel().clearSelection();
 		});
 		
 		textField = new TextField();
@@ -205,7 +228,7 @@ public class CrossQcController<S> implements Initializable, Constant {
 		HBox.setHgrow(region, Priority.ALWAYS);
 
 		borderPane = new BorderPane();
-		hBox = new HBox(textFieldWorker, buttonSave, buttonReload, wasChecked, comboBoxCategory, textField, label, region);
+		hBox = new HBox(textFieldWorker, buttonSave, buttonReload, wasChecked, comboBoxSite, comboBoxCategory, textField, label, buttonAutoReview , region);
 		hBox.setStyle("-fx-alignment: CENTER-LEFT;");
 		hBox.setSpacing(10);
 		hBox.setPadding(new Insets(0, 7, 7, 0));
@@ -214,6 +237,85 @@ public class CrossQcController<S> implements Initializable, Constant {
 		borderPane.setTop(hBox);
 		borderPane.setCenter(tableView);
 		LOG.info("========== start initialize ");
+	}
+
+	private List<Spam> actionComboBoxSite() {
+		Boolean isSeleted = wasChecked.isSelected();
+		String review = comboBoxSite.getSelectionModel().getSelectedItem();
+
+
+		switch (comboBoxSite.getSelectionModel().getSelectedIndex()) {
+		case 0:
+			if (comboBoxCategory.getSelectionModel().getSelectedIndex() == 0) {
+				reloadTable(filtedSpamList);
+			}
+
+			break;
+		case 1:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> review.equals("서비스 메인 페이지") && item.getLookMain()) // 서메
+						.collect(Collectors.toList());
+			break;
+		case 2:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> review.equals("채널 메인 페이지") && item.getLookCh()) // 채널
+						.collect(Collectors.toList());
+			break;
+		case 3:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> review.equals("컨텐츠 리스트 페이지") && item.getLookList()) // 리스트
+						.collect(Collectors.toList());
+			break;
+		case 4:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> review.equals("컨텐트 페이지") && item.getLookCont()) // 켄테
+						.collect(Collectors.toList());
+			break;
+		case 5:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> !item.getNotCheck().equals("검수불가") && !item.getBooleanDefer()) // 켄테
+						.filter(item -> !item.getLookMain() && !item.getLookCh() && !item.getLookList()
+								&& !item.getLookCont()) // 켄테
+						.collect(Collectors.toList());
+			break;
+		case 6:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> item.getNotCheck().equals("검수불가") || item.getBooleanDefer())
+						.collect(Collectors.toList());
+			break;
+		case 7:
+				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+						.filter(item -> item.getBooleanDefer())
+						.collect(Collectors.toList());
+			break;
+		case 8:
+			break;
+		default:
+			System.out.println("그 외의 숫자");
+		}
+
+		return filtedSpamList;
+
+	}
+	
+	private void actionButtonAutoReview() {
+		int i = 0;
+		for (Spam spam : tableView.getItems()) {
+			if (!spam.getSelected()) {
+				spam.setSelected(true);
+				String url = spam.getUri();
+				verifySite.startBrowser(url, verifySite.getChrome());			
+				i++;
+//				if (comboBoxSite.getSelectionModel().getSelectedIndex() == 5) {
+//					verifySite.eventSearchResultAutoReview(spam.getUri()); // 검색결과
+//				     verifySite.hiddenText(spam.getUri());   // 저장된 텍스트
+//					verifySite.eventInspectReultAutoReview(spam.getUri()); // 결과 수정
+//				}
+			}
+			if(i == 20) {
+				break;
+			}
+		}
 	}
 
 	private void reloadTable(List<Spam> filedList) {
@@ -225,71 +327,69 @@ public class CrossQcController<S> implements Initializable, Constant {
 	}
 	
 	private List<Spam> actionComboBoxCategoryHandler() {
-
-
 		Boolean isSeleted = wasChecked.isSelected();
 		String category = comboBoxCategory.getSelectionModel().getSelectedItem();
-
+		List<Spam> categoryList = null;
 		switch (comboBoxCategory.getSelectionModel().getSelectedIndex()) {
 		case 0:
-			tableView.setItems(FXCollections.observableArrayList(spamList));
+			tableView.setItems(FXCollections.observableArrayList(sitedSpamList));
 			break;
 		case 1:
 
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("비정상 광고 컨테트") && item.getSpamAd()) // 비광
 						.collect(Collectors.toList());
 			break;
 		case 2:
 	
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("비정상 텍스트") && item.getSpamText()) // 비텍
 						.collect(Collectors.toList());
 			break;
 		case 3:
 	
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("스펨 사이트로 리디렉션") && item.getSpamRedir())
 						.collect(Collectors.toList());
 			break;
 		case 4:
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("악성 소프트웨어") && item.getSpamMalware()) // 악성
 						.collect(Collectors.toList());
 			break;
 		case 5:
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("저작권위반") && item.getSpamCopy()).collect(Collectors.toList());
 			break;
 		// .filter(item -> category.equals("악성 소프트웨어") && item.getSpamCopy()) // 악성
 		// .filter(item -> category.equals("저작권위반") && item.getSpamIllegal()) // 저위
 		case 6:
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("음란물") && item.getSpamPorn()) // 음란
 						.collect(Collectors.toList());
 			break;
 		case 7:
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("기만적 컨텐트") && item.getSpamDecep()) // 기컨
 						.collect(Collectors.toList());
 			break;
 		case 8:
-				filtedSpamList = spamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("웹순위 조작 활동") && item.getSpamManip()) // 웹조
 						.collect(Collectors.toList());
 			break;
 		case 9:
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("불법 사이트") && item.getSpamIllegal()) // 불사
 						.collect(Collectors.toList());
 			break;
 		case 10:
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("정상 컨텐트") && item.getHam()) // 정상
 						.collect(Collectors.toList());
 			break;
 		case 11:
-				filtedSpamList = filtedSpamList.stream().filter(item -> isSeleted == item.getSelected())
+			categoryList = sitedSpamList.stream().filter(item -> isSeleted == item.getSelected())
 						.filter(item -> category.equals("정상 컨텐트 저품질") && item.getHamLow() ||
 								category.equals("정상 컨텐트 저품질") && item.getHamFish()) // 정저
 						.collect(Collectors.toList());
@@ -297,8 +397,9 @@ public class CrossQcController<S> implements Initializable, Constant {
 		default:
 			System.out.println("그 외의 숫자");
 		}
-		return filtedSpamList;
+		return categoryList;
 	}
+	
 	
 	@SuppressWarnings("unused")
 	private Object actionButtonTimeReloadHandler() {

@@ -16,7 +16,7 @@ public interface Constant {
 			"정상 컨텐트 저품질");
 	
 	ObservableList<String> observableListSite = FXCollections.observableArrayList(" ",
-			"서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지", "사이트미분류", "검수불가", "보류");
+			"서비스 메인 페이지", "채널 메인 페이지", "컨텐츠 리스트 페이지", "컨텐트 페이지", "사이트미분류", "검수불가", "보류", "COMMENT");
 
 	ObservableList<String> observableListWhite = 
 			FXCollections.observableArrayList(" ", "1단계 사이트", "1 단계 No", "1 단계 ", "2단계 사이트", "3단계 사이트");
