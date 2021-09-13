@@ -302,17 +302,24 @@ public class CrossQcController<S> implements Initializable, Constant {
 		int i = 0;
 		for (Spam spam : tableView.getItems()) {
 			if (!spam.getSelected()) {
-				spam.setSelected(true);
-				String url = spam.getUri();
-				verifySite.startBrowser(url, verifySite.getChrome());			
-				i++;
+		
+				try {
+					spam.setSelected(true);
+					String url = spam.getUri();
+					verifySite.startBrowser(url, verifySite.getChrome());			
+					i++;
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // 1초 대기
 //				if (comboBoxSite.getSelectionModel().getSelectedIndex() == 5) {
 //					verifySite.eventSearchResultAutoReview(spam.getUri()); // 검색결과
 //				     verifySite.hiddenText(spam.getUri());   // 저장된 텍스트
 //					verifySite.eventInspectReultAutoReview(spam.getUri()); // 결과 수정
 //				}
 			}
-			if(i == 20) {
+			if(i == 10) {
 				break;
 			}
 		}

@@ -380,16 +380,16 @@ public class ReviewController implements Initializable, Constant {
 		buttonDelete.setOnAction(e -> actionButtonDeleteHandler());
 		buttonDelete.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
+		buttonAutoReview = new Button("00");
+		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
+		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		
 		buttonAutoReview10 = new Button("IV");
 		buttonAutoReview10.setOnAction(e -> actionButtonAutoReviewAll());
 		buttonAutoReview10.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoReview = new Button("00");
-		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
-		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-
 		buttonAutoReview15 = new Button("10");
-		buttonAutoReview15.setOnAction(e -> actionButtonAutoReview(15000L));
+		buttonAutoReview15.setOnAction(e -> actionButtonAutoReview(8000L));
 		buttonAutoReview15.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
 		buttonStopAutoReview = new Button("STOP");
@@ -510,9 +510,15 @@ public class ReviewController implements Initializable, Constant {
 		int i = 0;
 		for (Spam spam : filtedSpamList) {
 			if (!spam.getSelected()) {
-				spam.setSelected(true);
-				String url = spam.getUri();
-				verifySite.startBrowser(url, verifySite.getChrome());
+				try {
+					spam.setSelected(true);
+					String url = spam.getUri();
+					verifySite.startBrowser(url, verifySite.getChrome());
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // 1초 대기
 				i++;
 //				if (comboBoxSite.getSelectionModel().getSelectedIndex() == 5) {
 //					verifySite.eventSearchResultAutoReview(spam.getUri()); // 검색결과
@@ -520,7 +526,7 @@ public class ReviewController implements Initializable, Constant {
 //					verifySite.eventInspectReultAutoReview(spam.getUri()); // 결과 수정
 //				}
 			}
-			if (i == 20) {
+			if (i == 10) {
 				break;
 			}
 		}
@@ -566,7 +572,11 @@ public class ReviewController implements Initializable, Constant {
 					timer.cancel(); // 타이머 종료
 					System.out.println("[카운트다운 : 종료]");
 				} else {
+				
 					Spam spam = filtedSpamList.get(i);
+					while(spam.getSelected()) {
+						spam = filtedSpamList.get(++i);
+					}
 					spam.setSelected(true);
 					String url = spam.getUri();
 					verifySite.startBrowser(url, verifySite.getChrome());

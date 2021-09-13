@@ -108,11 +108,6 @@
 			<version>0.6.5</version>
 		</dependency>
 		<dependency>
-			<groupId>one.util</groupId>
-			<artifactId>streamex</artifactId>
-			<version>0.6.5</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
 			<version>1.6</version>
