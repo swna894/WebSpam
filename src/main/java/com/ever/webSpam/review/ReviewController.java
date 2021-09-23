@@ -396,7 +396,7 @@ public class ReviewController implements Initializable, Constant {
 
 		buttonAutoContinue = new Button();
 		buttonAutoContinue.setGraphic(new ImageView(new Image("/images/repeat.png")));
-		buttonAutoContinue.setOnAction(e -> actionButtonAutoContinue(15000L));
+		buttonAutoContinue.setOnAction(e -> actionButtonAutoContinue(12000L));
 		buttonAutoContinue.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
 		buttonStopAutoReview = new Button();
@@ -516,10 +516,12 @@ public class ReviewController implements Initializable, Constant {
 		System.out.println("[카운트다운 : 종료]");
 		return null;
 	}
-
+	
 	private void actionButtonAutoKeepReview() {
 		int i = 0;
+		int postion = 0;
 		for (Spam spam : filtedSpamList) {
+			postion++;
 			if (!spam.getSelected()) {
 				try {
 					spam.setSelected(true);
@@ -530,6 +532,7 @@ public class ReviewController implements Initializable, Constant {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} // 1초 대기
+				
 				i++;
 //				if (comboBoxSite.getSelectionModel().getSelectedIndex() == 5) {
 //					verifySite.eventSearchResultAutoReview(spam.getUri()); // 검색결과
@@ -537,6 +540,7 @@ public class ReviewController implements Initializable, Constant {
 //					verifySite.eventInspectReultAutoReview(spam.getUri()); // 결과 수정
 //				}
 			}
+			tableView.scrollTo(postion-10);
 			if (i == 10) {
 				break;
 			}
@@ -545,7 +549,9 @@ public class ReviewController implements Initializable, Constant {
 
 	private void actionButtonAutoGroup() {
 		int i = 0;
+		int index = 0;
 		for (Spam spam : filtedSpamList) {
+			index++;
 			if (!spam.getSelected()) {
 				try {
 					spam.setSelected(true);
@@ -554,6 +560,7 @@ public class ReviewController implements Initializable, Constant {
 					verifySite.hiddenText(url); // 저장된 텍스트
 					Thread.sleep(200); // 1초 대기
 					verifySite.startBrowser(url, verifySite.getChrome());
+					
 					i++;
 					Thread.sleep(200); // 1초 대기
 				} catch (InterruptedException e) {
@@ -564,6 +571,7 @@ public class ReviewController implements Initializable, Constant {
 				break;
 			}
 		}
+		tableView.scrollTo(index-10);
 	}
 
 	Timer timer;
@@ -592,7 +600,9 @@ public class ReviewController implements Initializable, Constant {
 					//System.err.println(spam);
 					spam.setSelected(true);
 					String url = spam.getUri();
-					if(!spam.getLookMain() && !spam.getLookCh() && !spam.getLookList() && !spam.getLookCh()) {
+					//System.err.println(spam);
+					if(!spam.getLookMain() && !spam.getLookCh() && !spam.getLookList() && !spam.getLookCh()
+                          || spam.getSpamAd() || spam.getSpamText()  ) {
 						verifySite.eventSearchResultAutoReview(url); // 검색결과
 						verifySite.hiddenText(url); // 저장된 텍스트 =
 						try {
