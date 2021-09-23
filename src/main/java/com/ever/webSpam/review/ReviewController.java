@@ -142,9 +142,9 @@ public class ReviewController implements Initializable, Constant {
 	private Button buttonEnd;
 	private Button buttonWhiteSave;
 	private Button buttonCommentSort;
-	private Button buttonAutoReview;
-	private Button buttonAutoReview10;
-	private Button buttonAutoReview15;
+	private Button buttonAutoKeepReview;
+	private Button buttonAutoGroup;
+	private Button buttonAutoContinue;
 	private Button buttonStopAutoReview;
 	private DatePicker datePicker;
 	private String selectedUri;
@@ -380,19 +380,23 @@ public class ReviewController implements Initializable, Constant {
 		buttonDelete.setOnAction(e -> actionButtonDeleteHandler());
 		buttonDelete.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoReview = new Button("00");
-		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
-		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		buttonAutoKeepReview = new Button();
+		buttonAutoKeepReview.setGraphic(new ImageView(new Image("/images/keep.png")));
+		buttonAutoKeepReview.setOnAction(e -> actionButtonAutoKeepReview());
+		buttonAutoKeepReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		
-		buttonAutoReview10 = new Button("IV");
-		buttonAutoReview10.setOnAction(e -> actionButtonAutoReviewAll());
-		buttonAutoReview10.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		buttonAutoGroup = new Button();
+		buttonAutoGroup.setGraphic(new ImageView(new Image("/images/three.png")));
+		buttonAutoGroup.setOnAction(e -> actionButtonAutoGroup());
+		buttonAutoGroup.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoReview15 = new Button("10");
-		buttonAutoReview15.setOnAction(e -> actionButtonAutoReview(8000L));
-		buttonAutoReview15.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		buttonAutoContinue = new Button();
+		buttonAutoContinue.setGraphic(new ImageView(new Image("/images/repeat.png")));
+		buttonAutoContinue.setOnAction(e -> actionButtonAutoContinue(10000L));
+		buttonAutoContinue.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonStopAutoReview = new Button("STOP");
+		buttonStopAutoReview = new Button();
+		buttonStopAutoReview.setGraphic(new ImageView(new Image("/images/stop.png")));
 		buttonStopAutoReview.setOnAction(e -> actionButtonStopAutoReview());
 		buttonStopAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
@@ -437,11 +441,13 @@ public class ReviewController implements Initializable, Constant {
 		buttonFeedBack.setOnAction(e -> actionButtonFeedbackHandler());
 		buttonFeedBack.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonTop = new Button("TOP");
+		buttonTop = new Button();
+		buttonTop.setGraphic(new ImageView(new Image("/images/top.png")));
 		buttonTop.setOnAction(e -> handlerButtonTopHandler());
 		buttonTop.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonEnd = new Button("END");
+		buttonEnd = new Button();
+		buttonEnd.setGraphic(new ImageView(new Image("/images/end.png")));
 		buttonEnd.setOnAction(e -> handlerButtonEndHandler());
 		buttonEnd.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
@@ -488,8 +494,9 @@ public class ReviewController implements Initializable, Constant {
 		// datePicker, checkBoxUseDatePicker,
 		hBox.getChildren().addAll(comboBoxWorker, buttonAll, buttonWorkNum, textFieldFilterURL, buttonFilter,
 				buttonRefresh, buttonCross, buttonResultCross, buttonReview, buttonInsertCategory, buttonCommentSort,
-				label, region, wasChecked, textFieldNo, comboBoxCategory, comboBoxSite, comboBoxWhite, buttonWhiteSave,
-				buttonAutoReview, buttonAutoReview10, buttonAutoReview15, buttonStopAutoReview, buttonTop, buttonEnd);
+				label, region, wasChecked, textFieldNo, comboBoxCategory, comboBoxSite, buttonAutoKeepReview, 
+				 buttonAutoGroup, buttonAutoContinue, buttonStopAutoReview,comboBoxWhite, buttonWhiteSave,
+				 buttonTop, buttonEnd);
 //		} else {
 //			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, textFieldFilterURL,
 //					buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview, label, region,
@@ -506,7 +513,7 @@ public class ReviewController implements Initializable, Constant {
 		return null;
 	}
 
-	private void actionButtonAutoReview() {
+	private void actionButtonAutoKeepReview() {
 		int i = 0;
 		for (Spam spam : filtedSpamList) {
 			if (!spam.getSelected()) {
@@ -532,17 +539,17 @@ public class ReviewController implements Initializable, Constant {
 		}
 	}
 
-	private void actionButtonAutoReviewAll() {
+	private void actionButtonAutoGroup() {
 		int i = 0;
 		for (Spam spam : filtedSpamList) {
 			if (!spam.getSelected()) {
 				try {
 					spam.setSelected(true);
-					String url = spam.getUri();
-					verifySite.startBrowser(url, verifySite.getChrome());
-					Thread.sleep(200); // 1초 대기
+					String url = spam.getUri();				
 					verifySite.eventSearchResultAutoReview(url); // 검색결과
 					verifySite.hiddenText(url); // 저장된 텍스트
+					Thread.sleep(200); // 1초 대기
+					verifySite.startBrowser(url, verifySite.getChrome());
 					i++;
 					Thread.sleep(200); // 1초 대기
 				} catch (InterruptedException e) {
@@ -558,7 +565,7 @@ public class ReviewController implements Initializable, Constant {
 	Timer timer;
 	long delay = 5000L;
 
-	private Object actionButtonAutoReview(long time) {
+	private Object actionButtonAutoContinue(long time) {
 		delay = time;
 		System.out.println("Task performed on: " + new Date());
 		timer = new Timer();
@@ -574,11 +581,22 @@ public class ReviewController implements Initializable, Constant {
 				} else {
 				
 					Spam spam = filtedSpamList.get(i);
-					while(spam.getSelected()) {
+					while(spam.getSelected() || !spam.getNotCheck().isEmpty()) {
+						spam.setSelected(true);
 						spam = filtedSpamList.get(++i);
 					}
+					//System.err.println(spam);
 					spam.setSelected(true);
 					String url = spam.getUri();
+					if(!spam.getLookMain() && !spam.getLookCh() && !spam.getLookList() && !spam.getLookCh()) {
+						verifySite.eventSearchResultAutoReview(url); // 검색결과
+						verifySite.hiddenText(url); // 저장된 텍스트 =
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
 					verifySite.startBrowser(url, verifySite.getChrome());
 					i++;
 				}
@@ -713,7 +731,7 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private void updateLabel() {
-		label.setText("작업을 완료 했습니다.");
+		label.setText("OK");
 		label.setStyle("-fx-alignment: CENTER; -fx-text-fill: #ff6666;");
 		cleanNode();
 
@@ -2402,8 +2420,8 @@ public class ReviewController implements Initializable, Constant {
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
 						explorer.setGraphic(new ImageView(new Image("/images/explorer.png")));
-						result.setGraphic(new ImageView(new Image("/images/magnify.png")));
-						text.setGraphic(new ImageView(new Image("/images/bluelist.png")));
+						result.setGraphic(new ImageView(new Image("/images/bluelist.png")));  
+						text.setGraphic(new ImageView(new Image("/images/magnify.png")));
 						delete.setGraphic(new ImageView(new Image("/images/check.png")));
 						inspect.setGraphic(new ImageView(new Image("/images/all.png")));
 

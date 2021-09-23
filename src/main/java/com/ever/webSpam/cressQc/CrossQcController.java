@@ -717,8 +717,8 @@ public class CrossQcController<S> implements Initializable, Constant {
 					{	
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
 						explorer.setGraphic(new ImageView(new Image("/images/explorer.png")));
-						result.setGraphic(new ImageView(new Image("/images/magnify.png")));
-						text.setGraphic(new ImageView(new Image("/images/bluelist.png")));
+						result.setGraphic(new ImageView(new Image("/images/bluelist.png")));  
+						text.setGraphic(new ImageView(new Image("/images/magnify.png")));
 						
 						google.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());

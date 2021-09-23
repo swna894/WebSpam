@@ -17,7 +17,8 @@ public class VerifySite {
 	private String explore = "C:\\Program Files\\Internet Explorer\\iexplore.exe ";
 	private String chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 	private String hiddenPrefix = "http://spamdepot.navercorp.com/html/view_doc_text.html?search=";
-
+	//private String hiddenPrefix = "http://cclient006.logm.nfra.io:8021/html/view_doc_text.html?search=";
+	
 	public VerifySite() {
 		// TODO Auto-generated constructor stub
 	}
@@ -84,7 +85,8 @@ public class VerifySite {
 
 	public void eventSearchResult(String uri) {
 		String prefixUrl = "https://search.naver.com/search.naver?sm=top_hty&fbm=0&ie=utf8&query=";
-		prefixUrl = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=";
+		//prefixUrl = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=";
+		prefixUrl = "https://search.naver.com/search.naver?display=10&f=&filetype=0&page=2&research_url=&sm=tab_pge&start=1&where=web&query=";
 		if (!uri.startsWith(prefix)) {
 			uri = prefix + uri;
 		}
@@ -108,7 +110,7 @@ public class VerifySite {
 
 	public void eventSearchResultAutoReview(String uri) {
 		String prefixUrl = "https://search.naver.com/search.naver?sm=top_hty&fbm=0&ie=utf8&query=";
-		prefixUrl = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=";
+		//prefixUrl = "https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=";
 		if (!uri.startsWith(prefix)) {
 			uri = prefix + uri;
 		}
@@ -125,7 +127,7 @@ public class VerifySite {
 	
 	public void eventInspectReult(String uri) {
 		String prefixUrl = "http://spamdepot.navercorp.com/html/inspect_result.html?offset=0&limit=20&search=";
-
+		//String prefixUrl = "http://cclient006.logm.nfra.io:8021/html/inspect_result.html?offset=0&limit=20&search=";
 		Clipboard clipboard = Clipboard.getSystemClipboard();
 		ClipboardContent clipboardContent = new ClipboardContent();
 		clipboardContent.putString(uri);
@@ -146,6 +148,7 @@ public class VerifySite {
 	
 	public void eventInspectReultAutoReview(String uri) {
 		String prefixUrl = "http://spamdepot.navercorp.com/html/inspect_result.html?offset=0&limit=20&search=";
+		//String prefixUrl = "http://cclient006.logm.nfra.io:8021/html/inspect_result.html?offset=0&limit=20&search=";
 
 		uri = prefixUrl + uri;
 		try {

@@ -10,11 +10,9 @@ import com.ever.webSpam.spam.SpamController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import net.rgielen.fxweaver.core.FxWeaver;
@@ -39,11 +37,11 @@ public class JavaFxApplication extends Application {
         Scene scene = new Scene(root);
     	stage.getIcons().add(new Image("/images/Hyperlink.png"));
     	stage.setTitle("WebSpam Tools");
-    	Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-    	double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.7;
-    	double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.1;
-    	stage.setX(x);
-    	stage.setY(y);
+    	//Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+    	//double x = bounds.getMinX() + (bounds.getWidth() - scene.getWidth()) * 0.7;
+    	//double y = bounds.getMinY() + (bounds.getHeight() - scene.getHeight()) * 0.1;
+    	//stage.setX(x);
+    	//stage.setY(y);
     	stage.setAlwaysOnTop(true);
         stage.setScene(scene);
         

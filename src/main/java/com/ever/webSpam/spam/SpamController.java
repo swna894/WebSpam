@@ -397,6 +397,19 @@ public class SpamController implements Initializable, Constant {
 	@FXML
 	void actionTextFieldGoogle(ActionEvent event) {
 		writeTextFromClipboard(textFieldExplorer.getText());
+		
+	}
+
+	private void actionButtonAutoGroup(String url) {
+		try {	
+			//Thread.sleep(200); // 1초 대기
+			verifySite.eventSearchResultAutoReview(url); // 검색결과
+			verifySite.hiddenText(url); // 저장된 텍스트
+			Thread.sleep(200); // 1초 대기
+			verifySite.startBrowser(url, verifySite.getChrome());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
@@ -426,7 +439,10 @@ public class SpamController implements Initializable, Constant {
 	void mouseClickedGoogle(MouseEvent event) {
 		final Node source = (Node) event.getSource();
 		final Stage stage = (Stage) source.getScene().getWindow();
-		openNavigate(textFieldGoogle, verifySite.getChrome());
+		//openNavigate(textFieldGoogle, verifySite.getChrome()); 
+		clipText = verifySite.getClipboard();
+		textFieldGoogle.setText(clipText);
+		actionButtonAutoGroup(textFieldGoogle.getText());
 		textFieldClean(textFieldGoogle);
 		isSpamList();
 		isSpamCategory(stage);
@@ -677,8 +693,8 @@ public class SpamController implements Initializable, Constant {
 		buttonCrossQc.setGraphic(new ImageView(new Image("/images/cross.png")));
 		buttonGoogle.setGraphic(new ImageView(new Image("/images/google.png")));
 		buttonExplorer.setGraphic(new ImageView(new Image("/images/explorer.png")));
-		buttonResult.setGraphic(new ImageView(new Image("/images/magnify.png")));
-		buttonHiddenText.setGraphic(new ImageView(new Image("/images/bluelist.png")));
+		buttonResult.setGraphic(new ImageView(new Image("/images/bluelist.png"))); 
+		buttonHiddenText.setGraphic(new ImageView(new Image("/images/magnify.png")));
 		buttonReview.setGraphic(new ImageView(new Image("/images/review.png")));
 		buttonCategory.setGraphic(new ImageView(new Image("/images/category.png")));
 		buttonQuestion.setGraphic(new ImageView(new Image("/images/question_16.png")));
@@ -704,7 +720,7 @@ public class SpamController implements Initializable, Constant {
 
 	private void reload() {
 		long delay = 300010L;
-		//long delay = 240000L;
+		// long delay = 240000L;
 		System.out.println(
 				"Task performed on: " + new Date() + "n" + "Thread's name: " + Thread.currentThread().getName());
 		Timer timer = new Timer();
