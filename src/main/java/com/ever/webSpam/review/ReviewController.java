@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -591,7 +590,9 @@ public class ReviewController implements Initializable, Constant {
 
 	private Object actionButtonAutoContinue() {
 		delay = Long.valueOf(textFieldTime.getText()) * 1000;
-		System.out.println("Task performed on: " + new Date());
+		if(filtedSpamList == null) {
+			filtedSpamList = spamList;
+		}
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
 			int i = 0;
@@ -599,6 +600,7 @@ public class ReviewController implements Initializable, Constant {
 			@Override
 			public void run() {
 				// System.out.println("Task performed on: " + new Date());
+			
 				if (i >= filtedSpamList.size()) {
 					timer.cancel(); // 타이머 종료
 					System.out.println("[카운트다운 : 종료]");
@@ -627,6 +629,8 @@ public class ReviewController implements Initializable, Constant {
 						}
 					}
 					tableView.scrollTo(i-1); 
+					
+					Platform.runLater(() -> label.setText(String.valueOf(i)));
 					verifySite.startBrowser(url, verifySite.getChrome());
 					i++;
 				}
