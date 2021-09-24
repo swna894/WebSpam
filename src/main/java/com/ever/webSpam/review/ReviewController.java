@@ -362,6 +362,8 @@ public class ReviewController implements Initializable, Constant {
 		textFieldTime.setOnMouseClicked(event -> textFieldTime.clear());
 
 		radioButtonReverse = new RadioButton();
+		radioButtonReverse.setOnAction(e -> actionRadioButtonReverse());
+
 
 		buttonCross = new Button();
 		buttonCross.setGraphic(new ImageView("/images/cross.png"));
@@ -521,6 +523,13 @@ public class ReviewController implements Initializable, Constant {
 		LOG.info("========== start initialize ");
 	}
 
+	private Object actionRadioButtonReverse() {
+		if(radioButtonReverse.isSelected() && !textFieldNo.getText().isEmpty()) {
+			keyReleadedtextFieldNo(textFieldNo.getText());
+		}
+		return null;
+	}
+
 	private Object actionButtonStopAutoReview() {
 		timer.cancel(); // 타이머 종료
 		System.out.println("[카운트다운 : 종료]");
@@ -630,7 +639,7 @@ public class ReviewController implements Initializable, Constant {
 					}
 					tableView.scrollTo(i-1); 
 					
-					Platform.runLater(() -> label.setText(String.valueOf(i)));
+					Platform.runLater(() -> textFieldNo.setText(String.valueOf(i)));
 					verifySite.startBrowser(url, verifySite.getChrome());
 					i++;
 				}
