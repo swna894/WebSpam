@@ -1,5 +1,7 @@
 package com.ever.webSpam.review;
 
+
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -154,8 +156,9 @@ public class ReviewController implements Initializable, Constant {
 	private TextField textFieldFilterURL;
 	private TextField textFieldSearch;
 	private TextField textFieldNo;
+	private TextField textFieldTime;
 	private TableView<Spam> tableView;
-	private RadioButton reverse;
+	private RadioButton radioButtonReverse;
 
 	private List<Spam> spamList;
 	private List<Spam> filtedSpamList;
@@ -345,14 +348,22 @@ public class ReviewController implements Initializable, Constant {
 		textFieldNo = new TextField();
 		textFieldNo.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		textFieldNo.setPrefWidth(50);
+		textFieldNo.setAlignment(Pos.CENTER);
 		textFieldNo.setOnKeyReleased(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
 				keyReleadedtextFieldNo(textFieldNo.getText());
 			}
 		});
 
-		reverse = new RadioButton();
-		
+		textFieldTime = new TextField();
+		textFieldTime.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		textFieldTime.setPrefSize(45, 30);
+		textFieldTime.setText("10");
+		textFieldTime.setAlignment(Pos.CENTER);
+		textFieldTime.setOnMouseClicked(event -> textFieldTime.clear());
+
+		radioButtonReverse = new RadioButton();
+
 		buttonCross = new Button();
 		buttonCross.setGraphic(new ImageView("/images/cross.png"));
 		buttonCross.setTooltip(new Tooltip("Cross QC 파일 만들기"));
@@ -388,7 +399,7 @@ public class ReviewController implements Initializable, Constant {
 		buttonAutoKeepReview.setGraphic(new ImageView(new Image("/images/keep.png")));
 		buttonAutoKeepReview.setOnAction(e -> actionButtonAutoKeepReview());
 		buttonAutoKeepReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-		
+
 		buttonAutoGroup = new Button();
 		buttonAutoGroup.setGraphic(new ImageView(new Image("/images/three.png")));
 		buttonAutoGroup.setOnAction(e -> actionButtonAutoGroup());
@@ -396,7 +407,7 @@ public class ReviewController implements Initializable, Constant {
 
 		buttonAutoContinue = new Button();
 		buttonAutoContinue.setGraphic(new ImageView(new Image("/images/repeat.png")));
-		buttonAutoContinue.setOnAction(e -> actionButtonAutoContinue(12000L));
+		buttonAutoContinue.setOnAction(e -> actionButtonAutoContinue());
 		buttonAutoContinue.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
 		buttonStopAutoReview = new Button();
@@ -496,11 +507,11 @@ public class ReviewController implements Initializable, Constant {
 		hBox.setStyle("-fx-alignment: CENTER;");
 //		if (isFile) {
 		// datePicker, checkBoxUseDatePicker, // buttonAll,
-		hBox.getChildren().addAll(comboBoxWorker, buttonWorkNum, textFieldFilterURL, buttonFilter,
-				buttonRefresh, buttonCross, buttonResultCross, buttonReview, buttonInsertCategory, buttonCommentSort,
-				label, region, wasChecked, reverse, textFieldNo, comboBoxCategory, comboBoxSite, buttonAutoKeepReview, 
-				 buttonAutoGroup, buttonAutoContinue, buttonStopAutoReview,comboBoxWhite, buttonWhiteSave,
-				 buttonTop, buttonEnd);
+		hBox.getChildren().addAll(comboBoxWorker, buttonWorkNum, textFieldFilterURL, buttonFilter, buttonRefresh,
+				buttonCross, buttonResultCross, buttonReview, buttonInsertCategory, buttonCommentSort, label, region,
+				wasChecked, radioButtonReverse, textFieldNo, comboBoxCategory, comboBoxSite, buttonAutoKeepReview,
+				buttonAutoGroup, textFieldTime, buttonAutoContinue, buttonStopAutoReview, comboBoxWhite,
+				buttonWhiteSave, buttonTop, buttonEnd);
 //		} else {
 //			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, textFieldFilterURL,
 //					buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview, label, region,
@@ -514,9 +525,10 @@ public class ReviewController implements Initializable, Constant {
 	private Object actionButtonStopAutoReview() {
 		timer.cancel(); // 타이머 종료
 		System.out.println("[카운트다운 : 종료]");
+		label.setText("종료");
 		return null;
 	}
-	
+
 	private void actionButtonAutoKeepReview() {
 		int i = 0;
 		int postion = 0;
@@ -532,7 +544,7 @@ public class ReviewController implements Initializable, Constant {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} // 1초 대기
-				
+
 				i++;
 //				if (comboBoxSite.getSelectionModel().getSelectedIndex() == 5) {
 //					verifySite.eventSearchResultAutoReview(spam.getUri()); // 검색결과
@@ -540,7 +552,7 @@ public class ReviewController implements Initializable, Constant {
 //					verifySite.eventInspectReultAutoReview(spam.getUri()); // 결과 수정
 //				}
 			}
-			tableView.scrollTo(postion-10);
+			tableView.scrollTo(postion - 10);
 			if (i == 10) {
 				break;
 			}
@@ -555,12 +567,12 @@ public class ReviewController implements Initializable, Constant {
 			if (!spam.getSelected()) {
 				try {
 					spam.setSelected(true);
-					String url = spam.getUri();				
+					String url = spam.getUri();
 					verifySite.eventSearchResultAutoReview(url); // 검색결과
 					verifySite.hiddenText(url); // 저장된 텍스트
 					Thread.sleep(200); // 1초 대기
 					verifySite.startBrowser(url, verifySite.getChrome());
-					
+
 					i++;
 					Thread.sleep(200); // 1초 대기
 				} catch (InterruptedException e) {
@@ -571,14 +583,14 @@ public class ReviewController implements Initializable, Constant {
 				break;
 			}
 		}
-		tableView.scrollTo(index-10);
+		tableView.scrollTo(index - 10);
 	}
 
 	Timer timer;
 	long delay = 5000L;
 
-	private Object actionButtonAutoContinue(long time) {
-		delay = time;
+	private Object actionButtonAutoContinue() {
+		delay = Long.valueOf(textFieldTime.getText()) * 1000;
 		System.out.println("Task performed on: " + new Date());
 		timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -590,29 +602,32 @@ public class ReviewController implements Initializable, Constant {
 				if (i >= filtedSpamList.size()) {
 					timer.cancel(); // 타이머 종료
 					System.out.println("[카운트다운 : 종료]");
+					label.setText("종료");
 				} else {
-				
+
 					Spam spam = filtedSpamList.get(i);
-					while(spam.getSelected() || !spam.getNotCheck().isEmpty()) {
+					while (spam.getSelected() || !spam.getNotCheck().isEmpty()) {
 						spam.setSelected(true);
 						spam = filtedSpamList.get(++i);
 					}
-					//System.err.println(spam);
+					// System.err.println(spam);
 					spam.setSelected(true);
 					String url = spam.getUri();
-					//System.err.println(spam);
-					if(!spam.getLookMain() && !spam.getLookCh() && !spam.getLookList() && !spam.getLookCh()
-                          || spam.getSpamAd() || spam.getSpamText()  ) {
-						verifySite.eventSearchResultAutoReview(url); // 검색결과
-						verifySite.hiddenText(url); // 저장된 텍스트 =
+					// System.err.println(spam);
+					if (!spam.getLookMain() && !spam.getLookCh() && !spam.getLookList() && !spam.getLookCh()
+							|| spam.getSpamAd() || spam.getSpamText()) {
+						if (radioButtonReverse.isSelected()) {
+							verifySite.eventSearchResultAutoReview(url); // 검색결과
+							verifySite.hiddenText(url); // 저장된 텍스트 =
+						}
 						try {
 							Thread.sleep(200);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
 					}
+					tableView.scrollTo(i-1); 
 					verifySite.startBrowser(url, verifySite.getChrome());
-					tableView.scrollTo(i);
 					i++;
 				}
 			}
@@ -1109,7 +1124,7 @@ public class ReviewController implements Initializable, Constant {
 			filtedSpamList.forEach(item -> item.setSelected(false));
 		} else {
 			for (int i = 0; i < filtedSpamList.size(); i++) {
-				if(reverse.isSelected()) {
+				if (radioButtonReverse.isSelected()) {
 					if (i > (Integer.valueOf(text) - 1)) {
 						filtedSpamList.get(i).setSelected(false);
 					} else {
@@ -1671,7 +1686,7 @@ public class ReviewController implements Initializable, Constant {
 						&& item.getNotCheck() != null && !(spamform.contains(item.getNotCheck()))) {
 					if (item.getComment().contains("리디렉션오류") || item.getComment().contains("비광확인")
 							|| item.getComment().contains("서비스/채널 확인 필요")) {
-						setStyle("-fx-background-color: #f9e6ff;;");
+						setStyle("-fx-background-color: #f9e6ff;");
 					} else {
 						setStyle("-fx-background-color: null;");
 					}
@@ -1687,7 +1702,8 @@ public class ReviewController implements Initializable, Constant {
 				}
 			}
 		});
-
+		
+		//tableView.setStyle("-fx-selection-bar: red; -fx-selection-bar-non-focused: salmon;");
 		tableView.setEditable(true);
 		TableColumn<Spam, Boolean> columnSelected = createCheckBoxHeaderColumn(Spam::selectedProperty);
 		TableColumn<Spam, String> columnUri = createColumn("url", Spam::uriProperty);
@@ -2442,7 +2458,7 @@ public class ReviewController implements Initializable, Constant {
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
 						explorer.setGraphic(new ImageView(new Image("/images/explorer.png")));
-						result.setGraphic(new ImageView(new Image("/images/bluelist.png")));  
+						result.setGraphic(new ImageView(new Image("/images/bluelist.png")));
 						text.setGraphic(new ImageView(new Image("/images/magnify.png")));
 						delete.setGraphic(new ImageView(new Image("/images/check.png")));
 						inspect.setGraphic(new ImageView(new Image("/images/all.png")));
