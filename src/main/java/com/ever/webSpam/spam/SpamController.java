@@ -15,13 +15,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -715,30 +712,30 @@ public class SpamController implements Initializable, Constant {
 
 		}
 		spamCategoryList = spamCategoryRepository.findAllByOrderByUriAsc();
-		reload();
+		//reload();
 	}
 
-	private void reload() {
-		long delay = 300010L;
-		// long delay = 240000L;
-		System.out.println(
-				"Task performed on: " + new Date() + "n" + "Thread's name: " + Thread.currentThread().getName());
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				Platform.runLater(new Runnable() {
-					public void run() {
-						System.out.println("Task performed on: " + new Date() + "n" + "Thread's name: "
-								+ Thread.currentThread().getName());
-						textFieldCategory.setText("--");
-						Platform.runLater(() -> textFieldCategory.requestFocus());
-					}
-				});
-			}
-		}, delay, delay); // Every 1 second
-
-	}
+//	private void reload() {
+//		long delay = 300010L;
+//		// long delay = 240000L;
+//		System.out.println(
+//				"Task performed on: " + new Date() + "n" + "Thread's name: " + Thread.currentThread().getName());
+//		Timer timer = new Timer();
+//		timer.schedule(new TimerTask() {
+//			@Override
+//			public void run() {
+//				Platform.runLater(new Runnable() {
+//					public void run() {
+//						System.out.println("Task performed on: " + new Date() + "n" + "Thread's name: "
+//								+ Thread.currentThread().getName());
+//						textFieldCategory.setText("--");
+//						Platform.runLater(() -> textFieldCategory.requestFocus());
+//					}
+//				});
+//			}
+//		}, delay, delay); // Every 1 second
+//
+//	}
 
 	private void initialManualTableView() {
 		TableColumn<Manual, String> columnContent = createEditColumn("메    모", Manual::docProperty);
