@@ -530,12 +530,7 @@ public class ReviewController implements Initializable, Constant {
 		return null;
 	}
 
-	private Object actionButtonStopAutoReview() {
-		timer.cancel(); // 타이머 종료
-		System.out.println("[카운트다운 : 종료]");
-		label.setText("종료");
-		return null;
-	}
+
 
 	private void actionButtonAutoKeepReview() {
 		int i = 0;
@@ -594,7 +589,16 @@ public class ReviewController implements Initializable, Constant {
 		tableView.scrollTo(index - 10);
 	}
 
+	private Object actionButtonStopAutoReview() {
+		timer.cancel(); // 타이머 종료
+		timerTask.cancel();
+		System.out.println("[카운트다운 : 종료]");
+		label.setText("종료");
+		return null;
+	}
+	
 	Timer timer;
+	TimerTask timerTask;
 	long delay = 5000L;
 
 	private Object actionButtonAutoContinue() {
@@ -602,8 +606,8 @@ public class ReviewController implements Initializable, Constant {
 		if(filtedSpamList == null) {
 			filtedSpamList = spamList;
 		}
-		timer = new Timer();
-		timer.schedule(new TimerTask() {
+		
+		timerTask = new TimerTask() {
 			int i = 0;
 
 			@Override
@@ -644,7 +648,10 @@ public class ReviewController implements Initializable, Constant {
 					i++;
 				}
 			}
-		}, 0, delay); // Every 1 second
+		};
+		
+		timer = new Timer();
+		timer.schedule(timerTask, 0, delay); // Every 1 second
 		return null;
 	}
 
@@ -1667,6 +1674,7 @@ public class ReviewController implements Initializable, Constant {
 		// centerTableView.prefWidthProperty().bind(anchorPaneRightTableview.widthProperty());
 		// centerTableView.prefHeightProperty().bind(anchorPaneRightTableview.heightProperty());
 		tableView.getStyleClass().add("spam");
+		tableView.setTableMenuButtonVisible(true);
 
 		tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
@@ -2466,7 +2474,7 @@ public class ReviewController implements Initializable, Constant {
 					private final Button text = new Button();
 					private final Button delete = new Button();
 					private final Button inspect = new Button();
-					HBox hBox = new HBox(google, explorer, result, text, delete, inspect);
+					HBox hBox = new HBox(google, explorer, result, text, inspect, delete);
 
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
@@ -2518,7 +2526,14 @@ public class ReviewController implements Initializable, Constant {
 							Spam spam = getTableView().getItems().get(getIndex());
 							spam.setSelected(true);
 							verifySite.setClipbord(spam.getUri());
-
+							try {
+								URL url = new URL(spam.getUri());
+								textFieldFilterURL.setText(url.getHost());
+							} catch (MalformedURLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							//textFieldSearch
 							// Spam spam = getTableView().getItems().get(getIndex());
 							// eventDelete(spam);
 						});
