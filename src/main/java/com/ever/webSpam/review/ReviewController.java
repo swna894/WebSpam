@@ -631,7 +631,7 @@ public class ReviewController implements Initializable, Constant {
 					// System.err.println(spam);
 					if (!spam.getLookMain() && !spam.getLookCh() && !spam.getLookList() && !spam.getLookCh()
 							|| spam.getSpamAd() || spam.getSpamText()) {
-						if (radioButtonReverse.isSelected()) {
+						if (radioButtonReverse.isSelected() && !spam.getHam() && !spam.getHamLow()) {
 							verifySite.eventSearchResultAutoReview(url); // 검색결과
 							verifySite.hiddenText(url); // 저장된 텍스트 =
 						}
