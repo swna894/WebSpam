@@ -1104,7 +1104,7 @@ public class ReviewController implements Initializable, Constant {
 		checkBoxUseDatePicker.setSelected(true);
 		// string file 에서 spam 내역을 가져온다.
 		spamList = getSpamListFromDownloadList();
-
+		spamList.sort(Comparator.comparing(Spam::getUri));
 		reloadTable(spamList);
 		if (spamList != null)
 			datePicker.setValue(LocalDate.parse(spamList.get(0).getWorkday()));
@@ -2799,9 +2799,9 @@ public class ReviewController implements Initializable, Constant {
 		return spamList;
 	}
 
-	public void setSpamList(List<Spam> spamList) {
-		this.spamList = spamList;
-	}
+//	public void setSpamList(List<Spam> spamList) {
+//		this.spamList = spamList;
+//	}
 
 	public CheckBox getWasChecked() {
 		return wasChecked;
