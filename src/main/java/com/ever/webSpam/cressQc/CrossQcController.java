@@ -130,14 +130,11 @@ public class CrossQcController<S> implements Initializable, Constant {
 		buttonReload.setOnAction(e -> actionButtonReloadHandler());
 		buttonReload.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 		
-		buttonAutoReview = new Button("OPEN");
+		buttonAutoReview = new Button();
+		buttonAutoReview.setGraphic(new ImageView(new Image("/images/stop.png")));
 		buttonAutoReview.setOnAction(e -> actionButtonAutoReview());
 		buttonAutoReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
-//		buttonTimeReload = new Button();
-//		buttonTimeReload.setPrefWidth(200);
-//		buttonTimeReload.setGraphic(new ImageView(new Image("/images/refresh.png")));	
-//		buttonTimeReload.setOnAction(e -> actionButtonTimeReloadHandler());
-//		buttonTimeReload.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+
 
 
 		wasChecked = new CheckBox("검수");
@@ -302,7 +299,6 @@ public class CrossQcController<S> implements Initializable, Constant {
 		int i = 0;
 		for (Spam spam : tableView.getItems()) {
 			if (!spam.getSelected()) {
-		
 				try {
 					spam.setSelected(true);
 					String url = spam.getUri();
