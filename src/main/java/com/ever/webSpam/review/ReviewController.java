@@ -293,17 +293,6 @@ public class ReviewController implements Initializable, Constant {
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 		});
 
-		// comboBoxSite = new ComboBox<String>();
-		// comboBoxSite.setItems(observableListSite);
-		// comboBoxSite.setStyle("-fx-font: 14px \"Serif\"; -fx-font-weight: bold;");
-		// comboBoxSite.valueProperty().addListener((obs, oldVal, newVal) -> {
-		// filtedSpamList = spamList;
-		// filtedSpamList = actionComboBoxWorkerHandler();
-		// filtedSpamList = actionComboBoxCategoryHandler();
-		// filtedSpamList = actionComboBoxSite();
-		// Platform.runLater(() -> reloadTable(filtedSpamList));
-		//
-		// });
 
 		comboBoxSite = new ComboBox<String>();
 		comboBoxSite.setPromptText("SITE");
@@ -535,7 +524,8 @@ public class ReviewController implements Initializable, Constant {
 	private void actionButtonAutoKeepReview() {
 		int i = 0;
 		int postion = 0;
-		for (Spam spam : filtedSpamList) {
+		List<Spam> checkList =  tableView.getItems();
+		for (Spam spam : checkList) {
 			postion++;
 			if (!spam.getSelected()) {
 				try {
@@ -565,7 +555,8 @@ public class ReviewController implements Initializable, Constant {
 	private void actionButtonAutoGroup() {
 		int i = 0;
 		int index = 0;
-		for (Spam spam : filtedSpamList) {
+		List<Spam> checkList =  tableView.getItems();
+		for (Spam spam : checkList) {
 			index++;
 			if (!spam.getSelected()) {
 				try {
@@ -603,10 +594,7 @@ public class ReviewController implements Initializable, Constant {
 
 	private Object actionButtonAutoContinue() {
 		delay = Long.valueOf(textFieldTime.getText()) * 1000;
-		if(filtedSpamList == null) {
-			filtedSpamList = spamList;
-		}
-		
+		List<Spam> checkList =  tableView.getItems();
 		timerTask = new TimerTask() {
 			int i = 0;
 
@@ -614,16 +602,16 @@ public class ReviewController implements Initializable, Constant {
 			public void run() {
 				// System.out.println("Task performed on: " + new Date());
 			
-				if (i >= filtedSpamList.size()) {
+				if (i >= checkList.size()) {
 					timer.cancel(); // 타이머 종료
 					System.out.println("[카운트다운 : 종료]");
 					label.setText("종료");
 				} else {
 
-					Spam spam = filtedSpamList.get(i);
+					Spam spam = checkList.get(i);
 					while (spam.getSelected() || !spam.getNotCheck().isEmpty()) {
 						spam.setSelected(true);
-						spam = filtedSpamList.get(++i);
+						spam = checkList.get(++i);
 					}
 					// System.err.println(spam);
 					spam.setSelected(true);
@@ -641,7 +629,7 @@ public class ReviewController implements Initializable, Constant {
 							e.printStackTrace();
 						}
 					}
-					tableView.scrollTo(i-1); 
+					tableView.scrollTo(i); 
 					
 					Platform.runLater(() -> textFieldNo.setText(String.valueOf(i)));
 					verifySite.startBrowser(url, verifySite.getChrome());
