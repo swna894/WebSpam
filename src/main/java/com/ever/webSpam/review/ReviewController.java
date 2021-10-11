@@ -1661,6 +1661,24 @@ public class ReviewController implements Initializable, Constant {
 
 		// centerTableView.prefWidthProperty().bind(anchorPaneRightTableview.widthProperty());
 		// centerTableView.prefHeightProperty().bind(anchorPaneRightTableview.heightProperty());
+		tableView.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
+					try {
+						String spamUrl = tableView.getSelectionModel().getSelectedItem().getUri();
+						if(!spamUrl.startsWith("http")) {
+							spamUrl = "http://" + spamUrl;
+						}
+						URL url = new URL(spamUrl); 
+						textFieldFilterURL.setText(url.getHost());
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		
 		tableView.getStyleClass().add("spam");
 		tableView.setTableMenuButtonVisible(true);
 
@@ -1860,8 +1878,8 @@ public class ReviewController implements Initializable, Constant {
 		columnNotCheck.setPrefWidth(60);
 
 		TableColumn<Spam, Void> columnButton = createButtonColumn();
-		columnButton.setMinWidth(195);
-		columnButton.setPrefWidth(195);
+		columnButton.setMinWidth(168);
+		columnButton.setPrefWidth(168);
 
 		tableView.getColumns().addAll(numberCol, columnSelected, columnButton, columnUri, columnName, columnScope,
 				columnNotCheck, columnDefer, columnLookMain, columnLookCh, columnLookList, columnLookCont, columnHam,
@@ -2462,7 +2480,7 @@ public class ReviewController implements Initializable, Constant {
 					private final Button text = new Button();
 					private final Button delete = new Button();
 					private final Button inspect = new Button();
-					HBox hBox = new HBox(google, explorer, result, text, inspect, delete);
+					HBox hBox = new HBox(google, explorer, result, text, inspect);
 
 					{
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
@@ -2515,7 +2533,11 @@ public class ReviewController implements Initializable, Constant {
 							spam.setSelected(true);
 							verifySite.setClipbord(spam.getUri());
 							try {
-								URL url = new URL(spam.getUri());
+								String spamUrl = spam.getUri();
+								if(!spamUrl.startsWith("http")) {
+									spamUrl = "http://" + spamUrl;
+								}
+								URL url = new URL(spamUrl); 
 								textFieldFilterURL.setText(url.getHost());
 							} catch (MalformedURLException e) {
 								// TODO Auto-generated catch block
