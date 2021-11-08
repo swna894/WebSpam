@@ -1399,8 +1399,9 @@ public class ReviewController implements Initializable, Constant {
 
 		List<String> workingMan = wrokingSpamList.stream().map(item -> item.getName())
 				.filter(item -> observableListName.contains(item)).collect(Collectors.toList());
-
+	
 		Map<String, String> historyMap = new HashMap<String, String>();
+		workingMan.remove(workingMan.size()-1);
 
 		LOG.info("========== make cross file ");
 

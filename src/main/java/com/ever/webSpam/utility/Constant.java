@@ -10,7 +10,7 @@ import javafx.collections.ObservableList;
 public interface Constant {
 
 	ObservableList<String> observableListName = FXCollections.observableArrayList(" ", "나상운", "송호열", "엄정란", "연제관", "이미원",
-			"이성규", "임수진", "정영미", "정영선", "최동우", "최붕희", "허창건");
+			"이성규", "임수진", "정영미", "정영선", "최동우", "최붕희", "허창건", "admin");
 	ObservableList<String> observableListSpam = FXCollections.observableArrayList(" ", "비정상 광고 컨테트", "비정상 텍스트", 
 			"스펨 사이트로 리디렉션", "악성 소프트웨어", "저작권위반", "음란물", "기만적 컨텐트", "웹순위 조작 활동", "불법 사이트", "정상 컨텐트", 
 			"정상 컨텐트 저품질");
