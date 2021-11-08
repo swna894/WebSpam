@@ -1401,7 +1401,7 @@ public class ReviewController implements Initializable, Constant {
 				.filter(item -> observableListName.contains(item)).collect(Collectors.toList());
 	
 		Map<String, String> historyMap = new HashMap<String, String>();
-		workingMan.remove(workingMan.size()-1);
+		workingMan.remove("admin");
 
 		LOG.info("========== make cross file ");
 
@@ -1518,7 +1518,9 @@ public class ReviewController implements Initializable, Constant {
 		alert.setHeaderText(null);
 		alert.setGraphic(null);
 		alert.setContentText(message);
-
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		stage.setAlwaysOnTop(true);
+		 
 		alert.showAndWait();
 	}
 
