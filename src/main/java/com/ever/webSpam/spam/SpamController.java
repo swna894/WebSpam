@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import com.ever.webSpam.category.SpamCategory;
 import com.ever.webSpam.category.SpamCategoryController;
 import com.ever.webSpam.category.SpamCategoryRepository;
+import com.ever.webSpam.cressQc.CrossExcel;
 import com.ever.webSpam.cressQc.CrossQcController;
 import com.ever.webSpam.excel.ExcelManual;
 import com.ever.webSpam.feedBack.FeedBackExcel;
@@ -96,6 +97,7 @@ public class SpamController implements Initializable, Constant {
 	private String clipText;
 	private List<Manual> manualList;
 	private List<SpamCategory> spamCategoryList;
+	private File reviewFile;
 
 	// private Manual selectedManual;
 
@@ -111,6 +113,9 @@ public class SpamController implements Initializable, Constant {
 //	@Autowired
 //	private JsonUtil jsonUtil;
 
+	@Autowired
+	CrossExcel crossExcel;
+	
 	@Autowired
 	private ReviewController feedBackController;
 
@@ -212,6 +217,9 @@ public class SpamController implements Initializable, Constant {
 	private Button buttonQuestionList;
 
 	@FXML
+	private Button buttonSaveRview;
+	
+	@FXML
 	private TableView<Spam> checkTableView;
 
 	@FXML
@@ -222,6 +230,20 @@ public class SpamController implements Initializable, Constant {
 
 	}
 
+	@FXML
+	void actionButtonSaveRview(ActionEvent event) {
+		if(reviewFile == null) {
+			reviewFile = chooseExcelFile();
+		}
+		String url = textFieldCategory.getText().trim();
+		if(!url.isEmpty()) {
+		    Boolean result = crossExcel.writeReview(reviewFile, url);
+		    if(result) {
+		    	textFieldCategory.clear();
+		    }
+		}
+	}
+	
 	@FXML
 	void actionButtonSave(ActionEvent event) {
 		buttonDel.setDisable(true);
@@ -326,6 +348,12 @@ public class SpamController implements Initializable, Constant {
 
 	@FXML
 	void actionButtonCrossQc(ActionEvent event) {
+		file = chooseExcelFile();
+		if (file != null)
+			crossQcController.start(file);
+	}
+
+	private File chooseExcelFile() {
 		FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("*.xlsx", "*.xlsx");
 		FileChooser fileChooser = new FileChooser();
 		String userDirectoryString = HOME_DIR + File.separator + "Downloads";
@@ -338,9 +366,7 @@ public class SpamController implements Initializable, Constant {
 
 		fileChooser.getExtensionFilters().add(extentionFilter);
 		file = fileChooser.showOpenDialog(null);
-		if (file != null)
-			crossQcController.start(file);
-
+		return file;
 	}
 
 	@FXML
@@ -697,6 +723,7 @@ public class SpamController implements Initializable, Constant {
 		buttonQuestion.setGraphic(new ImageView(new Image("/images/question_16.png")));
 		buttonQuestionList.setGraphic(new ImageView(new Image("/images/question_16.png")));
 		buttonInstprctionResult.setGraphic(new ImageView(new Image("/images/all.png")));
+		buttonSaveRview.setGraphic(new ImageView(new Image("/images/excel.png")));
 
 		textFieldGoogle.setPromptText("Goole");
 		textFieldExplorer.setPromptText("Explorer");

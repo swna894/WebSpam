@@ -97,19 +97,24 @@
       </VBox>
    </top>
    <bottom>
-      <HBox fx:id="hBoxBottom" prefHeight="24.0" prefWidth="1000.0" spacing="7.0" BorderPane.alignment="CENTER">
-         <children>
-            <TextField fx:id="textFieldCategory" onKeyPressed="#keyPressedTextFieldCategoryHandler" onMouseClicked="#mouseClickedTextFieldCategory" prefWidth="2000.0" />
-            <Button fx:id="buttonQuestion" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonQuestion" prefWidth="40.0" />
-            <Button fx:id="buttonSave" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonSave" prefWidth="40.0" />
-            <Button fx:id="buttonSearch" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonSearch" prefWidth="40.0" />
-            <Button fx:id="buttonDel" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonDel" prefWidth="40.0" />
-            <Button fx:id="buttonCategory" maxWidth="50.0" minWidth="40.0" mnemonicParsing="false" onAction="#actionButtonCategory" prefWidth="40.0" />
-         </children>
+      <VBox spacing="7.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets top="7.0" />
          </BorderPane.margin>
-      </HBox>
+         <children>
+            <TextField fx:id="textFieldCategory" onKeyPressed="#keyPressedTextFieldCategoryHandler" onMouseClicked="#mouseClickedTextFieldCategory" prefWidth="2000.0" promptText="Enter URL" />
+            <HBox fx:id="hBoxBottom" prefHeight="24.0" prefWidth="1000.0" spacing="7.0">
+               <children>
+                  <Button fx:id="buttonQuestion" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonQuestion" prefWidth="200.0" />
+                  <Button fx:id="buttonSave" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonSave" prefWidth="200.0" />
+                  <Button fx:id="buttonSearch" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonSearch" prefWidth="200.0" />
+                  <Button fx:id="buttonDel" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonDel" prefWidth="200.0" />
+                  <Button fx:id="buttonCategory" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonCategory" prefWidth="200.0" />
+                  <Button fx:id="buttonSaveRview" mnemonicParsing="false" onAction="#actionButtonSaveRview" prefWidth="200.0" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
    </bottom>
    <opaqueInsets>
       <Insets />

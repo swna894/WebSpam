@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -44,7 +45,7 @@ public class CrossExcel implements Constant {
 
 	List<Spam> spamList;
 	private String path;
-	
+
 	public List<Spam> getSpamList(File file) {
 		path = spamController.getPath();
 
@@ -447,7 +448,10 @@ public class CrossExcel implements Constant {
 					cell.setCellStyle(style);
 					for (int i = 29; i < 44; i++) {
 						cell = row.getCell(i);
-						cell.setCellFormula(cell.getCellFormula());
+						if(cell.getCellTypeEnum() == CellType.FORMULA){
+							cell.setCellFormula(cell.getCellFormula());
+						}
+						
 					}
 					cell.getRow().setHeight((short) -1);
 					break;
@@ -485,12 +489,12 @@ public class CrossExcel implements Constant {
 		} else {
 			path = spamController.getPath();
 		}
-		//File inFile = new File(QC_FILE + "/크로스qc.xlsx");
-		//FileInputStream fis;
+		// File inFile = new File(QC_FILE + "/크로스qc.xlsx");
+		// FileInputStream fis;
 		try {
-			//fis = new FileInputStream(inFile);
+			// fis = new FileInputStream(inFile);
 			InputStream is = getClass().getResourceAsStream("/file/신규크로스파일.xlsx");
-			//InputStream is = getClass().getResourceAsStream("/file/크로스qc.xlsx");
+			// InputStream is = getClass().getResourceAsStream("/file/크로스qc.xlsx");
 			workbook = new XSSFWorkbook(is);
 		} catch (IOException e) {
 			alert("지정된 경로를 찾을 수 없습니다");
@@ -514,7 +518,7 @@ public class CrossExcel implements Constant {
 
 		Iterator<Row> rowIterator = sheet.iterator();
 		// Iterate through rows
-		
+
 		for (Spam spam : spamList) {
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.next();
@@ -565,7 +569,7 @@ public class CrossExcel implements Constant {
 
 				cell = row.getCell(15);
 				cell.setCellValue(spam.getHamLow());
-				
+
 				cell = row.getCell(16);
 				cell.setCellValue(spam.getHamFish());
 
@@ -586,7 +590,7 @@ public class CrossExcel implements Constant {
 
 				cell = row.getCell(22);
 				cell.setCellValue(spam.getSpamPorn());
-				
+
 				cell = row.getCell(23);
 				cell.setCellValue(spam.getSpamPornWeak());
 
@@ -653,10 +657,10 @@ public class CrossExcel implements Constant {
 		} else {
 			path = spamController.getPath();
 		}
-		//File inFile = new File(path + "/크로스qc_Result.xlsx");
-		//FileInputStream fis;
+		// File inFile = new File(path + "/크로스qc_Result.xlsx");
+		// FileInputStream fis;
 		try {
-			//fis = new FileInputStream(inFile);
+			// fis = new FileInputStream(inFile);
 			InputStream is = getClass().getResourceAsStream("/file/크로스qc_Result.xlsx");
 			workbook = new XSSFWorkbook(is);
 		} catch (IOException e) {
@@ -681,7 +685,7 @@ public class CrossExcel implements Constant {
 
 		Iterator<Row> rowIterator = sheet.iterator();
 		// Iterate through rows
-		
+
 		LocalDate localDate = LocalDate.now();
 		String today = localDate.format(DateTimeFormatter.ofPattern("MM월 dd일"));
 		for (Spam spam : spamList) {
@@ -690,16 +694,16 @@ public class CrossExcel implements Constant {
 				if (row.getRowNum() < 12) {
 					continue;
 				}
-				
-				Cell  cell = row.getCell(1);
+
+				Cell cell = row.getCell(1);
 				cell.setCellValue(today);
-				
+
 				cell = row.getCell(2);
 				cell.setCellValue(spam.getLabel());
-				
+
 				cell = row.getCell(1 + GAP);
 				cell.setCellValue(spam.getUri());
-				
+
 				cell = row.getCell(2 + GAP);
 				cell.setCellValue(spam.getScope());
 
@@ -812,9 +816,71 @@ public class CrossExcel implements Constant {
 		}
 		return true;
 	}
-//	private String randomFileName(String name) {		
-//		return  path + "/크로스qc(" + LocalDate.now().format(DateTimeFormatter.ofPattern("MMdd")) + ")-" + name + ".xlsx";
-//	}
+
+	public boolean writeReview(File selectedFile, String url) {
+
+		XSSFWorkbook workbook = null;
+		XSSFSheet sheet = null;
+
+		FileInputStream fis;
+		try {
+			if (selectedFile.exists()) {
+				fis = new FileInputStream(selectedFile);
+				workbook = new XSSFWorkbook(fis);
+			} else {
+				fis = new FileInputStream(new File(QC_FILE + "/크로스qc.xlsx"));
+				workbook = new XSSFWorkbook(fis);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		workbook.setForceFormulaRecalculation(true);
+
+		CellStyle style = workbook.createCellStyle();
+		style.setBorderBottom(BorderStyle.THIN);
+		style.setBottomBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+		style.setBorderLeft(BorderStyle.THIN);
+		style.setLeftBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+		style.setBorderRight(BorderStyle.THIN);
+		style.setRightBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+		style.setBorderTop(BorderStyle.THIN);
+		style.setTopBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+		style.setWrapText(true);
+
+		sheet = workbook.getSheetAt(0);
+		//int startRow = 4;
+		Iterator<Row> rowIterator = sheet.iterator();
+		// Iterate through rows
+		while (rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+
+			if (row.getRowNum() < 4) {
+				continue;
+			}
+			Cell cell = row.getCell(1);
+			String item = cell.getStringCellValue();
+			if(item.equals(url)) {
+				break;
+			}
+			if(item.isEmpty()) {
+				cell.setCellValue(url);
+				break;
+			}		
+//			cell.getRow().setHeight((short) -1);
+		}
+
+		try {
+			FileOutputStream outputStream = new FileOutputStream(selectedFile);
+			workbook.write(outputStream);
+			workbook.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
 
 	private void alert(String messge) {
 		Alert alert = new Alert(AlertType.INFORMATION);

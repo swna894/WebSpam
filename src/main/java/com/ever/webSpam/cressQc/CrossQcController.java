@@ -476,7 +476,8 @@ public class CrossQcController<S> implements Initializable, Constant {
 
 	public void initialSpamList(File file) {
 		spamList = crossExcel.getSpamList(file);
-		textFieldWorker.setText(spamList.get(0).getName());
+		if(spamList.size() > 0)
+			textFieldWorker.setText(spamList.get(0).getName());
 
 	}
 
@@ -708,13 +709,15 @@ public class CrossQcController<S> implements Initializable, Constant {
 					private final Button explorer = new Button();
 					private final Button result = new Button();
 					private final Button text = new Button();
-					HBox hBox = new HBox(google, explorer, result, text);
+					private final Button inspect = new Button();
+					HBox hBox = new HBox(google, explorer, result, text, inspect);
 
 					{	
 						google.setGraphic(new ImageView(new Image("/images/google.png")));
 						explorer.setGraphic(new ImageView(new Image("/images/explorer.png")));
 						result.setGraphic(new ImageView(new Image("/images/bluelist.png")));  
 						text.setGraphic(new ImageView(new Image("/images/magnify.png")));
+						inspect.setGraphic(new ImageView(new Image("/images/all.png")));
 						
 						google.setOnAction((ActionEvent event) -> {
 							Spam spam = getTableView().getItems().get(getIndex());
@@ -752,6 +755,13 @@ public class CrossQcController<S> implements Initializable, Constant {
 
 							verifySite.hiddenText(spam.getUri());	
 
+						});
+						
+						inspect.setOnAction((ActionEvent event) -> {
+							Spam spam = getTableView().getItems().get(getIndex());
+							spam.setSelected(true);
+							verifySite.setClipbord(spam.getUri());
+							verifySite.eventInspectReult(spam.getUri());
 						});
 					}
 
