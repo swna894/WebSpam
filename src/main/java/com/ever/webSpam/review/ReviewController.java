@@ -1,7 +1,5 @@
 package com.ever.webSpam.review;
 
-
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -146,6 +144,8 @@ public class ReviewController implements Initializable, Constant {
 	private Button buttonCommentSort;
 	private Button buttonAutoKeepReview;
 	private Button buttonAutoGroup;
+	private Button buttonAutoResult;
+	private Button buttonAutoText;
 	private Button buttonAutoContinue;
 	private Button buttonStopAutoReview;
 	private DatePicker datePicker;
@@ -293,7 +293,6 @@ public class ReviewController implements Initializable, Constant {
 			Platform.runLater(() -> reloadTable(filtedSpamList));
 		});
 
-
 		comboBoxSite = new ComboBox<String>();
 		comboBoxSite.setPromptText("SITE");
 		comboBoxSite.setItems(observableListSite);
@@ -353,7 +352,6 @@ public class ReviewController implements Initializable, Constant {
 		radioButtonReverse = new RadioButton();
 		radioButtonReverse.setOnAction(e -> actionRadioButtonReverse());
 
-
 		buttonCross = new Button();
 		buttonCross.setGraphic(new ImageView("/images/cross.png"));
 		buttonCross.setTooltip(new Tooltip("Cross QC 파일 만들기"));
@@ -394,6 +392,16 @@ public class ReviewController implements Initializable, Constant {
 		buttonAutoGroup.setGraphic(new ImageView(new Image("/images/three.png")));
 		buttonAutoGroup.setOnAction(e -> actionButtonAutoGroup());
 		buttonAutoGroup.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+
+		buttonAutoResult = new Button();
+		buttonAutoResult.setGraphic(new ImageView(new Image("/images/bluelist.png")));
+		buttonAutoResult.setOnAction(e -> actionButtonAutoResult());
+		buttonAutoResult.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+
+		buttonAutoText = new Button();
+		buttonAutoText.setGraphic(new ImageView(new Image("/images/magnify.png")));
+		buttonAutoText.setOnAction(e -> actionButtonAutoText());
+		buttonAutoText.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
 		buttonAutoContinue = new Button();
 		buttonAutoContinue.setGraphic(new ImageView(new Image("/images/repeat.png")));
@@ -500,8 +508,8 @@ public class ReviewController implements Initializable, Constant {
 		hBox.getChildren().addAll(comboBoxWorker, buttonWorkNum, textFieldFilterURL, buttonFilter, buttonRefresh,
 				buttonCross, buttonResultCross, buttonReview, buttonInsertCategory, buttonCommentSort, label, region,
 				wasChecked, radioButtonReverse, textFieldNo, comboBoxCategory, comboBoxSite, buttonAutoKeepReview,
-				buttonAutoGroup, textFieldTime, buttonAutoContinue, buttonStopAutoReview, comboBoxWhite,
-				buttonWhiteSave, buttonTop, buttonEnd);
+				buttonAutoGroup, buttonAutoResult, buttonAutoText, textFieldTime, buttonAutoContinue, buttonStopAutoReview,
+				comboBoxWhite, buttonWhiteSave, buttonTop, buttonEnd);
 //		} else {
 //			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, textFieldFilterURL,
 //					buttonFilter, buttonRefresh, buttonCross, buttonResultCross, buttonReview, label, region,
@@ -513,24 +521,31 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private Object actionRadioButtonReverse() {
-		if(radioButtonReverse.isSelected() && !textFieldNo.getText().isEmpty()) {
+		if (radioButtonReverse.isSelected() && !textFieldNo.getText().isEmpty()) {
 			keyReleadedtextFieldNo(textFieldNo.getText());
 		}
 		return null;
 	}
 
+	private List<String> autoReviewList = new ArrayList<String>();
 
-
-	private void actionButtonAutoKeepReview() {
+	private void actionButtonAutoKeepReview() { 
+		autoReviewList.clear();
 		int i = 0;
 		int postion = 0;
-		List<Spam> checkList =  tableView.getItems();
+		List<Spam> checkList = tableView.getItems();
 		for (Spam spam : checkList) {
 			postion++;
+			if (spam.getSelected() || !spam.getNotCheck().isEmpty()) {
+				spam.setSelected(true);
+				continue;
+			}
+			
 			if (!spam.getSelected()) {
 				try {
 					spam.setSelected(true);
 					String url = spam.getUri();
+					autoReviewList.add(url);
 					verifySite.startBrowser(url, verifySite.getChrome());
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
@@ -541,7 +556,7 @@ public class ReviewController implements Initializable, Constant {
 				i++;
 //				if (comboBoxSite.getSelectionModel().getSelectedIndex() == 5) {
 //					verifySite.eventSearchResultAutoReview(spam.getUri()); // 검색결과
-//				     verifySite.hiddenText(spam.getUri());   // 저장된 텍스트
+//				    verifySite.hiddenText(spam.getUri());   // 저장된 텍스트
 //					verifySite.eventInspectReultAutoReview(spam.getUri()); // 결과 수정
 //				}
 			}
@@ -552,10 +567,35 @@ public class ReviewController implements Initializable, Constant {
 		}
 	}
 
+	private void actionButtonAutoResult() {
+		for (String url : autoReviewList) {			
+			try {
+				verifySite.eventSearchResultAutoReview(url); // 검색결과
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private void actionButtonAutoText() {
+		for (String url : autoReviewList) {			
+			try {
+				verifySite.hiddenText(url);   // 저장된 텍스트
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
 	private void actionButtonAutoGroup() {
 		int i = 0;
 		int index = 0;
-		List<Spam> checkList =  tableView.getItems();
+		List<Spam> checkList = tableView.getItems();
 		for (Spam spam : checkList) {
 			index++;
 			if (!spam.getSelected()) {
@@ -587,21 +627,21 @@ public class ReviewController implements Initializable, Constant {
 		label.setText("종료");
 		return null;
 	}
-	
+
 	Timer timer;
 	TimerTask timerTask;
 	long delay = 5000L;
 
 	private Object actionButtonAutoContinue() {
 		delay = Long.valueOf(textFieldTime.getText()) * 1000;
-		List<Spam> checkList =  tableView.getItems();
+		List<Spam> checkList = tableView.getItems();
 		timerTask = new TimerTask() {
 			int i = 0;
 
 			@Override
 			public void run() {
 				// System.out.println("Task performed on: " + new Date());
-			
+
 				if (i >= checkList.size()) {
 					timer.cancel(); // 타이머 종료
 					System.out.println("[카운트다운 : 종료]");
@@ -629,15 +669,15 @@ public class ReviewController implements Initializable, Constant {
 							e.printStackTrace();
 						}
 					}
-					tableView.scrollTo(i); 
-					
+					tableView.scrollTo(i);
+
 					Platform.runLater(() -> textFieldNo.setText(String.valueOf(i)));
 					verifySite.startBrowser(url, verifySite.getChrome());
 					i++;
 				}
 			}
 		};
-		
+
 		timer = new Timer();
 		timer.schedule(timerTask, 0, delay); // Every 1 second
 		return null;
@@ -1092,7 +1132,7 @@ public class ReviewController implements Initializable, Constant {
 		checkBoxUseDatePicker.setSelected(true);
 		// string file 에서 spam 내역을 가져온다.
 		spamList = getSpamListFromDownloadList();
-		//spamList.sort(Comparator.comparing(Spam::getUri));
+		// spamList.sort(Comparator.comparing(Spam::getUri));
 		reloadTable(spamList);
 		if (spamList != null)
 			datePicker.setValue(LocalDate.parse(spamList.get(0).getWorkday()));
@@ -1399,7 +1439,7 @@ public class ReviewController implements Initializable, Constant {
 
 		List<String> workingMan = wrokingSpamList.stream().map(item -> item.getName())
 				.filter(item -> observableListName.contains(item)).collect(Collectors.toList());
-	
+
 		Map<String, String> historyMap = new HashMap<String, String>();
 		workingMan.remove("admin");
 
@@ -1520,7 +1560,7 @@ public class ReviewController implements Initializable, Constant {
 		alert.setContentText(message);
 		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
 		stage.setAlwaysOnTop(true);
-		 
+
 		alert.showAndWait();
 	}
 
@@ -1670,10 +1710,10 @@ public class ReviewController implements Initializable, Constant {
 				if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
 					try {
 						String spamUrl = tableView.getSelectionModel().getSelectedItem().getUri();
-						if(!spamUrl.startsWith("http")) {
+						if (!spamUrl.startsWith("http")) {
 							spamUrl = "http://" + spamUrl;
 						}
-						URL url = new URL(spamUrl); 
+						URL url = new URL(spamUrl);
 						textFieldFilterURL.setText(url.getHost());
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
@@ -1681,7 +1721,7 @@ public class ReviewController implements Initializable, Constant {
 				}
 			}
 		});
-		
+
 		tableView.getStyleClass().add("spam");
 		tableView.setTableMenuButtonVisible(true);
 
@@ -1732,8 +1772,9 @@ public class ReviewController implements Initializable, Constant {
 				}
 			}
 		});
-		
-		//tableView.setStyle("-fx-selection-bar: red; -fx-selection-bar-non-focused: salmon;");
+
+		// tableView.setStyle("-fx-selection-bar: red; -fx-selection-bar-non-focused:
+		// salmon;");
 		tableView.setEditable(true);
 		TableColumn<Spam, Boolean> columnSelected = createCheckBoxHeaderColumn(Spam::selectedProperty);
 		TableColumn<Spam, String> columnUri = createColumn("url", Spam::uriProperty);
@@ -2537,16 +2578,16 @@ public class ReviewController implements Initializable, Constant {
 							verifySite.setClipbord(spam.getUri());
 							try {
 								String spamUrl = spam.getUri();
-								if(!spamUrl.startsWith("http")) {
+								if (!spamUrl.startsWith("http")) {
 									spamUrl = "http://" + spamUrl;
 								}
-								URL url = new URL(spamUrl); 
+								URL url = new URL(spamUrl);
 								textFieldFilterURL.setText(url.getHost());
 							} catch (MalformedURLException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							//textFieldSearch
+							// textFieldSearch
 							// Spam spam = getTableView().getItems().get(getIndex());
 							// eventDelete(spam);
 						});

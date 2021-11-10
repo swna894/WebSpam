@@ -68,7 +68,7 @@ public class VerifySite {
 //
 //	}
 
-	public void startBrowser(String uri, String browser) {
+	public Boolean startBrowser(String uri, String browser) {
 
 		try {
 			String[] b = { browser, uri };
@@ -77,7 +77,7 @@ public class VerifySite {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
-
+		return true;
 	}
 
 	@SuppressWarnings("unused")
@@ -160,18 +160,21 @@ public class VerifySite {
 		}
 	}
 	
-	public void hiddenText(String uri) {		
+	public Boolean hiddenText(String uri) {
+		Boolean result = null;
 		if (uri.startsWith(prefix)) {
 			uri = uri.substring(prefix.length());
 		}
 		
 		try {
 			String enStr = URLEncoder.encode(uri, "UTF-8");
-			startBrowser(hiddenPrefix + enStr, getChrome());
+			result = startBrowser(hiddenPrefix + enStr, getChrome());
 			//setClipbord(uri);
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		
+		return result;
 	}
 
 	public String getPrefix() {
