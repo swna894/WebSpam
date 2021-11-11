@@ -516,7 +516,7 @@ public class ReviewController implements Initializable, Constant {
 //					comboBoxCategory);
 //		}
 		hBox.setPadding(new Insets(7, 7, 7, 7));
-		hBox.setSpacing(10);
+		hBox.setSpacing(5);
 		LOG.info("========== start initialize ");
 	}
 
