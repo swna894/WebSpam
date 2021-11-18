@@ -499,9 +499,6 @@ public class CrossQcController<S> implements Initializable, Constant {
 		stage.setScene(scene);
 		stage.setWidth(primaryScreenBounds.getWidth());
 		stage.setHeight(primaryScreenBounds.getHeight());
-		stage.setOnCloseRequest(event -> {
-			stage.close();
-		});
 		stage.setOnShowing(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
@@ -510,6 +507,7 @@ public class CrossQcController<S> implements Initializable, Constant {
 		
 		stage.setOnCloseRequest(event -> {
 		    buttonSave.fire();
+		    stage.close();
 		});
 		
 		stage.show();
@@ -1024,8 +1022,8 @@ public class CrossQcController<S> implements Initializable, Constant {
 		return tableColumn;
 	}
 
-	@SuppressWarnings({ "unused", "unchecked" })
-	private void updateLabel(int index) {
+	//@SuppressWarnings({ "unused", "unchecked" })
+/*	private void updateLabel(int index) {
 		Spam spam = spamList.get(index);
 		SpamCheck spamCheck = spam.getSpamCheck();
 		ObjectMapper mapper = new ObjectMapper();
@@ -1043,5 +1041,5 @@ public class CrossQcController<S> implements Initializable, Constant {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

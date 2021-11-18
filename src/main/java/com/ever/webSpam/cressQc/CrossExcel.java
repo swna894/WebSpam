@@ -258,109 +258,109 @@ public class CrossExcel implements Constant {
 		}
 	}
 
-	public boolean writeSpam(File selectedFile, Spam spam) {
+//	public boolean writeSpam(File selectedFile, Spam spam) {
+//
+//		XSSFWorkbook workbook = null;
+//		XSSFSheet sheet = null;
+//
+//		if (selectedFile.exists()) {
+//			FileInputStream fis;
+//			try {
+//				fis = new FileInputStream(selectedFile);
+//				workbook = new XSSFWorkbook(fis);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		} else {
+//			workbook = new XSSFWorkbook();
+//		}
+//
+//		CellStyle style = workbook.createCellStyle();
+//		style.setBorderBottom(BorderStyle.THIN);
+//		style.setBottomBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+//		style.setBorderLeft(BorderStyle.THIN);
+//		style.setLeftBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+//		style.setBorderRight(BorderStyle.THIN);
+//		style.setRightBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+//		style.setBorderTop(BorderStyle.THIN);
+//		style.setTopBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+//		style.setWrapText(true);
+//
+//		sheet = workbook.getSheetAt(0);
+//
+//		Iterator<Row> rowIterator = sheet.iterator();
+//		// Iterate through rows
+//		while (rowIterator.hasNext()) {
+//			Row row = rowIterator.next();
+//
+//			if (row.getRowNum() < 4) {
+//				continue;
+//			}
+//
+//			Cell cell = row.getCell(1);
+//
+//			String url = cell.getStringCellValue();
+//			if (spam.getUri().trim().equals(url)) {
+//				cell = row.getCell(10);
+//				cell.setCellValue(spam.getLookMain());
+//				cell = row.getCell(11);
+//				cell.setCellValue(spam.getLookCh());
+//				cell = row.getCell(12);
+//				cell.setCellValue(spam.getLookList());
+//				cell = row.getCell(13);
+//				cell.setCellValue(spam.getLookCont());
+//				cell = row.getCell(14);
+//				cell.setCellValue(spam.getHam());
+//				cell = row.getCell(15);
+//				cell.setCellValue(spam.getHamLow());
+//				cell = row.getCell(16);
+//				cell.setCellValue(spam.getSpamAd());
+//				cell = row.getCell(17);
+//				cell.setCellValue(spam.getSpamText());
+//				cell = row.getCell(18);
+//				cell.setCellValue(spam.getSpamRedir());
+//				cell = row.getCell(19);
+//				cell.setCellValue(spam.getSpamMalware());
+//				cell = row.getCell(20);
+//				cell.setCellValue(spam.getSpamCopy());
+//				cell = row.getCell(21);
+//				cell.setCellValue(spam.getSpamPorn());
+//				cell = row.getCell(22);
+//				cell.setCellValue(spam.getSpamPornWeak());
+//				cell = row.getCell(23);
+//				cell.setCellValue(spam.getSpamDecep());
+//				cell = row.getCell(24);
+//				cell.setCellValue(spam.getSpamManip());
+//				cell = row.getCell(25);
+//				cell.setCellValue(spam.getSpamIllegal());
+//				cell = row.getCell(43);
+//				cell.setCellValue(spam.getQc());
+//				cell = row.getCell(44);
+//				cell.setCellValue(spam.getComment());
+//				cell.setCellStyle(style);
+//				cell.getRow().setHeight((short) -1);
+//
+//				for (int i = 27; i < 42; i++) {
+//					cell = row.getCell(i);
+//					cell.setCellFormula(cell.getCellFormula());
+//				}
+//				break;
+//			}
+//		}
+//
+//		try {
+//			FileOutputStream outputStream = new FileOutputStream(selectedFile);
+//			workbook.write(outputStream);
+//			workbook.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			return false;
+//		}
+//
+//		return true;
+//	}
 
-		XSSFWorkbook workbook = null;
-		XSSFSheet sheet = null;
-
-		if (selectedFile.exists()) {
-			FileInputStream fis;
-			try {
-				fis = new FileInputStream(selectedFile);
-				workbook = new XSSFWorkbook(fis);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			workbook = new XSSFWorkbook();
-		}
-
-		CellStyle style = workbook.createCellStyle();
-		style.setBorderBottom(BorderStyle.THIN);
-		style.setBottomBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-		style.setBorderLeft(BorderStyle.THIN);
-		style.setLeftBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-		style.setBorderRight(BorderStyle.THIN);
-		style.setRightBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-		style.setBorderTop(BorderStyle.THIN);
-		style.setTopBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
-		style.setWrapText(true);
-
-		sheet = workbook.getSheetAt(0);
-
-		Iterator<Row> rowIterator = sheet.iterator();
-		// Iterate through rows
-		while (rowIterator.hasNext()) {
-			Row row = rowIterator.next();
-
-			if (row.getRowNum() < 4) {
-				continue;
-			}
-
-			Cell cell = row.getCell(1);
-
-			String url = cell.getStringCellValue();
-			if (spam.getUri().trim().equals(url)) {
-				cell = row.getCell(10);
-				cell.setCellValue(spam.getLookMain());
-				cell = row.getCell(11);
-				cell.setCellValue(spam.getLookCh());
-				cell = row.getCell(12);
-				cell.setCellValue(spam.getLookList());
-				cell = row.getCell(13);
-				cell.setCellValue(spam.getLookCont());
-				cell = row.getCell(14);
-				cell.setCellValue(spam.getHam());
-				cell = row.getCell(15);
-				cell.setCellValue(spam.getHamLow());
-				cell = row.getCell(16);
-				cell.setCellValue(spam.getSpamAd());
-				cell = row.getCell(17);
-				cell.setCellValue(spam.getSpamText());
-				cell = row.getCell(18);
-				cell.setCellValue(spam.getSpamRedir());
-				cell = row.getCell(19);
-				cell.setCellValue(spam.getSpamMalware());
-				cell = row.getCell(20);
-				cell.setCellValue(spam.getSpamCopy());
-				cell = row.getCell(21);
-				cell.setCellValue(spam.getSpamPorn());
-				cell = row.getCell(22);
-				cell.setCellValue(spam.getSpamPornWeak());
-				cell = row.getCell(23);
-				cell.setCellValue(spam.getSpamDecep());
-				cell = row.getCell(24);
-				cell.setCellValue(spam.getSpamManip());
-				cell = row.getCell(25);
-				cell.setCellValue(spam.getSpamIllegal());
-				cell = row.getCell(43);
-				cell.setCellValue(spam.getQc());
-				cell = row.getCell(44);
-				cell.setCellValue(spam.getComment());
-				cell.setCellStyle(style);
-				cell.getRow().setHeight((short) -1);
-
-				for (int i = 27; i < 42; i++) {
-					cell = row.getCell(i);
-					cell.setCellFormula(cell.getCellFormula());
-				}
-				break;
-			}
-		}
-
-		try {
-			FileOutputStream outputStream = new FileOutputStream(selectedFile);
-			workbook.write(outputStream);
-			workbook.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-
-		return true;
-	}
-
-	public boolean writeSpam(File selectedFile, List<Spam> spamList) {
+	public boolean writeSpam(File selectedFile, List<Spam> spamList) { 
 
 		XSSFWorkbook workbook = null;
 		XSSFSheet sheet = null;

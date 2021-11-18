@@ -110,7 +110,7 @@
                   <Button fx:id="buttonSearch" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonSearch" prefWidth="200.0" />
                   <Button fx:id="buttonDel" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonDel" prefWidth="200.0" />
                   <Button fx:id="buttonCategory" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonCategory" prefWidth="200.0" />
-                  <Button fx:id="buttonSaveRview" mnemonicParsing="false" onAction="#actionButtonSaveRview" prefWidth="200.0" />
+                  <Button fx:id="buttonSaveRview" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#actionButtonSaveRview" prefWidth="200.0" />
                </children>
             </HBox>
          </children>

@@ -142,10 +142,10 @@ public class ReviewController implements Initializable, Constant {
 	private Button buttonEnd;
 	private Button buttonWhiteSave;
 	private Button buttonCommentSort;
-	private Button buttonAutoKeepReview;
-	private Button buttonAutoGroup;
-	private Button buttonAutoResult;
-	private Button buttonAutoText;
+	private Button buttonTenReview;
+	private Button buttonTenGroup;
+	private Button buttonTenResult;
+	private Button buttonTenHiddenText;
 	private Button buttonAutoContinue;
 	private Button buttonStopAutoReview;
 	private DatePicker datePicker;
@@ -383,25 +383,25 @@ public class ReviewController implements Initializable, Constant {
 		buttonDelete.setOnAction(e -> actionButtonDeleteHandler());
 		buttonDelete.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoKeepReview = new Button();
-		buttonAutoKeepReview.setGraphic(new ImageView(new Image("/images/keep.png")));
-		buttonAutoKeepReview.setOnAction(e -> actionButtonAutoKeepReview());
-		buttonAutoKeepReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		buttonTenReview = new Button();
+		buttonTenReview.setGraphic(new ImageView(new Image("/images/keep.png")));
+		buttonTenReview.setOnAction(e -> actionButtonTenReview());
+		buttonTenReview.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoGroup = new Button();
-		buttonAutoGroup.setGraphic(new ImageView(new Image("/images/three.png")));
-		buttonAutoGroup.setOnAction(e -> actionButtonAutoGroup());
-		buttonAutoGroup.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		buttonTenGroup = new Button();
+		buttonTenGroup.setGraphic(new ImageView(new Image("/images/three.png")));
+		buttonTenGroup.setOnAction(e -> actionButtonAutoGroup());
+		buttonTenGroup.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoResult = new Button();
-		buttonAutoResult.setGraphic(new ImageView(new Image("/images/bluelist.png")));
-		buttonAutoResult.setOnAction(e -> actionButtonAutoResult());
-		buttonAutoResult.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		buttonTenResult = new Button();
+		buttonTenResult.setGraphic(new ImageView(new Image("/images/bluelist.png")));
+		buttonTenResult.setOnAction(e -> actionButtonTenResult());
+		buttonTenResult.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
-		buttonAutoText = new Button();
-		buttonAutoText.setGraphic(new ImageView(new Image("/images/magnify.png")));
-		buttonAutoText.setOnAction(e -> actionButtonAutoText());
-		buttonAutoText.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
+		buttonTenHiddenText = new Button();
+		buttonTenHiddenText.setGraphic(new ImageView(new Image("/images/magnify.png")));
+		buttonTenHiddenText.setOnAction(e -> actionButtonTenHiddenText());
+		buttonTenHiddenText.setFont(Font.font("Verdana", FontWeight.BOLD, 14));
 
 		buttonAutoContinue = new Button();
 		buttonAutoContinue.setGraphic(new ImageView(new Image("/images/repeat.png")));
@@ -507,8 +507,8 @@ public class ReviewController implements Initializable, Constant {
 		// datePicker, checkBoxUseDatePicker, // buttonAll,
 		hBox.getChildren().addAll(comboBoxWorker, buttonWorkNum, textFieldFilterURL, buttonFilter, buttonRefresh,
 				buttonCross, buttonResultCross, buttonReview, buttonInsertCategory, buttonCommentSort, label, region,
-				wasChecked, radioButtonReverse, textFieldNo, comboBoxCategory, comboBoxSite, buttonAutoKeepReview,
-				buttonAutoGroup, buttonAutoResult, buttonAutoText, textFieldTime, buttonAutoContinue, buttonStopAutoReview,
+				wasChecked, radioButtonReverse, textFieldNo, comboBoxCategory, comboBoxSite, buttonTenReview,
+				buttonTenGroup, buttonTenResult, buttonTenHiddenText, textFieldTime, buttonAutoContinue, buttonStopAutoReview,
 				comboBoxWhite, buttonWhiteSave, buttonTop, buttonEnd);
 //		} else {
 //			hBox.getChildren().addAll(datePicker, checkBoxUseDatePicker, comboBoxWorker, buttonAll, textFieldFilterURL,
@@ -529,7 +529,7 @@ public class ReviewController implements Initializable, Constant {
 
 	private List<String> autoReviewList = new ArrayList<String>();
 
-	private void actionButtonAutoKeepReview() { 
+	private void actionButtonTenReview() { 
 		autoReviewList.clear();
 		int i = 0;
 		int postion = 0;
@@ -567,7 +567,7 @@ public class ReviewController implements Initializable, Constant {
 		}
 	}
 
-	private void actionButtonAutoResult() {
+	private void actionButtonTenResult() {
 		for (String url : autoReviewList) {			
 			try {
 				verifySite.eventSearchResultAutoReview(url); // 검색결과
@@ -580,7 +580,7 @@ public class ReviewController implements Initializable, Constant {
 
 	}
 
-	private void actionButtonAutoText() {
+	private void actionButtonTenHiddenText() {
 		for (String url : autoReviewList) {			
 			try {
 				verifySite.hiddenText(url);   // 저장된 텍스트
@@ -1140,6 +1140,7 @@ public class ReviewController implements Initializable, Constant {
 	}
 
 	private List<Spam> getSpamListFromDownloadList() {
+		
 		List<String> downloadList = spamController.getSpamListFromDownLoadFile();
 
 		if (downloadList != null) {
@@ -1659,7 +1660,7 @@ public class ReviewController implements Initializable, Constant {
 		stage.getIcons().add(new Image("/images/list.png"));
 		stage.setTitle("Review result");
 		scene = new Scene(borderPane);
-		scene.getStylesheets().add("styles/styles.css");
+		//scene.getStylesheets().add("styles/styles.css");
 		stage.setScene(scene);
 		stage.setWidth(primaryScreenBounds.getWidth());
 		stage.setHeight(primaryScreenBounds.getHeight());
@@ -2187,231 +2188,6 @@ public class ReviewController implements Initializable, Constant {
 		return false;
 	}
 
-//	public Boolean checkSpamAction(Spam spam) {
-//		// String uri = null;
-//		// 기본 url 작업
-//		String checkUrl = getBasicUrl(spam.getUri());
-//
-//		// spamCategoryController.initalSpamCategory();
-//		// List<SpamCategory> spamCategroysList =
-//		// restSpamCategoryRepository.findAllByOrderByUriAsc();
-//
-//		if (!spam.getLookCh() && !spam.getLookCont() && !spam.getLookList() && !spam.getLookMain()) {
-//			return false;
-//		}
-//		
-//		// 작업 실수 확인
-//		if (spam.getSpamRedir() && spam.getSpamText() && !spam.getSpamAd()) {
-//			spam.setComment("리디렉션오류");
-//			spam.setIsCheck(true);
-//			return true;
-//		}
-//
-//		if (spam.getUri().contains(".go.kr") && (spam.getSpamAd() || spam.getSpamText())) {
-//			spam.setComment("{비광확인}");
-//			spam.setIsCheck(true);
-//		}
-//
-//		if (spam.getSpamMalware()) {
-//			spam.setComment("?악소");
-//			spam.setIsCheck(true);
-//			return true;
-//		}
-//
-//		if (!spam.getDefer().equals("")) {
-//			spam.setComment("?보류");
-//			return true;
-//		}
-//
-//		if (spam.getSpamDecep()) {
-//			spam.setComment("?기컨");
-//			spam.setIsCheck(true);
-//			return true;
-//		}
-//
-//		if (spam.getSpamMalware()) {
-//			spam.setComment("?악성");
-//			spam.setIsCheck(true);
-//			return true;
-//		}
-//
-//		// 1. 채널 확인
-//		if (checkChannel(spam, checkUrl)) {
-//			spam.setComment("채널 확인");
-//			spam.setIsCheck(true);
-//			return true;
-//		}
-//
-//		// 2. 서비스 확인
-//		if (checkService(spam, checkUrl)) {		
-//				spam.setComment("서비스 확인");
-//				spam.setIsCheck(true);
-//				return true;
-//			//}
-//		}
-//
-//	
-////		if ((checkUrl.endsWith(".com") || checkUrl.endsWith(".kr") || checkUrl.endsWith(".net"))
-////				&& (spam.getSpamAd() || spam.getSpamText()) && !isWhite) {
-////			spam.setComment("{비광확인}");
-////			spam.setIsCheck(true);
-////		}
-//
-////		List<SpamCategory> spamCategroyList = spamCategoryRepository.findAllByOrderByUriAsc();
-////
-////		// spamCategoryList 에서 체크한다.
-////		if (spamCategroyList != null) {
-////			SpamCategory spamCategroy = spamCategroyList.stream().filter(item -> item != null)
-////					.filter(item -> spam.getUri().contains(item.getUri())).findAny().orElse(null);
-////			String comment = spam.getComment();
-////			if (spamCategroy != null) {
-////				if (spamCategroy.getLookMain() && spam.getLookCh()) { // 그룹 : 메인 , 작업 : 채널
-////					if (spam.getComment() == null || spam.getComment().isEmpty()) {
-////						spam.setComment("검증 -> {서비스}" + comment);
-////						spam.setIsCheck(true);
-////					}
-////					return true;
-////				} else if (spamCategroy.getLookCh() && spam.getLookMain()) { // 그룹 : 채널 , 작업 : 메인
-////					if (spam.getComment() == null || spam.getComment().isEmpty()) {
-////						spam.setComment("{채널}" + comment);
-////						spam.setIsCheck(true);
-////					}
-////					return true;
-////				} else if (spamCategroy.getHamLow() && !spam.getHamLow()) { // 그룹 : 저품질 , 작업 : !저품질
-////					if (spam.getComment() == null || spam.getComment().isEmpty()) {
-////						spam.setComment("{저품질}" + comment);
-////						spam.setIsCheck(true);
-////					}
-////					return true;
-////				} else if (spamCategroy.getLookList() && (spam.getLookMain() || spam.getLookCh())) { // 그룹 : 리스트 , 작업 :
-////																										// !리스트
-////					if (spam.getComment() == null || spam.getComment().isEmpty()) {
-////						spam.setComment("{리스트}" + comment);
-////						spam.setIsCheck(true);
-////					}
-////					return true;
-////				} else {
-////					String s = comment;
-////					if (spamCategroy.getSpamAd() && !spam.getSpamAd()) {
-////						if (spam.getComment() == null || spam.getComment().isEmpty())
-////							s = "{비광}";
-////						spam.setIsCheck(true);
-////
-////					}
-////
-////					if (spamCategroy.getSpamText() && !spam.getSpamText()) { // 그룹 : 리스트 , 작업 : !리스트
-////						if (spam.getComment() == null || spam.getComment().isEmpty())
-////							s = s + "{비광}";
-////						spam.setIsCheck(true);
-////					}
-////					spam.setComment(s);
-////					return true;
-////				}
-////			}
-////		}
-////
-//
-//		// google 확인
-//		if (checkUrl.contains("sites.google.com/site")) {
-//			if (spam.getLookCh()) {
-//				spam.setComment("?서메");
-//				return true;
-//			}
-//
-//			if ((checkUrl.split("/").length == 3) && !spam.getLookMain()) {
-//				spam.setComment("?서메");
-//				return true;
-//			}
-//
-//			if ((checkUrl.split("/").length > 3) && spam.getLookMain()) {
-//				spam.setComment("?컨텐");
-//				return true;
-//			}
-//			// List<String> chList = Arrays.asList("tistory.com","blogspot.com",
-//			// "blog.daum.net", "blog.naver.com", "facebook.com","tumblr.com");
-//		} else if ((checkUrl.contains("tistory.com") || checkUrl.contains("blogspot.com")
-//				|| checkUrl.contains("blog.daum.net") || checkUrl.contains("blog.naver.com")
-//				|| checkUrl.contains("facebook.com") || checkUrl.contains("tumblr.com"))
-//				&& (checkUrl.chars().filter(ch -> ch == '/').count() < 1)) {
-//
-//			if (!spam.getLookCh()) {
-//				spam.setComment("?채메");
-//				return true;
-//			}
-//
-//			if ((checkUrl.chars().filter(ch -> ch == '/').count() > 4) && spam.getLookCh()) {
-//				spam.setComment("?컨테/컨리");
-//				return true;
-//			}
-//
-//			if ((checkUrl.split("/").length > 4) && spam.getLookList()) {
-//				spam.setComment("?컨테");
-//				return true;
-//			}
-//
-//		} else if ((checkUrl.contains("story.kakao.com/ch"))
-//				&& (checkUrl.chars().filter(ch -> ch == '/').count() <= 2)) {
-//			if (!spam.getLookCh()) {
-//				spam.setComment("?채메");
-//				return true;
-//			}
-//
-//			if ((checkUrl.chars().filter(ch -> ch == '/').count() > 2) && spam.getLookCh()) {
-//				spam.setComment("?컨테/컨리");
-//				return true;
-//			}
-//
-//			if ((checkUrl.split("/").length <= 2) && spam.getLookList()) {
-//				spam.setComment("?컨테");
-//				return true;
-//			}
-//
-//		} else if (checkUrl.contains("wixsite.com") || checkUrl.contains("weebly.com") || checkUrl.contains("imWeb.com")
-//				|| checkUrl.contains("creatorlink.com")) {
-//			if (spam.getLookCh()) {
-//				spam.setComment("?서메");
-//				return true;
-//			}
-//
-//			if ((checkUrl.split("/").length < 2) && !spam.getLookCh() && !checkUrl.endsWith("/")) {
-//				spam.setComment("?서메");
-//				return true;
-//			}
-//		} else {
-//			if (checkUrl.split("/").length > 2 && (spam.getLookMain() || spam.getLookCh())) {
-//				if (spam.getComment() == null || spam.getComment().isEmpty())
-//					spam.setComment("{리스트/컨텐트}");
-//				return true;
-//			}
-//			if (checkUrl.split("/").length < 2) {
-//				if ((!spam.getLookList() && spam.getLookCh() && !spam.getLookList() && !spam.getLookCont())) {
-//					return false;
-//				}
-//
-//				if (spam.getLookList() || spam.getLookCont()) {
-//					if (spam.getComment() != null && !spam.getComment().isEmpty())
-//						spam.setComment("{서비스/채널 확인 필요}");
-//					return true;
-//				}
-//			}
-//
-//			String isSpam = isSpam(spam);
-//
-//			String comment = spam.getComment();
-//			if (isSpam != null && !spam.getSelected()) {
-//
-//				if (comment != null) {
-//					comment = comment + isSpam;
-//				} else {
-//					comment = isSpam;
-//				}
-//				spam.setComment(isSpam);
-//			}
-//
-//		}
-//
-//		return false;
-//	}
 
 	@SuppressWarnings("unused")
 	private String isSpam(Spam spam) {
